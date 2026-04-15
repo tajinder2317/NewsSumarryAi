@@ -1485,3 +1485,243 @@
 
 2026-04-15 18:03:45,220 - app.main - INFO - Shutting down News Analyzer AI...
 2026-04-15 18:03:49,316 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 18:03:59,631 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 18:03:59,645 - app.main - INFO - Database tables created successfully
+2026-04-15 18:04:04,816 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 18:04:04,822 - app.main - INFO - Database tables created successfully
+2026-04-15 18:04:21,599 - app.services.summarizer - ERROR - Error in sentence tokenization: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:04:21,619 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:04:27,764 - app.services.summarizer - ERROR - Error in sentence tokenization: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:04:27,782 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:09:25,240 - app.services.summarizer - ERROR - Error in sentence tokenization: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:09:25,252 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:09:34,505 - app.services.summarizer - ERROR - Error in sentence tokenization: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:09:34,509 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 18:13:19,966 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:14:01,188 - app.services.news_collector - INFO - Collected 20 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:14:01,219 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:14:01,220 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:14:01,433 - app.services.news_collector - INFO - Collected 0 articles from https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:14:01,434 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:14:01,528 - app.services.news_collector - INFO - Collected 0 articles from https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:14:02,944 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-15 18:17:48,937 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:18:21,847 - app.services.news_collector - INFO - Collected 20 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:18:21,862 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:18:21,862 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:18:22,053 - app.services.news_collector - INFO - Collected 0 articles from https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:18:22,053 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:18:22,099 - app.services.news_collector - INFO - Collected 0 articles from https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:18:23,064 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-15 18:18:45,192 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:19:16,193 - app.services.news_collector - INFO - Collected 20 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:19:16,214 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:19:16,215 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:19:16,417 - app.services.news_collector - INFO - Collected 0 articles from https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:19:16,418 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:19:16,489 - app.services.news_collector - INFO - Collected 0 articles from https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:19:17,520 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-15 18:20:27,636 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 18:20:28,068 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 18:20:38,013 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 18:20:38,019 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 18:20:38,022 - app.main - INFO - Database tables created successfully
+2026-04-15 18:20:38,026 - app.main - INFO - Database tables created successfully
+2026-04-15 18:20:44,550 - app.services.news_collector - INFO - Starting collection from 3 RSS feeds
+2026-04-15 18:20:44,551 - app.services.news_collector - INFO - Collecting from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:20:44,551 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:21:30,189 - app.services.news_collector - INFO - Collected 20 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 18:21:30,190 - app.services.news_collector - INFO - Collected 20 articles from RSS
+2026-04-15 18:21:30,224 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:21:30,225 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:21:30,225 - app.services.news_collector - INFO - Collecting from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:21:30,225 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:21:30,421 - app.services.news_collector - INFO - Collected 0 articles from https://rss.cnn.com/rss/edition.rss
+2026-04-15 18:21:30,421 - app.services.news_collector - INFO - Collected 0 articles from RSS
+2026-04-15 18:21:30,422 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:21:30,422 - app.services.news_collector - INFO - Collecting from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:21:30,422 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:21:30,488 - app.services.news_collector - INFO - Collected 0 articles from https://feeds.reuters.com/reuters/topNews
+2026-04-15 18:21:30,489 - app.services.news_collector - INFO - Collected 0 articles from RSS
+2026-04-15 18:21:30,489 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-15 18:21:30,490 - app.services.news_collector - INFO - Collecting from NewsAPI
+2026-04-15 18:21:31,741 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-15 18:21:31,742 - app.services.news_collector - INFO - Collected 0 articles from NewsAPI
+2026-04-15 18:21:31,742 - app.services.news_collector - INFO - Saved 0 new articles from NewsAPI
+2026-04-15 18:21:31,742 - app.services.news_collector - INFO - Total articles collected: 0
