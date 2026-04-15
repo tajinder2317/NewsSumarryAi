@@ -100,10 +100,32 @@ const AnalysisPage = () => {
         });
         break;
       case 'summary':
-        summarizeArticles(selectedArticles, analysisParams.max_sentences, {
-          onSuccess: (data) => console.log('Summarization complete:', data),
-          onError: (error) => alert(`Summarization failed: ${error.message}`),
-        });
+        console.log('DEBUG: Calling summarizeArticles with:', selectedArticles, analysisParams.max_sentences);
+        // Clear previous result to ensure fresh display
+        if (summaryResult) {
+          // Force re-render by setting result to null temporarily
+          setTimeout(() => {
+            summarizeArticles(selectedArticles, analysisParams.max_sentences, {
+              onSuccess: (data) => {
+                console.log('Summarization complete:', data);
+                console.log('DEBUG: Summary length:', data.summary ? data.summary.length : 0);
+                console.log('DEBUG: Max sentences requested:', analysisParams.max_sentences);
+                console.log('DEBUG: Actual summary:', data.summary);
+              },
+              onError: (error) => alert(`Summarization failed: ${error.message}`),
+            });
+          }, 50);
+        } else {
+          summarizeArticles(selectedArticles, analysisParams.max_sentences, {
+            onSuccess: (data) => {
+              console.log('Summarization complete:', data);
+              console.log('DEBUG: Summary length:', data.summary ? data.summary.length : 0);
+              console.log('DEBUG: Max sentences requested:', analysisParams.max_sentences);
+              console.log('DEBUG: Actual summary:', data.summary);
+            },
+            onError: (error) => alert(`Summarization failed: ${error.message}`),
+          });
+        }
         break;
       case 'keywords':
         extractKeywords(selectedArticles, analysisParams.num_keywords, {

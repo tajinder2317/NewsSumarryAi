@@ -89,12 +89,12 @@ export const newsAPI = {
 export const analysisAPI = {
   // Analyze sentiment
   analyzeSentiment: (articleIds) => {
-    return api.post('/api/v1/analysis/sentiment', articleIds);
+    return api.post('/api/v1/analysis/sentiment', { article_ids: articleIds });
   },
   
   // Extract topics
   analyzeTopics: (articleIds) => {
-    return api.post('/api/v1/analysis/topics', articleIds);
+    return api.post('/api/v1/analysis/topics', { article_ids: articleIds });
   },
   
   // Summarize articles
@@ -109,7 +109,7 @@ export const analysisAPI = {
   
   // Categorize articles
   categorizeArticles: (articleIds) => {
-    return api.post('/api/v1/analysis/categorize', articleIds);
+    return api.post('/api/v1/analysis/categorize', { article_ids: articleIds });
   },
   
   // Get analysis statistics

@@ -28,7 +28,7 @@ import {
   RocketLaunch,
 } from '@mui/icons-material';
 
-import { newsService } from '../services/newsService';
+import { newsService, trendsService } from '../services/newsService';
 import Loading from '../components/common/Loading';
 
 const Home = () => {
@@ -45,7 +45,7 @@ const Home = () => {
     data: trends,
     isLoading: trendsLoading,
     error: trendsError,
-  } = useQuery('trendsSummary', () => newsService.getTrendingTopics(24), {
+  } = useQuery('trendsSummary', () => trendsService.getTrendingTopics(24), {
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 
