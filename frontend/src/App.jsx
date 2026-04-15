@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Analysis from './pages/Analysis';
 import Search from './pages/Search';
+import News from './pages/News';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,7 +26,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="app-container">
         <Header />
-        
+
         <main className="main-content">
           <Container maxWidth="xl">
             <Routes>
@@ -33,10 +34,11 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/analysis" element={<Analysis />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/news" element={<News />} />
             </Routes>
           </Container>
         </main>
-        
+
         <Footer />
       </div>
     </QueryClientProvider>

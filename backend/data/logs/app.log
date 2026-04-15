@@ -72,3 +72,15 @@
 2026-04-15 15:54:12,722 - app.main - INFO - Shutting down News Analyzer AI...
 2026-04-15 15:58:21,616 - app.main - INFO - Starting News Analyzer AI...
 2026-04-15 15:58:21,631 - app.main - INFO - Database tables created successfully
+2026-04-15 16:59:43,301 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 16:59:43,315 - app.main - INFO - Database tables created successfully
+2026-04-15 16:59:48,778 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 17:00:26,537 - app.services.news_collector - INFO - Collected 20 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-15 17:00:26,573 - app.services.news_collector - INFO - Saved 20 new articles to database
+2026-04-15 17:00:26,574 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-15 17:00:26,754 - app.services.news_collector - INFO - Collected 0 articles from https://rss.cnn.com/rss/edition.rss
+2026-04-15 17:00:26,755 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-15 17:00:26,822 - app.services.news_collector - INFO - Collected 0 articles from https://feeds.reuters.com/reuters/topNews
+2026-04-15 17:00:27,694 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-15 17:01:05,492 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:01:05,500 - app.main - INFO - Database tables created successfully

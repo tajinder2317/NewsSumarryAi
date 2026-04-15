@@ -16,6 +16,7 @@ import {
   Dashboard,
   Analytics,
   Search,
+  Article,
 } from '@mui/icons-material';
 
 const Header = () => {
@@ -38,6 +39,7 @@ const Header = () => {
 
   const menuItems = [
     { label: 'Home', path: '/', icon: <Home /> },
+    { label: 'News', path: '/news', icon: <Article /> },
     { label: 'Dashboard', path: '/dashboard', icon: <Dashboard /> },
     { label: 'Analysis', path: '/analysis', icon: <Analytics /> },
     { label: 'Search', path: '/search', icon: <Search /> },
