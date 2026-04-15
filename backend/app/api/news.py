@@ -3,11 +3,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
 from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 from ..models import (
     get_db, NewsArticle, NewsArticleResponse, SearchRequest
 )
 from ..services import NewsCollector
+from ..config import settings
 
 router = APIRouter()
 
@@ -40,17 +44,61 @@ async def get_article(article_id: int, db: Session = Depends(get_db)):
     return article
 
 @router.post("/collect")
-async def collect_news(db: Session = Depends(get_db)):
+async def collect_news(
+    timeout: int = Query(8, ge=5, le=30, description="Timeout in seconds for RSS feed collection"),
+    db: Session = Depends(get_db)
+):
     """Trigger news collection from all sources"""
     try:
+        import asyncio
+        from concurrent.futures import ThreadPoolExecutor
+        
         collector = NewsCollector()
-        collected_count = collector.collect_all_sources()
+        
+        # Get total articles before collection
+        total_before = db.query(NewsArticle).count()
+        
+        # Run collection in a separate thread with timeout
+        loop = asyncio.get_event_loop()
+        
+        def collect_with_timeout():
+            return collector.collect_all_sources(timeout=timeout)
+        
+        try:
+            collected_count = await asyncio.wait_for(
+                loop.run_in_executor(ThreadPoolExecutor(max_workers=1), collect_with_timeout),
+                timeout=timeout + 2  # Small buffer for API processing
+            )
+        except asyncio.TimeoutError:
+            logger.error(f"News collection timed out after {timeout + 2} seconds")
+            return {
+                "message": f"News collection timed out after {timeout} seconds. Please try again with a longer timeout or check your internet connection.",
+                "collected_count": 0,
+                "total_articles": total_before,
+                "articles_processed": 0,
+                "timeout": True
+            }
+        
+        # Get total articles after collection
+        total_after = db.query(NewsArticle).count()
+        articles_processed = total_after - total_before
+        
+        if collected_count == 0 and articles_processed > 0:
+            message = f"Processed {articles_processed} articles from RSS feeds, but all were already in database"
+        elif collected_count > 0:
+            message = f"Successfully collected {collected_count} new articles (processed {articles_processed} total)"
+        else:
+            message = f"No new articles found. {total_after} articles already in database"
         
         return {
-            "message": f"Successfully collected {collected_count} new articles",
-            "collected_count": collected_count
+            "message": message,
+            "collected_count": collected_count,
+            "total_articles": total_after,
+            "articles_processed": articles_processed,
+            "timeout": False
         }
     except Exception as e:
+        logger.error(f"Error in collect_news: {e}")
         raise HTTPException(status_code=500, detail=f"Error collecting news: {str(e)}")
 
 @router.post("/search", response_model=List[NewsArticleResponse])

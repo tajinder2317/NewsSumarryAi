@@ -58,10 +58,18 @@ const Home = () => {
     collectNews(undefined, {
       onSuccess: (data) => {
         refetchStats();
-        alert(`Successfully collected ${data.collected_count} new articles!`);
+        if (data.timeout) {
+          alert(`Collection timed out. You can try again with a longer timeout or check your internet connection.\n\n${data.message}`);
+        } else {
+          alert(data.message);
+        }
       },
       onError: (error) => {
-        alert(`Error collecting news: ${error.message}`);
+        if (error.message.includes('timeout')) {
+          alert(`Request timed out. Please check your internet connection and try again.`);
+        } else {
+          alert(`Error collecting news: ${error.message}`);
+        }
       },
     });
   };
@@ -468,7 +476,7 @@ const Home = () => {
               🔥 Trending Topics
             </Typography>
             <Grid container spacing={3}>
-              {trends.trending_topics.slice(0, 6).map((topic, index) => (
+              {trends && trends.summary && trends.summary.trending_topics && trends.summary.trending_topics.slice(0, 6).map((topic, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Fade in timeout={1200 + index * 100}>
                     <Card

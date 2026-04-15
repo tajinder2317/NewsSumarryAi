@@ -19,11 +19,29 @@ class NewsCollector:
             'User-Agent': 'NewsAnalyzerAI/1.0 (Educational Purpose)'
         })
 
-    def collect_from_rss(self, rss_url: str, max_articles: int = 20) -> List[dict]:
+    def collect_from_rss(self, rss_url: str, max_articles: int = 5, timeout: int = 10) -> List[dict]:
         """Collect news articles from RSS feed"""
         try:
-            logger.info(f"Collecting news from RSS: {rss_url}")
+            logger.info(f"Collecting news from RSS: {rss_url} (max {max_articles} articles)")
+            
+            # Set timeout for the request
+            import socket
+            import urllib.request
+            
+            # Set socket timeout
+            socket.setdefaulttimeout(timeout)
+            
+            # Parse RSS feed with timeout
             feed = feedparser.parse(rss_url)
+            
+            # Reset socket timeout to default
+            socket.setdefaulttimeout(None)
+            
+            # Check if feed has entries
+            if not hasattr(feed, 'entries') or not feed.entries:
+                logger.warning(f"No entries found in RSS feed: {rss_url}")
+                return []
+            
             articles = []
             
             for entry in feed.entries[:max_articles]:
@@ -31,7 +49,8 @@ class NewsCollector:
                     article_data = self._parse_rss_entry(entry)
                     if article_data:
                         articles.append(article_data)
-                    time.sleep(0.1)  # Be respectful to servers
+                    # Reduced sleep time for faster processing
+                    time.sleep(0.05)  
                 except Exception as e:
                     logger.warning(f"Error parsing RSS entry: {e}")
                     continue
@@ -39,6 +58,9 @@ class NewsCollector:
             logger.info(f"Collected {len(articles)} articles from {rss_url}")
             return articles
             
+        except socket.timeout:
+            logger.error(f"Timeout collecting from RSS {rss_url} after {timeout} seconds")
+            return []
         except Exception as e:
             logger.error(f"Error collecting from RSS {rss_url}: {e}")
             return []
@@ -58,7 +80,7 @@ class NewsCollector:
                 'country': 'us'
             }
             
-            response = self.session.get(url, params=params)
+            response = self.session.get(url, params=params, timeout=30)
             response.raise_for_status()
             
             data = response.json()
@@ -190,21 +212,43 @@ class NewsCollector:
         
         return saved_count
 
-    def collect_all_sources(self) -> int:
+    def collect_all_sources(self, timeout: int = 15) -> int:
         """Collect news from all configured sources"""
         total_articles = 0
+        
+        logger.info(f"Starting collection from {len(settings.RSS_FEEDS)} RSS feeds with timeout {timeout}s")
         
         # Collect from RSS feeds
         for rss_url in settings.RSS_FEEDS:
             if rss_url.strip():
-                articles = self.collect_from_rss(rss_url.strip())
-                saved = self.save_articles(articles)
-                total_articles += saved
+                logger.info(f"Collecting from RSS: {rss_url}")
+                try:
+                    articles = self.collect_from_rss(rss_url.strip(), timeout=timeout)
+                    logger.info(f"Collected {len(articles)} articles from RSS")
+                    saved = self.save_articles(articles)
+                    logger.info(f"Saved {saved} new articles to database")
+                    total_articles += saved
+                except Exception as e:
+                    logger.error(f"Failed to collect from RSS {rss_url}: {e}")
+                    # Continue with other feeds even if one fails
+                    continue
+            else:
+                logger.warning(f"Empty RSS URL found")
         
         # Collect from NewsAPI
         if settings.NEWS_API_KEY:
-            articles = self.collect_from_newsapi()
-            saved = self.save_articles(articles)
-            total_articles += saved
+            logger.info("Collecting from NewsAPI")
+            try:
+                articles = self.collect_from_newsapi()
+                logger.info(f"Collected {len(articles)} articles from NewsAPI")
+                saved = self.save_articles(articles)
+                logger.info(f"Saved {saved} new articles from NewsAPI")
+                total_articles += saved
+            except Exception as e:
+                logger.error(f"Failed to collect from NewsAPI: {e}")
+                # Continue even if NewsAPI fails
+        else:
+            logger.info("No NewsAPI key configured")
         
+        logger.info(f"Total articles collected: {total_articles}")
         return total_articles
