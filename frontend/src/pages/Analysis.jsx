@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import {
   Container,
   Typography,
@@ -52,29 +52,29 @@ const AnalysisPage = () => {
     mutate: analyzeSentiment,
     isLoading: sentimentLoading,
     data: sentimentResult,
-  } = analysisService.analyzeSentiment;
+  } = useMutation(analysisService.analyzeSentiment);
 
   const {
     mutate: analyzeTopics,
     isLoading: topicsLoading,
     data: topicsResult,
-  } = analysisService.analyzeTopics;
+  } = useMutation(analysisService.analyzeTopics);
 
   const {
     mutate: summarizeArticles,
     isLoading: summaryLoading,
     data: summaryResult,
-  } = analysisService.summarizeArticles;
+  } = useMutation(analysisService.summarizeArticles);
 
   const {
     mutate: extractKeywords,
     isLoading: keywordsLoading,
     data: keywordsResult,
-  } = analysisService.extractKeywords;
+  } = useMutation(analysisService.extractKeywords);
 
   const handleArticleToggle = (articleId) => {
-    setSelectedArticles(prev => 
-      prev.includes(articleId) 
+    setSelectedArticles(prev =>
+      prev.includes(articleId)
         ? prev.filter(id => id !== articleId)
         : [...prev, articleId]
     );
@@ -146,7 +146,7 @@ const AnalysisPage = () => {
               <Typography variant="h6" gutterBottom>
                 Select Articles
               </Typography>
-              
+
               <Box sx={{ mb: 2, display: 'flex', gap: 1 }}>
                 <Button
                   size="small"
@@ -178,8 +178,8 @@ const AnalysisPage = () => {
                     sx={{
                       mb: 1,
                       cursor: 'pointer',
-                      border: selectedArticles.includes(article.id) 
-                        ? '2px solid primary.main' 
+                      border: selectedArticles.includes(article.id)
+                        ? '2px solid primary.main'
                         : '1px solid grey.300',
                       '&:hover': {
                         backgroundColor: 'grey.50',
