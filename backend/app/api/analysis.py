@@ -14,11 +14,14 @@ router = APIRouter()
 
 @router.post("/sentiment", response_model=SentimentAnalysis)
 async def analyze_sentiment(
-    article_ids: List[int],
+    request: dict,
     db: Session = Depends(get_db)
 ):
     """Analyze sentiment for specified articles"""
     try:
+        # Extract parameters from request body
+        article_ids = request.get("article_ids", [])
+        
         # Get articles
         articles = db.query(NewsArticle).filter(NewsArticle.id.in_(article_ids)).all()
         
@@ -63,11 +66,14 @@ async def analyze_sentiment(
 
 @router.post("/topics", response_model=TopicAnalysis)
 async def analyze_topics(
-    article_ids: List[int],
+    request: dict,
     db: Session = Depends(get_db)
 ):
     """Extract topics from specified articles"""
     try:
+        # Extract parameters from request body
+        article_ids = request.get("article_ids", [])
+        
         # Get articles
         articles = db.query(NewsArticle).filter(NewsArticle.id.in_(article_ids)).all()
         
@@ -105,12 +111,14 @@ async def analyze_topics(
 
 @router.post("/summarize")
 async def summarize_articles(
-    article_ids: List[int],
-    max_sentences: int = 3,
+    request: dict,
     db: Session = Depends(get_db)
 ):
     """Summarize specified articles"""
     try:
+        # Extract parameters from request body
+        article_ids = request.get("article_ids", [])
+        max_sentences = request.get("max_sentences", 3)
         # Get articles
         articles = db.query(NewsArticle).filter(NewsArticle.id.in_(article_ids)).all()
         
@@ -158,12 +166,15 @@ async def summarize_articles(
 
 @router.post("/keywords")
 async def extract_keywords(
-    article_ids: List[int],
-    num_keywords: int = 10,
+    request: dict,
     db: Session = Depends(get_db)
 ):
     """Extract keywords from specified articles"""
     try:
+        # Extract parameters from request body
+        article_ids = request.get("article_ids", [])
+        num_keywords = request.get("num_keywords", 10)
+        
         # Get articles
         articles = db.query(NewsArticle).filter(NewsArticle.id.in_(article_ids)).all()
         
@@ -175,7 +186,7 @@ async def extract_keywords(
         
         for article in articles:
             text = f"{article.title} {article.content}"
-            keywords = analyzer.extract_keywords(text, num_keywords)
+            keywords = analyzer._extract_keywords(text, num_keywords)
             all_keywords.extend(keywords)
         
         # Count keyword frequency

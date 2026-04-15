@@ -84,3 +84,81 @@
 2026-04-15 17:00:27,694 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
 2026-04-15 17:01:05,492 - app.main - INFO - Starting News Analyzer AI...
 2026-04-15 17:01:05,500 - app.main - INFO - Database tables created successfully
+2026-04-15 17:37:16,358 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:37:19,089 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:37:49,746 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:37:49,752 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:37:49,753 - app.main - INFO - Database tables created successfully
+2026-04-15 17:37:49,756 - app.main - INFO - Database tables created successfully
+2026-04-15 17:37:49,863 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:37:49,863 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:37:59,879 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:37:59,886 - app.main - INFO - Database tables created successfully
+2026-04-15 17:37:59,923 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:38:00,015 - app.main - INFO - Database tables created successfully
+2026-04-15 17:38:16,277 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:38:16,277 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:38:30,160 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:38:30,164 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:38:30,168 - app.main - INFO - Database tables created successfully
+2026-04-15 17:38:30,171 - app.main - INFO - Database tables created successfully
+2026-04-15 17:38:32,320 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:38:32,320 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:38:54,367 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:38:54,373 - app.main - INFO - Database tables created successfully
+2026-04-15 17:38:54,373 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:38:54,378 - app.main - INFO - Database tables created successfully
+2026-04-15 17:38:56,098 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:38:56,214 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:39:05,175 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:39:05,181 - app.main - INFO - Database tables created successfully
+2026-04-15 17:39:05,204 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:39:05,209 - app.main - INFO - Database tables created successfully
+2026-04-15 17:39:05,489 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:39:05,509 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:39:27,616 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:39:27,617 - app.main - INFO - Shutting down News Analyzer AI...
