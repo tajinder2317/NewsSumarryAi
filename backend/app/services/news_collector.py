@@ -162,10 +162,10 @@ class NewsCollector:
         if not articles:
             return 0
         
-        db = next(get_db())
         saved_count = 0
         
         try:
+            db = next(get_db())
             for article_data in articles:
                 # Check if article already exists
                 existing = db.query(NewsArticle).filter(
@@ -181,10 +181,12 @@ class NewsCollector:
             logger.info(f"Saved {saved_count} new articles to database")
             
         except Exception as e:
-            db.rollback()
+            if 'db' in locals():
+                db.rollback()
             logger.error(f"Error saving articles: {e}")
         finally:
-            db.close()
+            if 'db' in locals():
+                db.close()
         
         return saved_count
 

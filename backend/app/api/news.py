@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List, Optional
 from datetime import datetime, timedelta
 
@@ -113,10 +114,10 @@ async def get_news_stats(db: Session = Depends(get_db)):
     recent_articles = db.query(NewsArticle).filter(NewsArticle.published_date >= yesterday).count()
     
     # Articles by source
-    source_counts = db.query(NewsArticle.source, db.func.count(NewsArticle.id)).group_by(NewsArticle.source).all()
+    source_counts = db.query(NewsArticle.source, func.count(NewsArticle.id)).group_by(NewsArticle.source).all()
     
     # Sentiment distribution
-    sentiment_counts = db.query(NewsArticle.sentiment_label, db.func.count(NewsArticle.id)).group_by(NewsArticle.sentiment_label).all()
+    sentiment_counts = db.query(NewsArticle.sentiment_label, func.count(NewsArticle.id)).group_by(NewsArticle.sentiment_label).all()
     
     return {
         "total_articles": total_articles,

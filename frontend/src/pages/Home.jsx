@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import {
   Container,
   Typography,
@@ -42,7 +42,7 @@ const Home = () => {
   const {
     mutate: collectNews,
     isLoading: collecting,
-  } = newsService.collectNews;
+  } = useMutation(newsService.collectNews);
 
   const handleCollectNews = () => {
     collectNews(undefined, {
