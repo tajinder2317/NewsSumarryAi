@@ -1,0 +1,139 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.success-message {
+  color: #2e7d32;
+  background-color: #e8f5e8;
+  padding: 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.news-card {
+  margin-bottom: 16px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.news-card:hover {
+  transform: translateY(-2px);
+}
+
+.sentiment-positive {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.sentiment-negative {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.sentiment-neutral {
+  color: #757575;
+  font-weight: 600;
+}
+
+.trend-up {
+  color: #2e7d32;
+}
+
+.trend-down {
+  color: #d32f2f;
+}
+
+.trend-stable {
+  color: #757575;
+}
+
+.chart-container {
+  position: relative;
+  height: 400px;
+  margin: 20px 0;
+}
+
+.stats-card {
+  text-align: center;
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stats-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1976d2;
+}
+
+.stats-label {
+  color: #666;
+  margin-top: 8px;
+}
+
+.topic-chip {
+  margin: 4px;
+}
+
+.search-form {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.loading-skeleton {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 10px;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+}
