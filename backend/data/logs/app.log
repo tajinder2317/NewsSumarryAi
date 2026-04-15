@@ -162,3 +162,662 @@
 
 2026-04-15 17:39:27,616 - app.main - INFO - Shutting down News Analyzer AI...
 2026-04-15 17:39:27,617 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:39:36,654 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:39:36,661 - app.main - INFO - Database tables created successfully
+2026-04-15 17:39:36,669 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:39:36,674 - app.main - INFO - Database tables created successfully
+2026-04-15 17:44:51,988 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:44:52,007 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:44:58,115 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:44:58,118 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:03,970 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:03,977 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:09,909 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:09,916 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:16,091 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:16,095 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:22,592 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:22,594 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:30,967 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:30,970 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:32,250 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:32,252 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:34,458 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:34,465 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:37,321 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:37,327 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:41,862 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:45:41,876 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:03,488 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:03,497 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:27,336 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:47:29,400 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:47:38,929 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:47:38,938 - app.main - INFO - Database tables created successfully
+2026-04-15 17:47:41,169 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:47:41,174 - app.main - INFO - Database tables created successfully
+2026-04-15 17:47:41,307 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:47:45,136 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:45,146 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:48,983 - app.services.summarizer - ERROR - Error summarizing article: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:48,988 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - 'C:\\Users\\dhill/nltk_data'
+    - 'C:\\Python314\\nltk_data'
+    - 'C:\\Python314\\share\\nltk_data'
+    - 'C:\\Python314\\lib\\nltk_data'
+    - 'C:\\Users\\dhill\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+2026-04-15 17:47:50,620 - app.main - INFO - Starting News Analyzer AI...
+2026-04-15 17:47:50,626 - app.main - INFO - Database tables created successfully
+2026-04-15 17:48:05,647 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-15 17:48:06,167 - app.main - INFO - Shutting down News Analyzer AI...

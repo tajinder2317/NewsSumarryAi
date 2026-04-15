@@ -42,37 +42,102 @@ class TextAnalyzer:
             return {"polarity": 0.0, "subjectivity": 0.0, "label": "neutral", "confidence": 0.0}
 
     def extract_topics(self, texts: List[str], num_topics: int = 5) -> List[Dict]:
-        """Extract topics using simple keyword extraction"""
+        """Extract topics using improved keyword clustering"""
         try:
-            # Simple keyword-based topic extraction
-            all_words = []
-            for text in texts:
-                words = self._extract_keywords(text, 20)
-                all_words.extend(words)
+            # Combine all texts for analysis
+            combined_text = ' '.join(texts)
             
-            # Count word frequency
-            from collections import Counter
-            word_counts = Counter(all_words)
+            # Extract keywords with higher frequency threshold
+            all_keywords = self._extract_keywords(combined_text, 50)
             
-            # Create topics from most common words
+            # Group related keywords into topics
+            topic_groups = self._group_keywords_into_topics(all_keywords, num_topics)
+            
             topics = []
-            common_words = word_counts.most_common(num_topics * 3)
-            
-            for i in range(0, min(len(common_words), num_topics * 3), 3):
-                topic_words = common_words[i:i+3]
-                if topic_words:
-                    topics.append({
-                        "topic_id": i // 3,
-                        "words": [word for word, count in topic_words],
-                        "weights": [count for word, count in topic_words],
-                        "label": self._generate_topic_label([word for word, count in topic_words])
-                    })
+            for i, (topic_words, topic_label) in enumerate(topic_groups):
+                # Calculate weights based on word frequency in the original text
+                weights = []
+                for word in topic_words:
+                    weight = combined_text.lower().count(word.lower())
+                    weights.append(weight)
+                
+                topics.append({
+                    "topic_id": i,
+                    "words": topic_words,
+                    "weights": weights,
+                    "label": topic_label
+                })
             
             return topics[:num_topics]
             
         except Exception as e:
             logger.error(f"Error extracting topics: {e}")
             return []
+
+    def _group_keywords_into_topics(self, keywords: List[str], num_topics: int) -> List[tuple]:
+        """Group related keywords into coherent topics"""
+        try:
+            # Simple topic grouping based on semantic categories
+            topic_categories = {
+                'Politics & Government': ['government', 'policy', 'political', 'election', 'president', 'congress', 'senate', 'law', 'legal', 'court', 'judge', 'minister'],
+                'Technology & Science': ['technology', 'tech', 'software', 'computer', 'internet', 'digital', 'ai', 'artificial', 'intelligence', 'data', 'science', 'research', 'study'],
+                'Business & Economy': ['business', 'economy', 'market', 'financial', 'company', 'corporate', 'stock', 'trade', 'economic', 'revenue', 'profit', 'investment'],
+                'Health & Medicine': ['health', 'medical', 'hospital', 'disease', 'treatment', 'doctor', 'patient', 'medicine', 'clinical', 'drug', 'pharmaceutical', 'therapy'],
+                'Social Issues': ['social', 'society', 'community', 'people', 'public', 'rights', 'justice', 'equality', 'diversity', 'inclusion', 'welfare'],
+                'International Affairs': ['international', 'global', 'world', 'foreign', 'diplomatic', 'country', 'nation', 'border', 'immigration', 'refugee', 'asylum'],
+                'Media & Communication': ['media', 'news', 'report', 'journalist', 'broadcast', 'publication', 'article', 'story', 'information', 'communication'],
+                'Crime & Legal': ['crime', 'criminal', 'legal', 'law', 'court', 'police', 'investigation', 'arrest', 'trial', 'justice', 'case']
+            }
+            
+            # Categorize keywords
+            categorized_topics = {}
+            uncategorized_keywords = []
+            
+            for keyword in keywords:
+                keyword_lower = keyword.lower()
+                assigned = False
+                
+                for category, category_words in topic_categories.items():
+                    if keyword_lower in category_words:
+                        if category not in categorized_topics:
+                            categorized_topics[category] = []
+                        categorized_topics[category].append(keyword)
+                        assigned = True
+                        break
+                
+                if not assigned:
+                    uncategorized_keywords.append(keyword)
+            
+            # Build topic list
+            topic_groups = []
+            
+            # Add categorized topics first
+            for category, words in list(categorized_topics.items())[:num_topics-1]:
+                if words:
+                    topic_groups.append((words[:3], category))
+            
+            # Add remaining uncategorized keywords as a general topic
+            if uncategorized_keywords and len(topic_groups) < num_topics:
+                topic_groups.append((uncategorized_keywords[:3], "General Topics"))
+            
+            # If no topics found, create simple frequency-based topics
+            if not topic_groups and keywords:
+                for i in range(0, min(len(keywords), num_topics * 3), 3):
+                    topic_words = keywords[i:i+3]
+                    if topic_words:
+                        topic_groups.append((topic_words, f"Topic {i//3 + 1}"))
+            
+            return topic_groups[:num_topics]
+            
+        except Exception as e:
+            logger.error(f"Error grouping keywords into topics: {e}")
+            # Fallback to simple grouping
+            topic_groups = []
+            for i in range(0, min(len(keywords), num_topics * 3), 3):
+                topic_words = keywords[i:i+3]
+                if topic_words:
+                    topic_groups.append((topic_words, f"Topic {i//3 + 1}"))
+            return topic_groups[:num_topics]
 
     def categorize_text(self, text: str) -> str:
         """Categorize text into predefined categories"""

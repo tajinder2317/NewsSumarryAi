@@ -27,12 +27,21 @@ class TextSummarizer:
     def summarize_article(self, text: str, max_sentences: int = 3) -> str:
         """Summarize article using extractive summarization"""
         try:
-            if not text or len(text.strip()) < 100:
-                return text
+            if not text or len(text.strip()) < 50:
+                return "Content too short to summarize."
             
-            sentences = sent_tokenize(text)
+            # Improved sentence tokenization - split on common sentence delimiters
+            sentences = self._improved_sentence_tokenize(text)
+            
+            # Handle case where text has very few sentences
+            if len(sentences) == 1:
+                if max_sentences == 1:
+                    return sentences[0]
+                else:
+                    return sentences[0] + f" [Single sentence content - requested {max_sentences} sentences, but only 1 available]"
+            
             if len(sentences) <= max_sentences:
-                return text
+                return " ".join(sentences)
             
             # Calculate sentence scores
             sentence_scores = self._calculate_sentence_scores(sentences)
@@ -47,6 +56,33 @@ class TextSummarizer:
         except Exception as e:
             logger.error(f"Error summarizing article: {e}")
             return text[:200] + "..." if len(text) > 200 else text
+
+    def _improved_sentence_tokenize(self, text: str) -> List[str]:
+        """Improved sentence tokenization that handles complex sentences"""
+        try:
+            # First try NLTK tokenizer
+            sentences = sent_tokenize(text)
+            
+            # If NLTK doesn't split well, use custom splitting
+            if len(sentences) == 1 and len(text) > 200:
+                # Split on common sentence delimiters
+                import re
+                # Split on periods, question marks, exclamation marks, and semicolons
+                custom_sentences = re.split(r'[.!?;]+', text)
+                # Clean up and filter out empty strings
+                custom_sentences = [s.strip() for s in custom_sentences if s.strip() and len(s.strip()) > 10]
+                
+                if len(custom_sentences) > 1:
+                    return custom_sentences
+            
+            return sentences
+            
+        except Exception as e:
+            logger.error(f"Error in sentence tokenization: {e}")
+            # Fallback to simple splitting
+            import re
+            sentences = re.split(r'[.!?;]+', text)
+            return [s.strip() for s in sentences if s.strip() and len(s.strip()) > 10]
 
     def _calculate_sentence_scores(self, sentences: List[str]) -> Dict[str, float]:
         """Calculate importance scores for sentences"""
