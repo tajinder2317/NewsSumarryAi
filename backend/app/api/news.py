@@ -16,6 +16,7 @@ from ..models.mock_data import (
 )
 from ..services import NewsCollector
 from ..services.real_news_collector import RealNewsCollector
+from ..services.article_store import article_store
 from ..config import settings
 import os
 
@@ -30,12 +31,11 @@ async def get_news(
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
-    # Use mock data in serverless environment or when database fails
+    # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
-        logger.info("Using mock data for serverless deployment")
-        mock_articles = get_mock_articles(limit=limit, source=source, category=category)
-        # Apply skip for pagination
-        return mock_articles[skip:skip+limit]
+        logger.info("Using article store for serverless deployment")
+        store_articles = article_store.get_articles(limit=limit, skip=skip, source=source, category=category)
+        return store_articles
     
     try:
         # Use a more efficient query with indexes
@@ -59,10 +59,10 @@ async def get_news(
 @router.get("/{article_id}", response_model=NewsArticleResponse)
 async def get_article(article_id: int, db: Session = Depends(get_db)):
     """Get a specific news article by ID"""
-    # Use mock data in serverless environment or when database fails
+    # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
-        logger.info("Using mock data for article retrieval")
-        article = get_mock_article_by_id(article_id)
+        logger.info("Using article store for article retrieval")
+        article = article_store.get_article_by_id(article_id)
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
         return article
@@ -228,42 +228,42 @@ async def search_news(
 @router.get("/sources/list")
 async def get_news_sources(db: Session = Depends(get_db)):
     """Get list of all news sources"""
-    # Use mock data in serverless environment or when database fails
+    # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
-        logger.info("Using mock data for sources")
-        return {"sources": get_mock_sources()}
+        logger.info("Using article store for sources")
+        return {"sources": article_store.get_sources()}
     
     try:
         sources = db.query(NewsArticle.source).distinct().all()
         return {"sources": [source[0] for source in sources]}
     except Exception as e:
         logger.error(f"Error fetching sources: {e}")
-        # Fallback to mock data
-        return {"sources": get_mock_sources()}
+        # Fallback to article store
+        return {"sources": article_store.get_sources()}
 
 @router.get("/categories/list")
 async def get_news_categories(db: Session = Depends(get_db)):
     """Get list of all news categories"""
-    # Use mock data in serverless environment or when database fails
+    # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
-        logger.info("Using mock data for categories")
-        return {"categories": get_mock_categories()}
+        logger.info("Using article store for categories")
+        return {"categories": article_store.get_categories()}
     
     try:
         categories = db.query(NewsArticle.category).distinct().filter(NewsArticle.category.isnot(None)).all()
         return {"categories": [category[0] for category in categories]}
     except Exception as e:
         logger.error(f"Error fetching categories: {e}")
-        # Fallback to mock data
-        return {"categories": get_mock_categories()}
+        # Fallback to article store
+        return {"categories": article_store.get_categories()}
 
 @router.get("/stats/summary")
 async def get_news_stats(db: Session = Depends(get_db)):
     """Get news statistics summary"""
-    # Use mock data in serverless environment or when database fails
+    # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
-        logger.info("Using mock data for stats")
-        return get_mock_stats()
+        logger.info("Using article store for stats")
+        return article_store.get_stats()
     
     try:
         total_articles = db.query(NewsArticle).count()
@@ -286,8 +286,8 @@ async def get_news_stats(db: Session = Depends(get_db)):
         }
     except Exception as e:
         logger.error(f"Error fetching stats: {e}")
-        # Fallback to mock data
-        return get_mock_stats()
+        # Fallback to article store
+        return article_store.get_stats()
 
 @router.delete("/{article_id}")
 async def delete_article(article_id: int, db: Session = Depends(get_db)):

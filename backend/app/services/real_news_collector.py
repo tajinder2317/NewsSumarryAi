@@ -9,6 +9,8 @@ from typing import List, Dict, Any
 import re
 from bs4 import BeautifulSoup
 
+from .article_store import article_store
+
 logger = logging.getLogger(__name__)
 
 class RealNewsCollector:
@@ -157,24 +159,24 @@ class RealNewsCollector:
     
     def collect_all_sources(self, timeout: int = 30) -> int:
         """Collect news from all RSS feeds"""
-        total_collected = 0
+        all_articles = []
         
         logger.info(f"Starting news collection from {len(self.rss_feeds)} sources")
         
         for feed_info in self.rss_feeds:
             try:
                 articles = self.fetch_feed_articles(feed_info, max_articles=3)  # Limit per feed for speed
-                total_collected += len(articles)
-                
-                # In a real implementation, you would save these to database
-                # For now, we just count them since we're using mock data structure
+                all_articles.extend(articles)
                 
             except Exception as e:
                 logger.error(f"Failed to collect from {feed_info['name']}: {e}")
                 continue
         
-        logger.info(f"Collection completed. Total articles: {total_collected}")
-        return total_collected
+        # Store articles in the article store
+        new_articles_count = article_store.store_articles(all_articles)
+        
+        logger.info(f"Collection completed. Total articles stored: {len(article_store.articles)}, New articles: {new_articles_count}")
+        return new_articles_count
     
     def get_sample_articles(self) -> List[Dict[str, Any]]:
         """Get sample articles for demonstration when real collection fails"""
