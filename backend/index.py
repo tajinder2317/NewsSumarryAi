@@ -21,5 +21,5 @@ logging.basicConfig(level=logging.INFO)
 # Import the FastAPI app
 from app.main import app
 
-# Export the app for Vercel
+# Export the app for Vercel (standard approach)
 handler = app
