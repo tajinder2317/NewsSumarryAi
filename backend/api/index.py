@@ -4,12 +4,19 @@ Vercel serverless function entry point for News Analyzer AI backend
 """
 import sys
 import os
+from pathlib import Path
 
 # Add the backend directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+current_dir = Path(__file__).parent
+backend_dir = current_dir.parent
+sys.path.insert(0, str(backend_dir))
 
-# Import the FastAPI app
+# Set environment variables for serverless deployment
+os.environ.setdefault("VERCEL", "1")
+os.environ.setdefault("DATABASE_URL", "sqlite:///./database.db")
+
+# Import and configure the FastAPI app
 from app.main import app
 
-# Export the app for Vercel
-handler = app
+# Vercel will automatically handle the FastAPI app
+# No custom handler needed - Vercel Python runtime handles FastAPI natively
