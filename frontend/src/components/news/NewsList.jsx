@@ -27,6 +27,7 @@ const NewsList = ({
   filters,
   onFilterChange,
   totalCount,
+  regions,
 }) => {
   const handleFilterChange = (filterType, value) => {
     if (onFilterChange) {
@@ -112,6 +113,21 @@ const NewsList = ({
                     {source}
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Region</InputLabel>
+              <Select
+                value={filters.region || ''}
+                label="Region"
+                onChange={(e) => handleFilterChange('region', e.target.value || null)}
+              >
+                <MenuItem value="">All Regions</MenuItem>
+                <MenuItem value="Global">Global</MenuItem>
+                <MenuItem value="India">India</MenuItem>
+                <MenuItem value="US">United States</MenuItem>
+                <MenuItem value="UK">United Kingdom</MenuItem>
               </Select>
             </FormControl>
 

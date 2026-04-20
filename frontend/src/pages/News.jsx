@@ -17,6 +17,7 @@ const NewsPage = () => {
     source: '',
     category: '',
     sentiment: '',
+    region: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 20;
@@ -34,6 +35,7 @@ const NewsPage = () => {
       limit,
       source: filters.source || undefined,
       category: filters.category || undefined,
+      region: filters.region || undefined,
     }),
     {
       keepPreviousData: true,
@@ -106,6 +108,7 @@ const NewsPage = () => {
           ...filters,
           availableSources: sources?.sources || [],
           availableCategories: categories?.categories || [],
+          regions: ['Global', 'India', 'US', 'UK'],
         }}
         onFilterChange={handleFilterChange}
       />

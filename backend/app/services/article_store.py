@@ -33,7 +33,7 @@ class ArticleStore:
         logger.info(f"Stored {new_count} new articles. Total: {len(self.articles)}")
         return new_count
     
-    def get_articles(self, limit: int = 10, skip: int = 0, source: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+    def get_articles(self, limit: int = 10, skip: int = 0, source: Optional[str] = None, category: Optional[str] = None, region: Optional[str] = None) -> List[Dict[str, Any]]:
         """Retrieve articles with optional filtering"""
         filtered_articles = self.articles.copy()
         
@@ -43,6 +43,9 @@ class ArticleStore:
         
         if category:
             filtered_articles = [a for a in filtered_articles if a.get('category') == category]
+        
+        if region:
+            filtered_articles = [a for a in filtered_articles if a.get('region', '').lower() == region.lower()]
         
         # Sort by published date (newest first)
         filtered_articles.sort(key=lambda x: x.get('published_date', datetime.utcnow()), reverse=True)

@@ -25,27 +25,74 @@ class RealNewsCollector:
             {
                 'name': 'BBC News',
                 'url': 'http://feeds.bbci.co.uk/news/rss.xml',
-                'category': 'General'
+                'category': 'General',
+                'region': 'Global'
             },
             {
                 'name': 'Reuters',
                 'url': 'https://feeds.reuters.com/reuters/topNews',
-                'category': 'General'
+                'category': 'General',
+                'region': 'Global'
             },
             {
                 'name': 'CNN',
                 'url': 'https://rss.cnn.com/rss/edition.rss',
-                'category': 'General'
+                'category': 'General',
+                'region': 'Global'
             },
             {
                 'name': 'TechCrunch',
                 'url': 'https://feeds.feedburner.com/techcrunch',
-                'category': 'Technology'
+                'category': 'Technology',
+                'region': 'Global'
             },
             {
                 'name': 'BBC Technology',
                 'url': 'http://feeds.bbci.co.uk/news/technology/rss.xml',
-                'category': 'Technology'
+                'category': 'Technology',
+                'region': 'Global'
+            },
+            {
+                'name': 'The Hindu',
+                'url': 'https://www.thehindu.com/news/feeder/default.rss',
+                'category': 'General',
+                'region': 'India'
+            },
+            {
+                'name': 'Danik Bhaskar',
+                'url': 'https://www.dainikbhaskar.com/rssfeed.xml',
+                'category': 'General',
+                'region': 'India'
+            },
+            {
+                'name': 'Times of India',
+                'url': 'https://timesofindia.indiatimes.com/rssfeedsdefault.cms',
+                'category': 'General',
+                'region': 'India'
+            },
+            {
+                'name': 'NDTV',
+                'url': 'https://feeds.feedburner.com/ndtvnews-latest',
+                'category': 'General',
+                'region': 'India'
+            },
+            {
+                'name': 'Indian Express',
+                'url': 'https://indianexpress.com/section/india/feed/',
+                'category': 'General',
+                'region': 'India'
+            },
+            {
+                'name': 'Hindustan Times',
+                'url': 'https://www.hindustantimes.com/rssfeeds/topstories.xml',
+                'category': 'General',
+                'region': 'India'
+            },
+            {
+                'name': 'Financial Express',
+                'url': 'https://www.financialexpress.com/feed/',
+                'category': 'Business',
+                'region': 'India'
             }
         ]
     
@@ -136,6 +183,7 @@ class RealNewsCollector:
                         'published_date': pub_date,
                         'collected_date': datetime.utcnow(),
                         'category': feed_info['category'],
+                        'region': feed_info.get('region', 'Global'),
                         'sentiment_score': 0.0,  # Will be analyzed later
                         'sentiment_label': 'neutral',
                         'topics': '[]'  # JSON string, will be analyzed later
@@ -188,6 +236,7 @@ class RealNewsCollector:
                 'summary': 'Tech company announces major AI breakthrough with potential widespread applications.',
                 'url': 'https://example.com/tech-ai-breakthrough',
                 'source': 'Tech News Daily',
+                'region': 'Global',
                 'author': 'John Doe',
                 'published_date': datetime.utcnow() - timedelta(hours=2),
                 'collected_date': datetime.utcnow() - timedelta(hours=1),
@@ -199,10 +248,11 @@ class RealNewsCollector:
             {
                 'id': 2,
                 'title': 'Global Climate Summit Reaches Historic Agreement',
-                'content': 'World leaders have reached a historic agreement on climate action at the global summit, committing to ambitious new targets for carbon reduction...',
+                'content': 'World leaders have reached a historic agreement on climate action at the global Summit, committing to ambitious new targets for carbon reduction...',
                 'summary': 'Historic climate agreement reached with new carbon reduction targets.',
                 'url': 'https://example.com/climate-summit-agreement',
                 'source': 'Environmental News',
+                'region': 'Global',
                 'author': 'Jane Smith',
                 'published_date': datetime.utcnow() - timedelta(hours=4),
                 'collected_date': datetime.utcnow() - timedelta(hours=3),

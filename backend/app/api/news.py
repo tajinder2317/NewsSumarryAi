@@ -28,13 +28,14 @@ async def get_news(
     limit: int = Query(10, ge=1, le=50),  # Reduced default limit for faster loading
     source: Optional[str] = Query(None),
     category: Optional[str] = Query(None),
+    region: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
     # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
         logger.info("Using article store for serverless deployment")
-        store_articles = article_store.get_articles(limit=limit, skip=skip, source=source, category=category)
+        store_articles = article_store.get_articles(limit=limit, skip=skip, source=source, category=category, region=region)
         return store_articles
     
     try:
