@@ -4,14 +4,10 @@ import {
   Container,
   Typography,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Button,
   Alert,
 } from '@mui/material';
-import { Refresh, FilterList } from '@mui/icons-material';
+import { Refresh } from '@mui/icons-material';
 
 import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';

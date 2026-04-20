@@ -9,7 +9,6 @@ import {
   Button,
   IconButton,
   Tooltip,
-  Paper,
   Fade,
   Avatar,
 } from '@mui/material';

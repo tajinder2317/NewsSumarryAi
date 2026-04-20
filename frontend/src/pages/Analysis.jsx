@@ -14,7 +14,6 @@ import {
   MenuItem,
   TextField,
   Chip,
-  Alert,
   CircularProgress,
   Divider,
 } from '@mui/material';
@@ -30,7 +29,6 @@ import {
 import { newsService, analysisService } from '../services/newsService';
 import Loading from '../components/common/Loading';
 import SentimentChart from '../components/analysis/SentimentChart';
-import TrendChart from '../components/analysis/TrendChart';
 
 const AnalysisPage = () => {
   const [selectedArticles, setSelectedArticles] = useState([]);
@@ -43,7 +41,6 @@ const AnalysisPage = () => {
   const {
     data: articles,
     isLoading: articlesLoading,
-    error: articlesError,
   } = useQuery('recentNews', () => newsService.fetchNews({ limit: 50 }), {
     staleTime: 5 * 60 * 1000,
   });

@@ -10,7 +10,6 @@ import {
   Box,
   Alert,
   CircularProgress,
-  Paper,
   Fade,
   Slide,
   Avatar,

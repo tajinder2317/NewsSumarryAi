@@ -64,7 +64,6 @@ const Dashboard = () => {
 
   const {
     data: analysisStats,
-    isLoading: analysisLoading,
   } = useQuery('analysisStats', analysisService.getAnalysisStats, {
     staleTime: 10 * 60 * 1000,
   });
