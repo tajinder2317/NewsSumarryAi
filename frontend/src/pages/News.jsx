@@ -11,7 +11,6 @@ import { Refresh } from '@mui/icons-material';
 
 import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';
-import Loading from '../components/common/Loading';
 
 const NewsPage = () => {
   const [filters, setFilters] = useState({
