@@ -115,9 +115,11 @@ async def collect_news():
         all_articles = []
         collected_count = 0
         
-        for i, feed_url in enumerate(RSS_FEEDS[:3]):  # Limit to 3 feeds
+        # Try minimal collection first
+        for i, feed_url in enumerate(RSS_FEEDS[:2]):  # Limit to 2 feeds for testing
             try:
-                articles = collect_from_rss(feed_url, max_articles=2)
+                logger.info(f"Processing feed {i+1}: {feed_url}")
+                articles = collect_from_rss(feed_url, max_articles=1)  # Limit to 1 article for testing
                 all_articles.extend(articles)
                 collected_count += len(articles)
                 logger.info(f"Feed {i+1}: Collected {len(articles)} articles")
@@ -137,7 +139,18 @@ async def collect_news():
         )
     except Exception as e:
         logger.error(f"Error in news collection: {e}")
-        raise HTTPException(status_code=500, detail="Failed to collect news")
+        logger.error(f"Error type: {type(e).__name__}")
+        logger.error(f"Error details: {str(e)}")
+        
+        # Return a safe response instead of raising exception
+        return CollectResponse(
+            message=f"Error during collection: {str(e)}",
+            collected_count=0,
+            total_articles=0,
+            articles_processed=0,
+            timeout=False,
+            articles=[]
+        )
 
 # Export for Vercel
 handler = app
