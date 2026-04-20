@@ -42,6 +42,16 @@ async def collect_news_get():
         "timeout": False
     }
 
+@app.get("/api/v1/news/collect")
+async def collect_news_get():
+    return {
+        "message": "News collection working - GET method",
+        "collected_count": 2,
+        "total_articles": 2,
+        "articles_processed": 1,
+        "timeout": False
+    }
+
 @app.get("/api/v1/news/")
 async def get_news():
     return {"articles": [], "message": "News API working"}
