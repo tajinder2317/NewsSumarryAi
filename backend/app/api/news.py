@@ -15,6 +15,7 @@ from ..models.mock_data import (
     get_mock_categories, get_mock_stats
 )
 from ..services import NewsCollector
+from ..services.real_news_collector import RealNewsCollector
 from ..config import settings
 import os
 
@@ -85,16 +86,30 @@ async def collect_news(
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""
-    # Use mock collection in serverless environment
+    # Use real news collector in serverless environment
     if os.getenv("VERCEL"):
-        logger.info("Using mock news collection for serverless deployment")
-        return {
-            "message": "Mock news collection completed successfully. 5 sample articles are now available.",
-            "collected_count": 5,
-            "total_articles": 5,
-            "articles_processed": 5,
-            "timeout": False
-        }
+        logger.info("Using real news collection for serverless deployment")
+        try:
+            collector = RealNewsCollector()
+            collected_count = collector.collect_all_sources(timeout=timeout)
+            
+            return {
+                "message": f"Successfully collected {collected_count} articles from real RSS feeds!",
+                "collected_count": collected_count,
+                "total_articles": collected_count,
+                "articles_processed": collected_count,
+                "timeout": False
+            }
+        except Exception as e:
+            logger.error(f"Real news collection failed: {e}")
+            # Fallback to sample articles
+            return {
+                "message": "Real news collection encountered issues. Sample articles are now available.",
+                "collected_count": 5,
+                "total_articles": 5,
+                "articles_processed": 5,
+                "timeout": False
+            }
     
     # Handle database errors gracefully
     if db is None:

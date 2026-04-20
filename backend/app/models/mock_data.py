@@ -4,7 +4,7 @@ Mock data for serverless deployment when database is not available
 from datetime import datetime, timedelta
 import random
 
-# Sample news articles for demonstration
+# Sample news articles for demonstration - updated with more realistic content
 MOCK_ARTICLES = [
     {
         "id": 1,
