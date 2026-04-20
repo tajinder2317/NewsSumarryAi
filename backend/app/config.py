@@ -17,7 +17,37 @@ class Settings:
     NEWS_API_URL = os.getenv("NEWS_API_URL", "https://newsapi.org/v2")
     
     # RSS Feeds
-    RSS_FEEDS = os.getenv("RSS_FEEDS", "").split(",") if os.getenv("RSS_FEEDS") else []
+    RSS_FEEDS = os.getenv("RSS_FEEDS", "").split(",") if os.getenv("RSS_FEEDS") else [
+        # International News
+        "http://feeds.bbci.co.uk/news/rss.xml",
+        "https://rss.cnn.com/rss/edition.rss",
+        "https://feeds.reuters.com/reuters/topNews",
+        "https://feeds.apnews.com/apnews/topnews",
+        
+        # US News
+        "https://www.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+        "https://feeds.washingtonpost.com/rss/politics",
+        "https://feeds.nbcnews.com/nbcnews/public/news",
+        
+        # Business News
+        "https://feeds.bloomberg.com/markets/news.rss",
+        "https://feeds.finance.yahoo.com/rss/2.0/headline",
+        "https://feeds.marketwatch.com/marketwatch/topstories",
+        
+        # Tech News
+        "https://feeds.feedburner.com/techcrunch",
+        "https://feeds.wired.com/wired/index",
+        "https://feeds.arstechnica.com/arstechnica/index",
+        
+        # International Perspectives
+        "https://feeds.feedburner.com/TheGuardian-World-News",
+        "https://feeds.aljazeera.com/xml/rss/all",
+        "https://feeds.dw.com/xml/rss/all",
+        
+        # Asian News
+        "https://feeds.channelnewsasia.com/cna/topstories.rss",
+        "https://feeds.bbc.co.uk/news/world/asia/rss.xml"
+    ]
     
     # Analysis Configuration
     SENTIMENT_ANALYSIS_ENABLED = os.getenv("SENTIMENT_ANALYSIS_ENABLED", "True").lower() == "true"

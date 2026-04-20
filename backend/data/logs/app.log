@@ -2073,3 +2073,31 @@
 2026-04-20 11:37:05,978 - app.main - INFO - Shutting down News Analyzer AI...
 2026-04-20 11:37:13,959 - app.main - INFO - Starting News Analyzer AI...
 2026-04-20 11:37:13,961 - app.main - INFO - Database tables created successfully
+2026-04-20 11:39:05,229 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-20 11:39:06,938 - app.main - INFO - Starting News Analyzer AI...
+2026-04-20 11:39:06,939 - app.main - INFO - Database tables created successfully
+2026-04-20 11:39:16,794 - app.services.news_collector - INFO - Starting collection from 3 RSS feeds with timeout 8s
+2026-04-20 11:39:16,794 - app.services.news_collector - INFO - Collecting from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-20 11:39:16,794 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml (max 5 articles)
+2026-04-20 11:39:18,031 - app.services.news_collector - INFO - Collected 5 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-20 11:39:18,031 - app.services.news_collector - INFO - Collected 5 articles from RSS
+2026-04-20 11:39:18,036 - app.services.news_collector - INFO - Saved 1 new articles to database
+2026-04-20 11:39:18,036 - app.services.news_collector - INFO - Saved 1 new articles to database
+2026-04-20 11:39:18,036 - app.services.news_collector - INFO - Collecting from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-20 11:39:18,036 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss (max 5 articles)
+2026-04-20 11:39:18,516 - app.services.news_collector - WARNING - No entries found in RSS feed: https://rss.cnn.com/rss/edition.rss
+2026-04-20 11:39:18,516 - app.services.news_collector - INFO - Collected 0 articles from RSS
+2026-04-20 11:39:18,516 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-20 11:39:18,516 - app.services.news_collector - INFO - Collecting from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-20 11:39:18,516 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews (max 5 articles)
+2026-04-20 11:39:18,831 - app.services.news_collector - WARNING - No entries found in RSS feed: https://feeds.reuters.com/reuters/topNews
+2026-04-20 11:39:18,831 - app.services.news_collector - INFO - Collected 0 articles from RSS
+2026-04-20 11:39:18,832 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-20 11:39:18,832 - app.services.news_collector - INFO - Collecting from NewsAPI
+2026-04-20 11:39:19,248 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-20 11:39:19,249 - app.services.news_collector - INFO - Collected 0 articles from NewsAPI
+2026-04-20 11:39:19,249 - app.services.news_collector - INFO - Saved 0 new articles from NewsAPI
+2026-04-20 11:39:19,249 - app.services.news_collector - INFO - Total articles collected: 1
+2026-04-20 11:39:27,774 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-20 11:39:29,451 - app.main - INFO - Starting News Analyzer AI...
+2026-04-20 11:39:29,452 - app.main - INFO - Database tables created successfully
