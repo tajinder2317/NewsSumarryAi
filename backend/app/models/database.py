@@ -43,7 +43,22 @@ class AnalysisResult(Base):
 engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Global variable to track if tables are created
+_tables_created = False
+
 def get_db():
+    global _tables_created
+    # Create tables on first database access in serverless
+    if not _tables_created:
+        try:
+            create_tables()
+            _tables_created = True
+        except Exception as e:
+            # Log error but don't fail
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Could not create tables: {e}")
+    
     db = SessionLocal()
     try:
         yield db
@@ -51,4 +66,10 @@ def get_db():
         db.close()
 
 def create_tables():
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error creating tables: {e}")
+        raise

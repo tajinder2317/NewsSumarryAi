@@ -50,13 +50,27 @@ async def startup_event():
     """Initialize database and other startup tasks"""
     logger.info("Starting News Analyzer AI...")
     
-    # Create data directory if it doesn't exist
-    os.makedirs(os.path.dirname(settings.LOG_FILE), exist_ok=True)
-    os.makedirs(os.path.dirname(settings.DATABASE_URL.replace("sqlite:///", "")), exist_ok=True)
-    
-    # Create database tables
-    create_tables()
-    logger.info("Database tables created successfully")
+    try:
+        # For serverless deployment, handle database initialization differently
+        if os.getenv("VERCEL"):
+            # In serverless, create database on-demand
+            logger.info("Serverless deployment detected - database will be created on demand")
+        else:
+            # Create data directory if it doesn't exist
+            log_dir = os.path.dirname(settings.LOG_FILE)
+            if log_dir:
+                os.makedirs(log_dir, exist_ok=True)
+            
+            db_dir = os.path.dirname(settings.DATABASE_URL.replace("sqlite:///", ""))
+            if db_dir:
+                os.makedirs(db_dir, exist_ok=True)
+            
+            # Create database tables
+            create_tables()
+            logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.error(f"Startup error: {e}")
+        # Don't fail startup, log the error and continue
 
 @app.on_event("shutdown")
 async def shutdown_event():
