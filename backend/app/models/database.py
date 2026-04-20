@@ -39,9 +39,21 @@ class AnalysisResult(Base):
     def __repr__(self):
         return f"<AnalysisResult(id={self.id}, type='{self.analysis_type}')>"
 
-# Database setup
-engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Database setup - handle serverless environment
+try:
+    # For serverless deployment, use in-memory SQLite
+    if os.getenv("VERCEL"):
+        engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    else:
+        engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+except Exception as e:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.error(f"Database setup failed: {e}")
+    # Fallback to in-memory database
+    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Global variable to track if tables are created
 _tables_created = False
