@@ -18,7 +18,7 @@ MOCK_ARTICLES = [
         "collected_date": datetime.utcnow() - timedelta(hours=1),
         "sentiment_score": 0.7,
         "sentiment_label": "positive",
-        "topics": "AI,technology,innovation",
+        "topics": '["AI", "technology", "innovation"]',
         "category": "Technology"
     },
     {
@@ -33,7 +33,7 @@ MOCK_ARTICLES = [
         "collected_date": datetime.utcnow() - timedelta(hours=3),
         "sentiment_score": 0.6,
         "sentiment_label": "positive",
-        "topics": "climate,environment,policy",
+        "topics": '["climate", "environment", "policy"]',
         "category": "Environment"
     },
     {
@@ -48,7 +48,7 @@ MOCK_ARTICLES = [
         "collected_date": datetime.utcnow() - timedelta(hours=5),
         "sentiment_score": -0.1,
         "sentiment_label": "neutral",
-        "topics": "stocks,economy,finance",
+        "topics": '["stocks", "economy", "finance"]',
         "category": "Business"
     },
     {
@@ -63,7 +63,7 @@ MOCK_ARTICLES = [
         "collected_date": datetime.utcnow() - timedelta(hours=7),
         "sentiment_score": 0.8,
         "sentiment_label": "positive",
-        "topics": "health,medicine,research",
+        "topics": '["health", "medicine", "research"]',
         "category": "Health"
     },
     {
@@ -78,7 +78,7 @@ MOCK_ARTICLES = [
         "collected_date": datetime.utcnow() - timedelta(hours=9),
         "sentiment_score": 0.9,
         "sentiment_label": "positive",
-        "topics": "sports,championship,competition",
+        "topics": '["sports", "championship", "competition"]',
         "category": "Sports"
     }
 ]
