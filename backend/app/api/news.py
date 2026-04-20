@@ -10,8 +10,13 @@ logger = logging.getLogger(__name__)
 from ..models import (
     get_db, NewsArticle, NewsArticleResponse, SearchRequest
 )
+from ..models.mock_data import (
+    get_mock_articles, get_mock_article_by_id, get_mock_sources, 
+    get_mock_categories, get_mock_stats
+)
 from ..services import NewsCollector
 from ..config import settings
+import os
 
 router = APIRouter()
 
@@ -24,10 +29,12 @@ async def get_news(
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
-    # Handle database errors gracefully
-    if db is None:
-        logger.error("Database connection failed")
-        return []
+    # Use mock data in serverless environment or when database fails
+    if os.getenv("VERCEL") or db is None:
+        logger.info("Using mock data for serverless deployment")
+        mock_articles = get_mock_articles(limit=limit, source=source, category=category)
+        # Apply skip for pagination
+        return mock_articles[skip:skip+limit]
     
     try:
         # Use a more efficient query with indexes
@@ -44,15 +51,33 @@ async def get_news(
         return articles
     except Exception as e:
         logger.error(f"Error fetching news: {e}")
-        return []
+        # Fallback to mock data
+        mock_articles = get_mock_articles(limit=limit, source=source, category=category)
+        return mock_articles[skip:skip+limit]
 
 @router.get("/{article_id}", response_model=NewsArticleResponse)
 async def get_article(article_id: int, db: Session = Depends(get_db)):
     """Get a specific news article by ID"""
-    article = db.query(NewsArticle).filter(NewsArticle.id == article_id).first()
-    if not article:
-        raise HTTPException(status_code=404, detail="Article not found")
-    return article
+    # Use mock data in serverless environment or when database fails
+    if os.getenv("VERCEL") or db is None:
+        logger.info("Using mock data for article retrieval")
+        article = get_mock_article_by_id(article_id)
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        return article
+    
+    try:
+        article = db.query(NewsArticle).filter(NewsArticle.id == article_id).first()
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        return article
+    except Exception as e:
+        logger.error(f"Error fetching article: {e}")
+        # Fallback to mock data
+        article = get_mock_article_by_id(article_id)
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        return article
 
 @router.post("/collect")
 async def collect_news(
@@ -170,36 +195,66 @@ async def search_news(
 @router.get("/sources/list")
 async def get_news_sources(db: Session = Depends(get_db)):
     """Get list of all news sources"""
-    sources = db.query(NewsArticle.source).distinct().all()
-    return {"sources": [source[0] for source in sources]}
+    # Use mock data in serverless environment or when database fails
+    if os.getenv("VERCEL") or db is None:
+        logger.info("Using mock data for sources")
+        return {"sources": get_mock_sources()}
+    
+    try:
+        sources = db.query(NewsArticle.source).distinct().all()
+        return {"sources": [source[0] for source in sources]}
+    except Exception as e:
+        logger.error(f"Error fetching sources: {e}")
+        # Fallback to mock data
+        return {"sources": get_mock_sources()}
 
 @router.get("/categories/list")
 async def get_news_categories(db: Session = Depends(get_db)):
     """Get list of all news categories"""
-    categories = db.query(NewsArticle.category).distinct().filter(NewsArticle.category.isnot(None)).all()
-    return {"categories": [category[0] for category in categories]}
+    # Use mock data in serverless environment or when database fails
+    if os.getenv("VERCEL") or db is None:
+        logger.info("Using mock data for categories")
+        return {"categories": get_mock_categories()}
+    
+    try:
+        categories = db.query(NewsArticle.category).distinct().filter(NewsArticle.category.isnot(None)).all()
+        return {"categories": [category[0] for category in categories]}
+    except Exception as e:
+        logger.error(f"Error fetching categories: {e}")
+        # Fallback to mock data
+        return {"categories": get_mock_categories()}
 
 @router.get("/stats/summary")
 async def get_news_stats(db: Session = Depends(get_db)):
     """Get news statistics summary"""
-    total_articles = db.query(NewsArticle).count()
+    # Use mock data in serverless environment or when database fails
+    if os.getenv("VERCEL") or db is None:
+        logger.info("Using mock data for stats")
+        return get_mock_stats()
     
-    # Articles in last 24 hours
-    yesterday = datetime.utcnow() - timedelta(days=1)
-    recent_articles = db.query(NewsArticle).filter(NewsArticle.published_date >= yesterday).count()
-    
-    # Articles by source
-    source_counts = db.query(NewsArticle.source, func.count(NewsArticle.id)).group_by(NewsArticle.source).all()
-    
-    # Sentiment distribution
-    sentiment_counts = db.query(NewsArticle.sentiment_label, func.count(NewsArticle.id)).group_by(NewsArticle.sentiment_label).all()
-    
-    return {
-        "total_articles": total_articles,
-        "recent_articles_24h": recent_articles,
-        "sources": [{"source": source, "count": count} for source, count in source_counts],
-        "sentiment_distribution": [{"sentiment": sentiment, "count": count} for sentiment, count in sentiment_counts]
-    }
+    try:
+        total_articles = db.query(NewsArticle).count()
+        
+        # Articles in last 24 hours
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        recent_articles = db.query(NewsArticle).filter(NewsArticle.published_date >= yesterday).count()
+        
+        # Articles by source
+        source_counts = db.query(NewsArticle.source, func.count(NewsArticle.id)).group_by(NewsArticle.source).all()
+        
+        # Sentiment distribution
+        sentiment_counts = db.query(NewsArticle.sentiment_label, func.count(NewsArticle.id)).group_by(NewsArticle.sentiment_label).all()
+        
+        return {
+            "total_articles": total_articles,
+            "recent_articles_24h": recent_articles,
+            "sources": [{"source": source, "count": count} for source, count in source_counts],
+            "sentiment_distribution": [{"sentiment": sentiment, "count": count} for sentiment, count in sentiment_counts]
+        }
+    except Exception as e:
+        logger.error(f"Error fetching stats: {e}")
+        # Fallback to mock data
+        return get_mock_stats()
 
 @router.delete("/{article_id}")
 async def delete_article(article_id: int, db: Session = Depends(get_db)):
