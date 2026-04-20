@@ -123,7 +123,7 @@ def initialize_article_store():
                 {
                     'id': 1,
                     'title': 'Breaking: Major Tech Company Announces AI Breakthrough',
-                    'content': 'A leading technology company has announced a significant breakthrough in artificial intelligence research, promising to revolutionize how we interact with machines...',
+                    'content': 'A leading technology company has announced a significant breakthrough in artificial intelligence research, promising to revolutionize how we interact with machines. The new AI system demonstrates unprecedented capabilities in natural language understanding and problem-solving.',
                     'summary': 'Tech company announces major AI breakthrough with potential widespread applications.',
                     'url': 'https://example.com/tech-ai-breakthrough',
                     'source': 'Tech News Daily',
@@ -139,7 +139,7 @@ def initialize_article_store():
                 {
                     'id': 2,
                     'title': 'Global Climate Summit Reaches Historic Agreement',
-                    'content': 'World leaders have reached a historic agreement on climate action at the global Summit, committing to ambitious new targets for carbon reduction...',
+                    'content': 'World leaders have reached a historic agreement on climate action at the global Summit, committing to ambitious new targets for carbon reduction. The agreement includes binding commitments from major economies.',
                     'summary': 'Historic climate agreement reached with new carbon reduction targets.',
                     'url': 'https://example.com/climate-summit-agreement',
                     'source': 'Environmental News',
@@ -151,6 +151,54 @@ def initialize_article_store():
                     'sentiment_label': 'positive',
                     'topics': '["climate", "environment", "policy"]',
                     'category': 'Environment'
+                },
+                {
+                    'id': 3,
+                    'title': 'Indian Stock Market Hits Record High Amid Economic Growth',
+                    'content': 'The Indian stock market reached an all-time high today as investors showed confidence in the country\'s economic growth prospects. Major indices surged to unprecedented levels.',
+                    'summary': 'Indian stock market achieves record high amid positive economic indicators.',
+                    'url': 'https://example.com/indian-stock-market-record',
+                    'source': 'Financial Express',
+                    'region': 'India',
+                    'author': 'Raj Kumar',
+                    'published_date': datetime.utcnow() - timedelta(hours=3),
+                    'collected_date': datetime.utcnow() - timedelta(hours=2),
+                    'sentiment_score': 0.8,
+                    'sentiment_label': 'positive',
+                    'topics': '["economy", "stocks", "India", "finance"]',
+                    'category': 'Business'
+                },
+                {
+                    'id': 4,
+                    'title': 'New Health Breakthrough in Cancer Research',
+                    'content': 'Medical researchers have discovered a promising new treatment approach for certain types of cancer, showing remarkable results in early clinical trials. The breakthrough could save millions of lives.',
+                    'summary': 'Revolutionary cancer treatment shows promising results in clinical trials.',
+                    'url': 'https://example.com/cancer-research-breakthrough',
+                    'source': 'Health News Today',
+                    'region': 'Global',
+                    'author': 'Dr. Sarah Johnson',
+                    'published_date': datetime.utcnow() - timedelta(hours=5),
+                    'collected_date': datetime.utcnow() - timedelta(hours=4),
+                    'sentiment_score': 0.9,
+                    'sentiment_label': 'positive',
+                    'topics': '["health", "medicine", "cancer", "research"]',
+                    'category': 'Health'
+                },
+                {
+                    'id': 5,
+                    'title': 'Tech Giants Face New Regulatory Challenges in Europe',
+                    'content': 'Major technology companies are facing increased regulatory scrutiny in Europe as new rules come into effect. The regulations aim to protect user privacy and promote fair competition.',
+                    'summary': 'European regulators implement new rules for tech companies.',
+                    'url': 'https://example.com/tech-regulation-europe',
+                    'source': 'BBC News',
+                    'region': 'UK',
+                    'author': 'Michael Brown',
+                    'published_date': datetime.utcnow() - timedelta(hours=6),
+                    'collected_date': datetime.utcnow() - timedelta(hours=5),
+                    'sentiment_score': 0.3,
+                    'sentiment_label': 'negative',
+                    'topics': '["technology", "regulation", "Europe", "privacy"]',
+                    'category': 'Technology'
                 }
             ]
             
