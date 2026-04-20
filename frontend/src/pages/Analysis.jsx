@@ -326,14 +326,14 @@ const AnalysisPage = () => {
                     Sentiment Analysis
                   </Typography>
                   <SentimentChart data={{
-                    positive: { current_percentage: sentimentResult.positive * 100 },
-                    negative: { current_percentage: sentimentResult.negative * 100 },
-                    neutral: { current_percentage: sentimentResult.neutral * 100 },
+                    positive: { current_percentage: (sentimentResult?.positive || 0) * 100 },
+                    negative: { current_percentage: (sentimentResult?.negative || 0) * 100 },
+                    neutral: { current_percentage: (sentimentResult?.neutral || 0) * 100 },
                   }} />
                   <Box sx={{ mt: 2 }}>
-                    <Chip label={`Positive: ${(sentimentResult.positive * 100).toFixed(1)}%`} color="success" sx={{ mr: 1 }} />
-                    <Chip label={`Negative: ${(sentimentResult.negative * 100).toFixed(1)}%`} color="error" sx={{ mr: 1 }} />
-                    <Chip label={`Neutral: ${(sentimentResult.neutral * 100).toFixed(1)}%`} color="default" />
+                    <Chip label={`Positive: ${((sentimentResult?.positive || 0) * 100).toFixed(1)}%`} color="success" sx={{ mr: 1 }} />
+                    <Chip label={`Negative: ${((sentimentResult?.negative || 0) * 100).toFixed(1)}%`} color="error" sx={{ mr: 1 }} />
+                    <Chip label={`Neutral: ${((sentimentResult?.neutral || 0) * 100).toFixed(1)}%`} color="default" />
                   </Box>
                 </Box>
               )}
@@ -344,10 +344,10 @@ const AnalysisPage = () => {
                     Topic Analysis
                   </Typography>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Dominant Topic: <strong>{topicsResult.dominant_topic}</strong>
+                    Dominant Topic: <strong>{topicsResult?.domant_topic || 'Unknown'}</strong>
                   </Typography>
                   <Grid container spacing={2}>
-                    {topicsResult.topics?.slice(0, 3).map((topic, index) => (
+                    {(topicsResult?.topics || []).slice(0, 3).map((topic, index) => (
                       <Grid item xs={12} sm={4} key={index}>
                         <Card variant="outlined">
                           <CardContent>
@@ -358,7 +358,7 @@ const AnalysisPage = () => {
                               {topic.label}
                             </Typography>
                             <Box sx={{ mt: 1 }}>
-                              {topic.words?.slice(0, 3).map((word, wordIndex) => (
+                              {(topic.words || []).slice(0, 3).map((word, wordIndex) => (
                                 <Chip
                                   key={wordIndex}
                                   label={word}

@@ -45,7 +45,7 @@ const NewsList = ({
     filters.source ||
     filters.category ||
     filters.sentiment ||
-    filters.query
+    filters.region
   );
 
   if (loading && articles.length === 0) {
