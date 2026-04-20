@@ -114,12 +114,51 @@ article_store = ArticleStore()
 # Initialize with sample articles if store is empty
 def initialize_article_store():
     """Initialize the article store with sample articles if empty"""
-    if len(article_store.articles) == 0:
-        from .real_news_collector import RealNewsCollector
-        collector = RealNewsCollector()
-        sample_articles = collector.get_sample_articles()
-        article_store.store_articles(sample_articles)
-        print("Article store initialized with sample articles")
+    try:
+        if len(article_store.articles) == 0:
+            # Import sample articles directly to avoid circular import
+            from datetime import datetime, timedelta
+            
+            sample_articles = [
+                {
+                    'id': 1,
+                    'title': 'Breaking: Major Tech Company Announces AI Breakthrough',
+                    'content': 'A leading technology company has announced a significant breakthrough in artificial intelligence research, promising to revolutionize how we interact with machines...',
+                    'summary': 'Tech company announces major AI breakthrough with potential widespread applications.',
+                    'url': 'https://example.com/tech-ai-breakthrough',
+                    'source': 'Tech News Daily',
+                    'region': 'Global',
+                    'author': 'John Doe',
+                    'published_date': datetime.utcnow() - timedelta(hours=2),
+                    'collected_date': datetime.utcnow() - timedelta(hours=1),
+                    'sentiment_score': 0.7,
+                    'sentiment_label': 'positive',
+                    'topics': '["AI", "technology", "innovation"]',
+                    'category': 'Technology'
+                },
+                {
+                    'id': 2,
+                    'title': 'Global Climate Summit Reaches Historic Agreement',
+                    'content': 'World leaders have reached a historic agreement on climate action at the global Summit, committing to ambitious new targets for carbon reduction...',
+                    'summary': 'Historic climate agreement reached with new carbon reduction targets.',
+                    'url': 'https://example.com/climate-summit-agreement',
+                    'source': 'Environmental News',
+                    'region': 'Global',
+                    'author': 'Jane Smith',
+                    'published_date': datetime.utcnow() - timedelta(hours=4),
+                    'collected_date': datetime.utcnow() - timedelta(hours=3),
+                    'sentiment_score': 0.6,
+                    'sentiment_label': 'positive',
+                    'topics': '["climate", "environment", "policy"]',
+                    'category': 'Environment'
+                }
+            ]
+            
+            article_store.store_articles(sample_articles)
+            print("Article store initialized with sample articles")
+    except Exception as e:
+        print(f"Error initializing article store: {e}")
+        # Don't fail startup, just log the error
 
 # Initialize on import
 initialize_article_store()

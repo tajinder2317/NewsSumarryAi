@@ -14,8 +14,8 @@ from ..models.mock_data import (
     get_mock_articles, get_mock_article_by_id, get_mock_sources, 
     get_mock_categories, get_mock_stats
 )
-from ..services import NewsCollector
-from ..services.real_news_collector import RealNewsCollector
+# from ..services import NewsCollector  # Commented out to avoid import issues
+# from ..services.real_news_collector import RealNewsCollector  # Commented out to avoid import issues
 from ..services.article_store import article_store
 from ..config import settings
 import os
@@ -87,10 +87,12 @@ async def collect_news(
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""
-    # Use real news collector in serverless environment
+    # Use article store in serverless environment
     if os.getenv("VERCEL"):
-        logger.info("Using real news collection for serverless deployment")
+        logger.info("Using article store for news collection in serverless deployment")
         try:
+            # Import RealNewsCollector only when needed
+            from ..services.real_news_collector import RealNewsCollector
             collector = RealNewsCollector()
             collected_count = collector.collect_all_sources(timeout=timeout)
             
