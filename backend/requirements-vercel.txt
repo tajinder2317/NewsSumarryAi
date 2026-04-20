@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic
+python-multipart
+python-dotenv
+newspaper3k
+textblob
+scikit-learn
+nltk
+requests
+feedparser
+beautifulsoup4
+lxml_html_clean
+networkx
+aiofiles
