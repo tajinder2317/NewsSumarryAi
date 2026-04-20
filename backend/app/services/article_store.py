@@ -110,3 +110,16 @@ class ArticleStore:
 
 # Global instance for serverless deployment
 article_store = ArticleStore()
+
+# Initialize with sample articles if store is empty
+def initialize_article_store():
+    """Initialize the article store with sample articles if empty"""
+    if len(article_store.articles) == 0:
+        from .real_news_collector import RealNewsCollector
+        collector = RealNewsCollector()
+        sample_articles = collector.get_sample_articles()
+        article_store.store_articles(sample_articles)
+        print("Article store initialized with sample articles")
+
+# Initialize on import
+initialize_article_store()
