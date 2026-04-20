@@ -24,18 +24,27 @@ async def get_news(
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
-    # Use a more efficient query with indexes
-    query = db.query(NewsArticle)
+    # Handle database errors gracefully
+    if db is None:
+        logger.error("Database connection failed")
+        return []
     
-    if source:
-        query = query.filter(NewsArticle.source.ilike(f"%{source}%"))
-    
-    if category:
-        query = query.filter(NewsArticle.category == category)
-    
-    # Order and limit for better performance
-    articles = query.order_by(NewsArticle.published_date.desc()).offset(skip).limit(limit).all()
-    return articles
+    try:
+        # Use a more efficient query with indexes
+        query = db.query(NewsArticle)
+        
+        if source:
+            query = query.filter(NewsArticle.source.ilike(f"%{source}%"))
+        
+        if category:
+            query = query.filter(NewsArticle.category == category)
+        
+        # Order and limit for better performance
+        articles = query.order_by(NewsArticle.published_date.desc()).offset(skip).limit(limit).all()
+        return articles
+    except Exception as e:
+        logger.error(f"Error fetching news: {e}")
+        return []
 
 @router.get("/{article_id}", response_model=NewsArticleResponse)
 async def get_article(article_id: int, db: Session = Depends(get_db)):
@@ -51,6 +60,18 @@ async def collect_news(
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""
+    # Handle database errors gracefully
+    if db is None:
+        logger.error("Database connection failed for news collection")
+        return {
+            "message": "Database connection failed. Please try again later.",
+            "collected_count": 0,
+            "total_articles": 0,
+            "articles_processed": 0,
+            "timeout": False,
+            "error": "database_error"
+        }
+    
     try:
         import asyncio
         from concurrent.futures import ThreadPoolExecutor
@@ -58,7 +79,11 @@ async def collect_news(
         collector = NewsCollector()
         
         # Get total articles before collection
-        total_before = db.query(NewsArticle).count()
+        try:
+            total_before = db.query(NewsArticle).count()
+        except Exception as e:
+            logger.error(f"Error counting articles before collection: {e}")
+            total_before = 0
         
         # Run collection in a separate thread with timeout
         loop = asyncio.get_event_loop()

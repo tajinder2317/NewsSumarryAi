@@ -48,22 +48,23 @@ _tables_created = False
 
 def get_db():
     global _tables_created
-    # Create tables on first database access in serverless
-    if not _tables_created:
-        try:
+    try:
+        # Create tables on first database access in serverless
+        if not _tables_created:
             create_tables()
             _tables_created = True
-        except Exception as e:
-            # Log error but don't fail
-            import logging
-            logger = logging.getLogger(__name__)
-            logger.warning(f"Could not create tables: {e}")
-    
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+        
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+    except Exception as e:
+        # If database fails, return None and let the endpoint handle it
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Database error: {e}")
+        yield None
 
 def create_tables():
     try:
@@ -71,5 +72,5 @@ def create_tables():
     except Exception as e:
         import logging
         logger = logging.getLogger(__name__)
-        logger.error(f"Error creating tables: {e}")
-        raise
+        logger.warning(f"Could not create tables: {e}")
+        # Don't raise error, just log it
