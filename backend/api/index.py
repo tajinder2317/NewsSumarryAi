@@ -15,11 +15,28 @@ sys.path.insert(0, str(backend_dir))
 os.environ.setdefault("VERCEL", "1")
 os.environ.setdefault("DATABASE_URL", "sqlite:///./database.db")
 
+# Configure logging
+import logging
+logging.basicConfig(level=logging.INFO)
+
 # Import and configure the FastAPI app
-from app.main import app
-
-# Export the app for Vercel experimental services
-handler = app
-
-# Also export as module variable for compatibility
-app_handler = app
+try:
+    from app.main import app
+    handler = app
+    logging.info("FastAPI app imported successfully")
+except Exception as e:
+    logging.error(f"Error importing FastAPI app: {e}")
+    # Create a minimal fallback app
+    from fastapi import FastAPI
+    app = FastAPI(title="News Analyzer API - Fallback")
+    
+    @app.get("/")
+    async def root():
+        return {"message": "News Analyzer API - Fallback Mode", "error": str(e)}
+    
+    @app.get("/health")
+    async def health():
+        return {"status": "healthy", "mode": "fallback"}
+    
+    handler = app
+    logging.info("Fallback FastAPI app created")
