@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from datetime import datetime
 import uvicorn
 import logging
 import os
@@ -93,13 +94,14 @@ async def root():
         "message": "News Analyzer AI API",
         "version": "1.0.0",
         "docs": "/docs",
-        "status": "running"
+        "status": "running",
+        "environment": "serverless" if os.getenv("VERCEL") else "local"
     }
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "message": "Service is running"}
+    return {"status": "healthy", "timestamp": str(datetime.utcnow())}
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
