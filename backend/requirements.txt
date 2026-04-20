@@ -11,6 +11,8 @@ nltk
 requests
 feedparser
 beautifulsoup4
+lxml_html_clean
+networkx
 aiofiles
 pytest
 pytest-asyncio

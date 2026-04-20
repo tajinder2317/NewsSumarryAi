@@ -2000,3 +2000,76 @@
 2026-04-15 18:35:53,204 - app.services.news_collector - INFO - Collected 0 articles from NewsAPI
 2026-04-15 18:35:53,204 - app.services.news_collector - INFO - Saved 0 new articles from NewsAPI
 2026-04-15 18:35:53,205 - app.services.news_collector - INFO - Total articles collected: 0
+2026-04-20 11:22:22,358 - app.main - INFO - Starting News Analyzer AI...
+2026-04-20 11:22:22,362 - app.main - INFO - Database tables created successfully
+2026-04-20 11:22:47,344 - app.services.news_collector - INFO - Starting collection from 3 RSS feeds with timeout 8s
+2026-04-20 11:22:47,344 - app.services.news_collector - INFO - Collecting from RSS: https://feeds.bbci.co.uk/news/rss.xml
+2026-04-20 11:22:47,344 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.bbci.co.uk/news/rss.xml (max 5 articles)
+2026-04-20 11:22:48,839 - app.services.news_collector - INFO - Collected 5 articles from https://feeds.bbci.co.uk/news/rss.xml
+2026-04-20 11:22:48,839 - app.services.news_collector - INFO - Collected 5 articles from RSS
+2026-04-20 11:22:48,845 - app.services.news_collector - INFO - Saved 5 new articles to database
+2026-04-20 11:22:48,845 - app.services.news_collector - INFO - Saved 5 new articles to database
+2026-04-20 11:22:48,845 - app.services.news_collector - INFO - Collecting from RSS: https://rss.cnn.com/rss/edition.rss
+2026-04-20 11:22:48,845 - app.services.news_collector - INFO - Collecting news from RSS: https://rss.cnn.com/rss/edition.rss (max 5 articles)
+2026-04-20 11:22:49,081 - app.services.news_collector - WARNING - No entries found in RSS feed: https://rss.cnn.com/rss/edition.rss
+2026-04-20 11:22:49,081 - app.services.news_collector - INFO - Collected 0 articles from RSS
+2026-04-20 11:22:49,081 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-20 11:22:49,081 - app.services.news_collector - INFO - Collecting from RSS: https://feeds.reuters.com/reuters/topNews
+2026-04-20 11:22:49,081 - app.services.news_collector - INFO - Collecting news from RSS: https://feeds.reuters.com/reuters/topNews (max 5 articles)
+2026-04-20 11:22:49,323 - app.services.news_collector - WARNING - No entries found in RSS feed: https://feeds.reuters.com/reuters/topNews
+2026-04-20 11:22:49,323 - app.services.news_collector - INFO - Collected 0 articles from RSS
+2026-04-20 11:22:49,323 - app.services.news_collector - INFO - Saved 0 new articles to database
+2026-04-20 11:22:49,323 - app.services.news_collector - INFO - Collecting from NewsAPI
+2026-04-20 11:22:49,722 - app.services.news_collector - ERROR - Error collecting from NewsAPI: 401 Client Error: Unauthorized for url: https://newsapi.org/v2/top-headlines?apiKey=your_news_api_key_here&category=general&pageSize=20&country=us
+2026-04-20 11:22:49,722 - app.services.news_collector - INFO - Collected 0 articles from NewsAPI
+2026-04-20 11:22:49,722 - app.services.news_collector - INFO - Saved 0 new articles from NewsAPI
+2026-04-20 11:22:49,722 - app.services.news_collector - INFO - Total articles collected: 5
+2026-04-20 11:35:39,058 - app.services.summarizer - ERROR - Error in sentence tokenization: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - '/Users/appxbuild/nltk_data'
+    - '/Users/appxbuild/Desktop/agenticAi/project/NewsSumarryAi/backend/venv/nltk_data'
+    - '/Users/appxbuild/Desktop/agenticAi/project/NewsSumarryAi/backend/venv/share/nltk_data'
+    - '/Users/appxbuild/Desktop/agenticAi/project/NewsSumarryAi/backend/venv/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+2026-04-20 11:35:39,061 - app.services.summarizer - ERROR - Error extracting key points: 
+**********************************************************************
+  Resource 'punkt_tab' not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  >>> import nltk
+  >>> nltk.download('punkt_tab')
+
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load 'tokenizers/punkt_tab/english/'
+
+  Searched in:
+    - '/Users/appxbuild/nltk_data'
+    - '/Users/appxbuild/Desktop/agenticAi/project/NewsSumarryAi/backend/venv/nltk_data'
+    - '/Users/appxbuild/Desktop/agenticAi/project/NewsSumarryAi/backend/venv/share/nltk_data'
+    - '/Users/appxbuild/Desktop/agenticAi/project/NewsSumarryAi/backend/venv/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+2026-04-20 11:37:05,978 - app.main - INFO - Shutting down News Analyzer AI...
+2026-04-20 11:37:13,959 - app.main - INFO - Starting News Analyzer AI...
+2026-04-20 11:37:13,961 - app.main - INFO - Database tables created successfully
