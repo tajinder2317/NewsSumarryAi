@@ -18,5 +18,8 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./database.db")
 # Import and configure the FastAPI app
 from app.main import app
 
-# Vercel will automatically handle the FastAPI app
-# No custom handler needed - Vercel Python runtime handles FastAPI natively
+# Export the app for Vercel experimental services
+handler = app
+
+# Also export as module variable for compatibility
+app_handler = app
