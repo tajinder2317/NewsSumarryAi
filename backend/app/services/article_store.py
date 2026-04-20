@@ -115,10 +115,11 @@ article_store = ArticleStore()
 def initialize_article_store():
     """Initialize the article store with sample articles if empty"""
     try:
-        # Force reinitialization in serverless environment to get fresh data
-        # Clear existing articles in serverless to ensure fresh data
+        # Always ensure we have sample articles in serverless environment
         if os.getenv("VERCEL"):
+            # Clear and reinitialize for fresh data
             article_store.articles.clear()
+            print("Cleared article store for serverless reinitialization")
         
         if len(article_store.articles) == 0:
             # Import sample articles directly to avoid circular import

@@ -35,7 +35,23 @@ async def get_news(
     # Use article store in serverless environment or when database fails
     if os.getenv("VERCEL") or db is None:
         logger.info("Using article store for serverless deployment")
+        
+        # Ensure article store is initialized with sample data
+        if len(article_store.articles) == 0:
+            logger.info("Article store empty, initializing with sample data")
+            from ..services.article_store import initialize_article_store
+            initialize_article_store()
+        
         store_articles = article_store.get_articles(limit=limit, skip=skip, source=source, category=category, region=region)
+        logger.info(f"Returning {len(store_articles)} articles from store")
+        
+        # Fallback to mock data if store is empty
+        if len(store_articles) == 0:
+            logger.info("Article store empty, using fallback mock data")
+            from ..models.mock_data import get_mock_articles
+            mock_articles = get_mock_articles(limit=limit, skip=skip, source=source, category=category)
+            return mock_articles
+        
         return store_articles
     
     try:
