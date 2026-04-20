@@ -40,3 +40,8 @@ except Exception as e:
     
     handler = app
     logging.info("Fallback FastAPI app created")
+
+# Vercel serverless function handler
+def lambda_handler(event, context):
+    """AWS Lambda compatible handler for Vercel"""
+    return handler
