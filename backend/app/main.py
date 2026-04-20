@@ -10,15 +10,24 @@ from .config import settings
 from .models import get_db, create_tables
 from .api import news, analysis, trends
 
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, settings.LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(settings.LOG_FILE),
-        logging.StreamHandler()
-    ]
-)
+# Configure logging for serverless deployment
+if os.getenv("VERCEL"):
+    # Serverless environment - only use console logging
+    logging.basicConfig(
+        level=getattr(logging, settings.LOG_LEVEL),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
+else:
+    # Local development - use both file and console logging
+    logging.basicConfig(
+        level=getattr(logging, settings.LOG_LEVEL),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(settings.LOG_FILE),
+            logging.StreamHandler()
+        ]
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +71,7 @@ async def startup_event():
                 os.makedirs(log_dir, exist_ok=True)
             
             db_dir = os.path.dirname(settings.DATABASE_URL.replace("sqlite:///", ""))
-            if db_dir:
+            if db_dir and db_dir != '.':
                 os.makedirs(db_dir, exist_ok=True)
             
             # Create database tables
