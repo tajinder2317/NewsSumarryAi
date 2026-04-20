@@ -14,16 +14,16 @@ class NewsArticle(Base):
     content = Column(Text, nullable=False)
     summary = Column(Text)
     url = Column(String, unique=True, nullable=False)
-    source = Column(String, nullable=False)
+    source = Column(String, nullable=False, index=True)  # Add index for source filtering
     author = Column(String)
-    published_date = Column(DateTime)
+    published_date = Column(DateTime, index=True)  # Add index for date ordering
     collected_date = Column(DateTime, default=datetime.utcnow)
     
     # Analysis fields
     sentiment_score = Column(Float)
-    sentiment_label = Column(String)
+    sentiment_label = Column(String, index=True)  # Add index for sentiment filtering
     topics = Column(Text)  # JSON string of topics
-    category = Column(String)
+    category = Column(String, index=True)  # Add index for category filtering
     
     def __repr__(self):
         return f"<NewsArticle(id={self.id}, title='{self.title[:50]}...', source='{self.source}')>"

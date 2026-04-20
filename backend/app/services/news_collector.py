@@ -226,7 +226,7 @@ class NewsCollector:
                 source_name = self._extract_source_from_url(rss_url)
                 logger.info(f"[{i+1}/{len(settings.RSS_FEEDS)}] Collecting from {source_name}: {rss_url}")
                 try:
-                    articles = self.collect_from_rss(rss_url.strip(), max_articles=3, timeout=timeout)
+                    articles = self.collect_from_rss(rss_url.strip(), max_articles=2, timeout=timeout)
                     if articles:
                         logger.info(f"Collected {len(articles)} articles from {source_name}")
                         saved = self.save_articles(articles)

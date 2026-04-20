@@ -18,12 +18,13 @@ router = APIRouter()
 @router.get("/", response_model=List[NewsArticleResponse])
 async def get_news(
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100),
+    limit: int = Query(10, ge=1, le=50),  # Reduced default limit for faster loading
     source: Optional[str] = Query(None),
     category: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
+    # Use a more efficient query with indexes
     query = db.query(NewsArticle)
     
     if source:
@@ -32,6 +33,7 @@ async def get_news(
     if category:
         query = query.filter(NewsArticle.category == category)
     
+    # Order and limit for better performance
     articles = query.order_by(NewsArticle.published_date.desc()).offset(skip).limit(limit).all()
     return articles
 
@@ -45,7 +47,7 @@ async def get_article(article_id: int, db: Session = Depends(get_db)):
 
 @router.post("/collect")
 async def collect_news(
-    timeout: int = Query(8, ge=5, le=30, description="Timeout in seconds for RSS feed collection"),
+    timeout: int = Query(5, ge=3, le=15, description="Timeout in seconds for RSS feed collection"),
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""
