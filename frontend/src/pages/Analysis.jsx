@@ -41,8 +41,13 @@ const AnalysisPage = () => {
   const {
     data: articles,
     isLoading: articlesLoading,
+    error: articlesError,
   } = useQuery('recentNews', () => newsService.fetchNews({ limit: 50 }), {
     staleTime: 5 * 60 * 1000,
+    retry: 2,
+    onError: (error) => {
+      console.error('Analysis articles fetch error:', error);
+    },
   });
 
   const {
@@ -149,6 +154,19 @@ const AnalysisPage = () => {
 
   if (articlesLoading) {
     return <Loading message="Loading articles for analysis..." />;
+  }
+
+  if (articlesError) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Error loading articles: {articlesError.message}
+        </Alert>
+        <Button variant="outlined" onClick={() => window.location.reload()}>
+          Refresh Page
+        </Button>
+      </Container>
+    );
   }
 
   return (

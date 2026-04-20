@@ -35,6 +35,20 @@ const NewsList = ({
     }
   };
 
+  // Error boundary fallback
+  if (error && !loading) {
+    return (
+      <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error || 'Error loading articles'}
+        </Alert>
+        <Button variant="outlined" onClick={onRefresh} startIcon={<Refresh />}>
+          Try Again
+        </Button>
+      </Box>
+    );
+  }
+
   const clearFilters = () => {
     if (onFilterChange) {
       onFilterChange('clear', null);

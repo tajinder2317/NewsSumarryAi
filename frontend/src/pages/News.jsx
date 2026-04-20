@@ -39,6 +39,10 @@ const NewsPage = () => {
     }),
     {
       keepPreviousData: true,
+      retry: 2,
+      onError: (error) => {
+        console.error('News fetch error:', error);
+      },
     }
   );
 
