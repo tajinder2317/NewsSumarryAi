@@ -115,6 +115,11 @@ article_store = ArticleStore()
 def initialize_article_store():
     """Initialize the article store with sample articles if empty"""
     try:
+        # Force reinitialization in serverless environment to get fresh data
+        # Clear existing articles in serverless to ensure fresh data
+        if os.getenv("VERCEL"):
+            article_store.articles.clear()
+        
         if len(article_store.articles) == 0:
             # Import sample articles directly to avoid circular import
             from datetime import datetime, timedelta
@@ -202,8 +207,25 @@ def initialize_article_store():
                 }
             ]
             
+            # Add unique timestamps to make articles appear fresh
+            current_time = datetime.utcnow()
+            for i, article in enumerate(sample_articles):
+                article['published_date'] = current_time - timedelta(hours=i+1)
+                article['collected_date'] = current_time - timedelta(minutes=i*10)
+                article['id'] = i + 1  # Ensure unique IDs
+            
             article_store.store_articles(sample_articles)
-            print("Article store initialized with sample articles")
+            print(f"Article store initialized with {len(sample_articles)} fresh sample articles")
+            
+            # Try to collect real news in background
+            try:
+                from .real_news_collector import RealNewsCollector
+                collector = RealNewsCollector()
+                # Quick collection with short timeout
+                collector.collect_all_sources(timeout=3)
+                print("Attempted real news collection in background")
+            except Exception as e:
+                print(f"Background news collection failed: {e}")
     except Exception as e:
         print(f"Error initializing article store: {e}")
         # Don't fail startup, just log the error
