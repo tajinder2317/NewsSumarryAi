@@ -22,7 +22,6 @@ logging.basicConfig(level=logging.INFO)
 # Import and configure the FastAPI app
 try:
     from app.main import app
-    handler = app
     logging.info("FastAPI app imported successfully")
 except Exception as e:
     logging.error(f"Error importing FastAPI app: {e}")
@@ -38,10 +37,8 @@ except Exception as e:
     async def health():
         return {"status": "healthy", "mode": "fallback"}
     
-    handler = app
     logging.info("Fallback FastAPI app created")
 
-# Vercel serverless function handler
-def lambda_handler(event, context):
-    """AWS Lambda compatible handler for Vercel"""
-    return handler
+# Export the app as top-level handler for Vercel
+app = app
+handler = app
