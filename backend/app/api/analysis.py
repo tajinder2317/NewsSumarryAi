@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List
 import json
 
@@ -238,7 +239,7 @@ async def categorize_articles(
         raise HTTPException(status_code=500, detail=f"Error categorizing articles: {str(e)}")
 
 @router.get("/statistics")
-async def get_analysis_statistics(db: Session = Depends(get_db)):
+def get_analysis_statistics(db: Session = Depends(get_db)):
     """Get analysis statistics"""
     try:
         total_articles = db.query(NewsArticle).count()
@@ -246,13 +247,13 @@ async def get_analysis_statistics(db: Session = Depends(get_db)):
         # Sentiment distribution
         sentiment_counts = db.query(
             NewsArticle.sentiment_label, 
-            db.func.count(NewsArticle.id)
+            func.count(NewsArticle.id)
         ).group_by(NewsArticle.sentiment_label).all()
         
         # Category distribution
         category_counts = db.query(
             NewsArticle.category,
-            db.func.count(NewsArticle.id)
+            func.count(NewsArticle.id)
         ).group_by(NewsArticle.category).all()
         
         # Articles with analysis
