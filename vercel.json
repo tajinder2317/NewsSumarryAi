@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "_buildTimestamp": "2025-04-20T13:08:00Z",
   "builds": [
     {
       "src": "frontend/package.json",
