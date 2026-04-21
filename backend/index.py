@@ -18,8 +18,8 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./database.db")
 import logging
 logging.basicConfig(level=logging.INFO)
 
-# Import the FastAPI app
-from app.main import app
+# Import the simple API handler
+from api.simple_handler import handler as api_handler
 
-# Export the app for Vercel (standard approach)
-handler = app
+# Export the handler for Vercel
+handler = api_handler
