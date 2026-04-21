@@ -14,7 +14,12 @@ const normalizeBaseURL = (url) => {
 
 // Create axios instance with default configuration
 const api = axios.create({
-  baseURL: normalizeBaseURL(process.env.REACT_APP_API_URL) || 'https://news-sumarry-ai-backend.vercel.app',
+  // Production (Vercel) expects same-origin `/api/*` routing via `vercel.json`.
+  // For local dev, set `REACT_APP_API_URL=http://localhost:8000` (or your backend URL).
+  baseURL:
+    process.env.NODE_ENV === 'development'
+      ? (normalizeBaseURL(process.env.REACT_APP_API_URL) || 'http://localhost:8000')
+      : '',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

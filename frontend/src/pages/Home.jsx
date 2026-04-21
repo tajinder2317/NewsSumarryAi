@@ -57,17 +57,24 @@ const Home = () => {
     collectNews(undefined, {
       onSuccess: (data) => {
         refetchStats();
+        // Some deployments previously returned mock arrays here; guard to avoid "undefined" alerts.
+        if (!data || Array.isArray(data)) {
+          alert('News collection requested. Refresh in a moment to see updated articles.');
+          return;
+        }
+
         if (data.timeout) {
           alert(`Collection timed out. You can try again with a longer timeout or check your internet connection.\n\n${data.message}`);
         } else {
-          alert(data.message);
+          alert(data.message || 'News collected successfully.');
         }
       },
       onError: (error) => {
-        if (error.message.includes('timeout')) {
+        const message = error?.message ? String(error.message) : String(error);
+        if (message.includes('timeout')) {
           alert(`Request timed out. Please check your internet connection and try again.`);
         } else {
-          alert(`Error collecting news: ${error.message}`);
+          alert(`Error collecting news: ${message}`);
         }
       },
     });
@@ -475,7 +482,7 @@ const Home = () => {
               🔥 Trending Topics
             </Typography>
             <Grid container spacing={3}>
-              {trends && trends.summary && trends.summary.trending_topics && trends.summary.trending_topics.slice(0, 6).map((topic, index) => (
+              {trends.trending_topics.slice(0, 6).map((topic, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Fade in timeout={1200 + index * 100}>
                     <Card
