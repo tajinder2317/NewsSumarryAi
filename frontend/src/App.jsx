@@ -5,6 +5,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Analysis from "./pages/Analysis";
@@ -29,13 +30,15 @@ function App() {
 
         <main className="main-content">
           <Container maxWidth="xl">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/analysis" element={<Analysis />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/news" element={<News />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/analysis" element={<Analysis />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/news" element={<News />} />
+              </Routes>
+            </ErrorBoundary>
           </Container>
         </main>
 

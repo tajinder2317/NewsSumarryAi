@@ -1,5 +1,16 @@
 import { newsAPI, analysisAPI, trendsAPI } from "./api";
 
+const normalizeArticles = (data) => {
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.articles)) return data.articles;
+  return [];
+};
+
+const normalizeStringList = (data) => {
+  if (Array.isArray(data)) return data;
+  return [];
+};
+
 // News service functions
 export const newsService = {
   // Fetch news articles
@@ -8,17 +19,7 @@ export const newsService = {
       const response = await newsAPI.getNews(params);
       console.log("News API response:", response);
 
-      // Simple response handling - just return what we get
-      if (response && response.data) {
-        return { articles: response.data };
-      } else if (response && Array.isArray(response)) {
-        return { articles: response };
-      } else if (response && response.articles) {
-        return { articles: response.articles };
-      } else {
-        console.warn("Unexpected response format:", response);
-        return { articles: [] };
-      }
+      return normalizeArticles(response?.data);
     } catch (error) {
       console.error("News API error:", error);
       throw new Error(`Failed to fetch news: ${error.message}`);
@@ -59,7 +60,9 @@ export const newsService = {
   getSources: async () => {
     try {
       const response = await newsAPI.getSources();
-      return response.data;
+      const data = response?.data;
+      if (data && Array.isArray(data.sources)) return data;
+      return { sources: normalizeStringList(data) };
     } catch (error) {
       throw new Error(`Failed to fetch sources: ${error.message}`);
     }
@@ -69,7 +72,9 @@ export const newsService = {
   getCategories: async () => {
     try {
       const response = await newsAPI.getCategories();
-      return response.data;
+      const data = response?.data;
+      if (data && Array.isArray(data.categories)) return data;
+      return { categories: normalizeStringList(data) };
     } catch (error) {
       throw new Error(`Failed to fetch categories: ${error.message}`);
     }
@@ -79,16 +84,7 @@ export const newsService = {
   getStats: async () => {
     try {
       const response = await newsAPI.getStats();
-      // Handle different response formats
-      if (response && typeof response === "object") {
-        // If response has data property, use that
-        if (response.data) {
-          return response.data;
-        }
-        // Otherwise, return the response directly
-        return response;
-      }
-      return response;
+      return response?.data;
     } catch (error) {
       throw new Error(`Failed to fetch stats: ${error.message}`);
     }
@@ -110,7 +106,11 @@ export const analysisService = {
   // Analyze sentiment
   analyzeSentiment: async (articleIds) => {
     try {
-      const response = await analysisAPI.analyzeSentiment(articleIds);
+      const ids = Array.isArray(articleIds)
+        ? articleIds
+        : (articleIds && Array.isArray(articleIds.articleIds) ? articleIds.articleIds : []);
+
+      const response = await analysisAPI.analyzeSentiment(ids);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to analyze sentiment: ${error.message}`);
@@ -120,7 +120,11 @@ export const analysisService = {
   // Extract topics
   analyzeTopics: async (articleIds) => {
     try {
-      const response = await analysisAPI.analyzeTopics(articleIds);
+      const ids = Array.isArray(articleIds)
+        ? articleIds
+        : (articleIds && Array.isArray(articleIds.articleIds) ? articleIds.articleIds : []);
+
+      const response = await analysisAPI.analyzeTopics(ids);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to analyze topics: ${error.message}`);
@@ -128,12 +132,12 @@ export const analysisService = {
   },
 
   // Summarize articles
-  summarizeArticles: async (articleIds, maxSentences = 3) => {
+  summarizeArticles: async (variables) => {
     try {
-      const response = await analysisAPI.summarizeArticles(
-        articleIds,
-        maxSentences,
-      );
+      const articleIds = Array.isArray(variables) ? variables : variables?.articleIds;
+      const maxSentences = variables?.maxSentences ?? 3;
+
+      const response = await analysisAPI.summarizeArticles(articleIds || [], maxSentences);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to summarize articles: ${error.message}`);
@@ -141,12 +145,12 @@ export const analysisService = {
   },
 
   // Extract keywords
-  extractKeywords: async (articleIds, numKeywords = 10) => {
+  extractKeywords: async (variables) => {
     try {
-      const response = await analysisAPI.extractKeywords(
-        articleIds,
-        numKeywords,
-      );
+      const articleIds = Array.isArray(variables) ? variables : variables?.articleIds;
+      const numKeywords = variables?.numKeywords ?? 10;
+
+      const response = await analysisAPI.extractKeywords(articleIds || [], numKeywords);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to extract keywords: ${error.message}`);
@@ -167,16 +171,7 @@ export const analysisService = {
   getAnalysisStats: async () => {
     try {
       const response = await analysisAPI.getStats();
-      // Handle different response formats
-      if (response && typeof response === "object") {
-        // If response has data property, use that
-        if (response.data) {
-          return response.data;
-        }
-        // Otherwise, return the response directly
-        return response;
-      }
-      return response;
+      return response?.data;
     } catch (error) {
       throw new Error(`Failed to fetch analysis stats: ${error.message}`);
     }
@@ -239,16 +234,7 @@ export const trendsService = {
   getTrendsSummary: async (hours = 24) => {
     try {
       const response = await trendsAPI.getTrendsSummary(hours);
-      // Handle different response formats
-      if (response && typeof response === "object") {
-        // If response has data property, use that
-        if (response.data) {
-          return response.data;
-        }
-        // Otherwise, return the response directly
-        return response;
-      }
-      return response;
+      return response?.data;
     } catch (error) {
       throw new Error(`Failed to fetch trends summary: ${error.message}`);
     }

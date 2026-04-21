@@ -40,7 +40,7 @@ const AnalysisPage = () => {
   });
 
   const {
-    data: articles,
+    data: articles = [],
     isLoading: articlesLoading,
     error: articlesError,
   } = useQuery('recentNews', () => newsService.fetchNews({ limit: 50 }), {
@@ -103,38 +103,22 @@ const AnalysisPage = () => {
         });
         break;
       case 'summary':
-        console.log('DEBUG: Calling summarizeArticles with:', selectedArticles, analysisParams.max_sentences);
-        // Clear previous result to ensure fresh display
-        if (summaryResult) {
-          // Force re-render by setting result to null temporarily
-          setTimeout(() => {
-            summarizeArticles(selectedArticles, analysisParams.max_sentences, {
-              onSuccess: (data) => {
-                console.log('Summarization complete:', data);
-                console.log('DEBUG: Summary length:', data.summary ? data.summary.length : 0);
-                console.log('DEBUG: Max sentences requested:', analysisParams.max_sentences);
-                console.log('DEBUG: Actual summary:', data.summary);
-              },
-              onError: (error) => alert(`Summarization failed: ${error.message}`),
-            });
-          }, 50);
-        } else {
-          summarizeArticles(selectedArticles, analysisParams.max_sentences, {
-            onSuccess: (data) => {
-              console.log('Summarization complete:', data);
-              console.log('DEBUG: Summary length:', data.summary ? data.summary.length : 0);
-              console.log('DEBUG: Max sentences requested:', analysisParams.max_sentences);
-              console.log('DEBUG: Actual summary:', data.summary);
-            },
+        summarizeArticles(
+          { articleIds: selectedArticles, maxSentences: analysisParams.max_sentences },
+          {
+            onSuccess: (data) => console.log('Summarization complete:', data),
             onError: (error) => alert(`Summarization failed: ${error.message}`),
-          });
-        }
+          }
+        );
         break;
       case 'keywords':
-        extractKeywords(selectedArticles, analysisParams.num_keywords, {
-          onSuccess: (data) => console.log('Keyword extraction complete:', data),
-          onError: (error) => alert(`Keyword extraction failed: ${error.message}`),
-        });
+        extractKeywords(
+          { articleIds: selectedArticles, numKeywords: analysisParams.num_keywords },
+          {
+            onSuccess: (data) => console.log('Keyword extraction complete:', data),
+            onError: (error) => alert(`Keyword extraction failed: ${error.message}`),
+          }
+        );
         break;
       default:
         alert('Please select an analysis type');
@@ -142,9 +126,7 @@ const AnalysisPage = () => {
   };
 
   const selectAllArticles = () => {
-    if (articles) {
-      setSelectedArticles(articles.map(article => article.id));
-    }
+    setSelectedArticles(articles.map(article => article.id));
   };
 
   const clearSelection = () => {
@@ -363,7 +345,7 @@ const AnalysisPage = () => {
                     Topic Analysis
                   </Typography>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Dominant Topic: <strong>{topicsResult?.domant_topic || 'Unknown'}</strong>
+                    Dominant Topic: <strong>{topicsResult?.dominant_topic || 'Unknown'}</strong>
                   </Typography>
                   <Grid container spacing={2}>
                     {(topicsResult?.topics || []).slice(0, 3).map((topic, index) => (

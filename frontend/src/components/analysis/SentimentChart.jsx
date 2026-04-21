@@ -30,6 +30,27 @@ const SentimentChart = ({ data, type = 'doughnut' }) => {
     );
   }
 
+  const getPercentage = (key) => {
+    const value = data?.[key];
+
+    // Trends endpoint shape: { positive: { current_percentage, trend_direction, ... }, ... }
+    if (value && typeof value === 'object' && typeof value.current_percentage === 'number') {
+      return value.current_percentage;
+    }
+
+    // Analysis endpoint shape: { positive: 0.6, negative: 0.1, neutral: 0.3, ... }
+    if (typeof value === 'number') {
+      return value <= 1 ? value * 100 : value;
+    }
+
+    return 0;
+  };
+
+  const getTrendDirection = (key) => {
+    const value = data?.[key];
+    return value && typeof value === 'object' ? value.trend_direction : undefined;
+  };
+
   
   const chartData = {
     labels: ['Positive', 'Negative', 'Neutral'],
@@ -37,9 +58,9 @@ const SentimentChart = ({ data, type = 'doughnut' }) => {
       {
         label: 'Sentiment Distribution',
         data: [
-          data.positive?.current_percentage || 0,
-          data.negative?.current_percentage || 0,
-          data.neutral?.current_percentage || 0,
+          getPercentage('positive'),
+          getPercentage('negative'),
+          getPercentage('neutral'),
         ],
         backgroundColor: [
           'rgba(75, 192, 192, 0.8)',  // Green for positive
@@ -104,32 +125,32 @@ const SentimentChart = ({ data, type = 'doughnut' }) => {
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ 
-            color: data.positive?.trend_direction === 'increasing' ? '#4caf50' : 
-                   data.positive?.trend_direction === 'decreasing' ? '#f44336' : '#666',
+            color: getTrendDirection('positive') === 'increasing' ? '#4caf50' : 
+                   getTrendDirection('positive') === 'decreasing' ? '#f44336' : '#666',
             fontWeight: 'bold'
           }}>
-            {data.positive?.trend_direction === 'increasing' ? ' Rising' : 
-             data.positive?.trend_direction === 'decreasing' ? ' Falling' : ' Stable'}
+            {getTrendDirection('positive') === 'increasing' ? ' Rising' : 
+             getTrendDirection('positive') === 'decreasing' ? ' Falling' : ' Stable'}
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ 
-            color: data.negative?.trend_direction === 'increasing' ? '#f44336' : 
-                   data.negative?.trend_direction === 'decreasing' ? '#4caf50' : '#666',
+            color: getTrendDirection('negative') === 'increasing' ? '#f44336' : 
+                   getTrendDirection('negative') === 'decreasing' ? '#4caf50' : '#666',
             fontWeight: 'bold'
           }}>
-            {data.negative?.trend_direction === 'increasing' ? ' Rising' : 
-             data.negative?.trend_direction === 'decreasing' ? ' Falling' : ' Stable'}
+            {getTrendDirection('negative') === 'increasing' ? ' Rising' : 
+             getTrendDirection('negative') === 'decreasing' ? ' Falling' : ' Stable'}
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ 
-            color: data.neutral?.trend_direction === 'increasing' ? '#4caf50' : 
-                   data.neutral?.trend_direction === 'decreasing' ? '#f44336' : '#666',
+            color: getTrendDirection('neutral') === 'increasing' ? '#4caf50' : 
+                   getTrendDirection('neutral') === 'decreasing' ? '#f44336' : '#666',
             fontWeight: 'bold'
           }}>
-            {data.neutral?.trend_direction === 'increasing' ? ' Rising' : 
-             data.neutral?.trend_direction === 'decreasing' ? ' Falling' : ' Stable'}
+            {getTrendDirection('neutral') === 'increasing' ? ' Rising' : 
+             getTrendDirection('neutral') === 'decreasing' ? ' Falling' : ' Stable'}
           </div>
         </div>
       </div>

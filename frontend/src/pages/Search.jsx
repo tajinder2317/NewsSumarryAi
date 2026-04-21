@@ -314,7 +314,7 @@ const SearchPage = () => {
         <NewsList
           articles={searchResults}
           loading={isLoading}
-          error={error}
+          error={error?.message}
           pagination={{
             page: currentPage,
             limit: searchParams.limit,
@@ -322,8 +322,8 @@ const SearchPage = () => {
           onPageChange={handlePageChange}
           totalCount={searchResults.length >= searchParams.limit ? undefined : searchResults.length}
           filters={{
-            availableSources: sources?.sources,
-            availableCategories: categories?.categories,
+            availableSources: sources?.sources || [],
+            availableCategories: categories?.categories || [],
           }}
         />
       )}

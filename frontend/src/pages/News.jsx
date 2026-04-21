@@ -24,7 +24,7 @@ const NewsPage = () => {
 
   // Fetch news articles
   const {
-    data: articles,
+    data: articles = [],
     isLoading,
     error,
     refetch,
@@ -60,6 +60,17 @@ const NewsPage = () => {
   });
 
   const handleFilterChange = (filterType, value) => {
+    if (filterType === 'clear') {
+      setFilters({
+        source: '',
+        category: '',
+        sentiment: '',
+        region: '',
+      });
+      setCurrentPage(1);
+      return;
+    }
+
     setFilters(prev => ({
       ...prev,
       [filterType]: value,

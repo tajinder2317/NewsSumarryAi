@@ -1,8 +1,20 @@
 import axios from 'axios';
 
+const normalizeBaseURL = (url) => {
+  if (!url || typeof url !== 'string') return '';
+
+  // Trim trailing slashes
+  let normalized = url.replace(/\/+$/, '');
+
+  // If someone configured the base URL as ".../api", strip it because our routes already include "/api/..."
+  normalized = normalized.replace(/\/api$/i, '');
+
+  return normalized;
+};
+
 // Create axios instance with default configuration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://news-sumarry-ai-backend.vercel.app/api',
+  baseURL: normalizeBaseURL(process.env.REACT_APP_API_URL) || 'https://news-sumarry-ai-backend.vercel.app',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -82,7 +94,7 @@ export const newsAPI = {
   
   // Get news categories
   getCategories: () => {
-    return api.get('/api/v1/news/categories');
+    return api.get('/api/v1/news/categories/list');
   },
   
   // Get news statistics
@@ -165,7 +177,8 @@ export const trendsAPI = {
 // Health check
 export const healthAPI = {
   check: () => {
-    return api.get('/health');
+    // Local FastAPI exposes `/health`, while the Vercel mock handler uses `/api/health`.
+    return api.get('/health').catch(() => api.get('/api/health'));
   },
 };
 
