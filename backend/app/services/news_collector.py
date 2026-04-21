@@ -215,40 +215,56 @@ class NewsCollector:
     def collect_all_sources(self, timeout: int = 15) -> int:
         """Collect news from all configured sources"""
         total_articles = 0
+        successful_sources = 0
+        failed_sources = 0
         
         logger.info(f"Starting collection from {len(settings.RSS_FEEDS)} RSS feeds with timeout {timeout}s")
         
         # Collect from RSS feeds
-        for rss_url in settings.RSS_FEEDS:
+        for i, rss_url in enumerate(settings.RSS_FEEDS):
             if rss_url.strip():
-                logger.info(f"Collecting from RSS: {rss_url}")
+                source_name = self._extract_source_from_url(rss_url)
+                logger.info(f"[{i+1}/{len(settings.RSS_FEEDS)}] Collecting from {source_name}: {rss_url}")
                 try:
-                    articles = self.collect_from_rss(rss_url.strip(), timeout=timeout)
-                    logger.info(f"Collected {len(articles)} articles from RSS")
-                    saved = self.save_articles(articles)
-                    logger.info(f"Saved {saved} new articles to database")
-                    total_articles += saved
+                    articles = self.collect_from_rss(rss_url.strip(), max_articles=2, timeout=timeout)
+                    if articles:
+                        logger.info(f"Collected {len(articles)} articles from {source_name}")
+                        saved = self.save_articles(articles)
+                        logger.info(f"Saved {saved} new articles from {source_name}")
+                        total_articles += saved
+                        successful_sources += 1
+                    else:
+                        logger.warning(f"No articles collected from {source_name}")
+                        failed_sources += 1
                 except Exception as e:
-                    logger.error(f"Failed to collect from RSS {rss_url}: {e}")
+                    logger.error(f"Failed to collect from {source_name}: {e}")
+                    failed_sources += 1
                     # Continue with other feeds even if one fails
                     continue
             else:
-                logger.warning(f"Empty RSS URL found")
+                logger.warning(f"Empty RSS URL found at index {i}")
+                failed_sources += 1
         
         # Collect from NewsAPI
         if settings.NEWS_API_KEY:
             logger.info("Collecting from NewsAPI")
             try:
                 articles = self.collect_from_newsapi()
-                logger.info(f"Collected {len(articles)} articles from NewsAPI")
-                saved = self.save_articles(articles)
-                logger.info(f"Saved {saved} new articles from NewsAPI")
-                total_articles += saved
+                if articles:
+                    logger.info(f"Collected {len(articles)} articles from NewsAPI")
+                    saved = self.save_articles(articles)
+                    logger.info(f"Saved {saved} new articles from NewsAPI")
+                    total_articles += saved
+                    successful_sources += 1
+                else:
+                    logger.warning("No articles collected from NewsAPI")
+                    failed_sources += 1
             except Exception as e:
                 logger.error(f"Failed to collect from NewsAPI: {e}")
+                failed_sources += 1
                 # Continue even if NewsAPI fails
         else:
             logger.info("No NewsAPI key configured")
         
-        logger.info(f"Total articles collected: {total_articles}")
+        logger.info(f"Collection complete: {total_articles} total articles from {successful_sources} sources ({failed_sources} sources failed)")
         return total_articles

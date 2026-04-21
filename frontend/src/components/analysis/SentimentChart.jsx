@@ -30,11 +30,7 @@ const SentimentChart = ({ data, type = 'doughnut' }) => {
     );
   }
 
-  // Get current sentiment values
-  const currentData = data.positive?.current_percentage || 
-                     data.negative?.current_percentage || 
-                     data.neutral?.current_percentage;
-
+  
   const chartData = {
     labels: ['Positive', 'Negative', 'Neutral'],
     datasets: [

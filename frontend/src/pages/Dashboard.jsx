@@ -64,7 +64,6 @@ const Dashboard = () => {
 
   const {
     data: analysisStats,
-    isLoading: analysisLoading,
   } = useQuery('analysisStats', analysisService.getAnalysisStats, {
     staleTime: 10 * 60 * 1000,
   });
@@ -206,7 +205,7 @@ const Dashboard = () => {
                 <TrendChart 
                   data={Object.entries(sourceTrends?.source_trends || {})
                     .slice(0, 5)
-                    .map(([source, data]) => ({ name: source, value: data.total_articles }))}
+                    .map(([source, data]) => ({ name: source, value: data?.total_articles || 0 }))}
                   type="bar"
                 />
               )}
@@ -225,7 +224,7 @@ const Dashboard = () => {
               </Typography>
               {trends?.summary?.trending_topics?.length > 0 ? (
                 <Grid container spacing={2}>
-                  {trends.summary.trending_topics.slice(0, 6).map((topic, index) => (
+                  {(trends.summary?.trending_topics || []).slice(0, 6).map((topic, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                       <Card variant="outlined" sx={{ p: 2, height: '100%' }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>

@@ -20,6 +20,7 @@ class NewsArticleResponse(NewsArticleBase):
     sentiment_label: Optional[str] = None
     topics: Optional[str] = None
     category: Optional[str] = None
+    region: Optional[str] = None
     collected_date: datetime
     
     class Config:

@@ -10,7 +10,6 @@ import {
   Box,
   Alert,
   CircularProgress,
-  Paper,
   Fade,
   Slide,
   Avatar,
@@ -241,7 +240,7 @@ const Home = () => {
                       <Article sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-                      {stats.total_articles.toLocaleString()}
+                      {stats?.total_articles?.toLocaleString() || '0'}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Total Articles
@@ -269,7 +268,7 @@ const Home = () => {
                       <TrendingUp sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-                      {stats.recent_articles_24h}
+                      {stats?.recent_articles_24h || '0'}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Last 24 Hours

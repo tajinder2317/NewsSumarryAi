@@ -27,12 +27,27 @@ const NewsList = ({
   filters,
   onFilterChange,
   totalCount,
+  regions,
 }) => {
   const handleFilterChange = (filterType, value) => {
     if (onFilterChange) {
       onFilterChange(filterType, value);
     }
   };
+
+  // Error boundary fallback
+  if (error && !loading) {
+    return (
+      <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error || 'Error loading articles'}
+        </Alert>
+        <Button variant="outlined" onClick={onRefresh} startIcon={<Refresh />}>
+          Try Again
+        </Button>
+      </Box>
+    );
+  }
 
   const clearFilters = () => {
     if (onFilterChange) {
@@ -44,7 +59,7 @@ const NewsList = ({
     filters.source ||
     filters.category ||
     filters.sentiment ||
-    filters.query
+    filters.region
   );
 
   if (loading && articles.length === 0) {
@@ -112,6 +127,21 @@ const NewsList = ({
                     {source}
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Region</InputLabel>
+              <Select
+                value={filters.region || ''}
+                label="Region"
+                onChange={(e) => handleFilterChange('region', e.target.value || null)}
+              >
+                <MenuItem value="">All Regions</MenuItem>
+                <MenuItem value="Global">Global</MenuItem>
+                <MenuItem value="India">India</MenuItem>
+                <MenuItem value="US">United States</MenuItem>
+                <MenuItem value="UK">United Kingdom</MenuItem>
               </Select>
             </FormControl>
 

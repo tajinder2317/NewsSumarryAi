@@ -14,9 +14,9 @@ import {
   MenuItem,
   TextField,
   Chip,
-  Alert,
   CircularProgress,
   Divider,
+  Alert,
 } from '@mui/material';
 import {
   Analytics,
@@ -30,7 +30,6 @@ import {
 import { newsService, analysisService } from '../services/newsService';
 import Loading from '../components/common/Loading';
 import SentimentChart from '../components/analysis/SentimentChart';
-import TrendChart from '../components/analysis/TrendChart';
 
 const AnalysisPage = () => {
   const [selectedArticles, setSelectedArticles] = useState([]);
@@ -46,6 +45,10 @@ const AnalysisPage = () => {
     error: articlesError,
   } = useQuery('recentNews', () => newsService.fetchNews({ limit: 50 }), {
     staleTime: 5 * 60 * 1000,
+    retry: 2,
+    onError: (error) => {
+      console.error('Analysis articles fetch error:', error);
+    },
   });
 
   const {
@@ -152,6 +155,19 @@ const AnalysisPage = () => {
 
   if (articlesLoading) {
     return <Loading message="Loading articles for analysis..." />;
+  }
+
+  if (articlesError) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Error loading articles: {articlesError.message}
+        </Alert>
+        <Button variant="outlined" onClick={() => window.location.reload()}>
+          Refresh Page
+        </Button>
+      </Container>
+    );
   }
 
   return (
@@ -329,14 +345,14 @@ const AnalysisPage = () => {
                     Sentiment Analysis
                   </Typography>
                   <SentimentChart data={{
-                    positive: { current_percentage: sentimentResult.positive * 100 },
-                    negative: { current_percentage: sentimentResult.negative * 100 },
-                    neutral: { current_percentage: sentimentResult.neutral * 100 },
+                    positive: { current_percentage: (sentimentResult?.positive || 0) * 100 },
+                    negative: { current_percentage: (sentimentResult?.negative || 0) * 100 },
+                    neutral: { current_percentage: (sentimentResult?.neutral || 0) * 100 },
                   }} />
                   <Box sx={{ mt: 2 }}>
-                    <Chip label={`Positive: ${(sentimentResult.positive * 100).toFixed(1)}%`} color="success" sx={{ mr: 1 }} />
-                    <Chip label={`Negative: ${(sentimentResult.negative * 100).toFixed(1)}%`} color="error" sx={{ mr: 1 }} />
-                    <Chip label={`Neutral: ${(sentimentResult.neutral * 100).toFixed(1)}%`} color="default" />
+                    <Chip label={`Positive: ${((sentimentResult?.positive || 0) * 100).toFixed(1)}%`} color="success" sx={{ mr: 1 }} />
+                    <Chip label={`Negative: ${((sentimentResult?.negative || 0) * 100).toFixed(1)}%`} color="error" sx={{ mr: 1 }} />
+                    <Chip label={`Neutral: ${((sentimentResult?.neutral || 0) * 100).toFixed(1)}%`} color="default" />
                   </Box>
                 </Box>
               )}
@@ -347,10 +363,10 @@ const AnalysisPage = () => {
                     Topic Analysis
                   </Typography>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Dominant Topic: <strong>{topicsResult.dominant_topic}</strong>
+                    Dominant Topic: <strong>{topicsResult?.domant_topic || 'Unknown'}</strong>
                   </Typography>
                   <Grid container spacing={2}>
-                    {topicsResult.topics?.slice(0, 3).map((topic, index) => (
+                    {(topicsResult?.topics || []).slice(0, 3).map((topic, index) => (
                       <Grid item xs={12} sm={4} key={index}>
                         <Card variant="outlined">
                           <CardContent>
@@ -361,7 +377,7 @@ const AnalysisPage = () => {
                               {topic.label}
                             </Typography>
                             <Box sx={{ mt: 1 }}>
-                              {topic.words?.slice(0, 3).map((word, wordIndex) => (
+                              {(topic.words || []).slice(0, 3).map((word, wordIndex) => (
                                 <Chip
                                   key={wordIndex}
                                   label={word}

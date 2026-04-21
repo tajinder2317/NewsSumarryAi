@@ -1,15 +1,15 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Container, AppBar, Toolbar, Typography, Box } from '@mui/material';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import { Container } from "@mui/material";
+import { QueryClientProvider, QueryClient } from "react-query";
 
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Analysis from './pages/Analysis';
-import Search from './pages/Search';
-import News from './pages/News';
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import Analysis from "./pages/Analysis";
+import Search from "./pages/Search";
+import News from "./pages/News";
 
 const queryClient = new QueryClient({
   defaultOptions: {

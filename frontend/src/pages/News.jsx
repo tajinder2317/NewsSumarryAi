@@ -4,24 +4,20 @@ import {
   Container,
   Typography,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Button,
   Alert,
 } from '@mui/material';
-import { Refresh, FilterList } from '@mui/icons-material';
+import { Refresh } from '@mui/icons-material';
 
 import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';
-import Loading from '../components/common/Loading';
 
 const NewsPage = () => {
   const [filters, setFilters] = useState({
     source: '',
     category: '',
     sentiment: '',
+    region: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 20;
@@ -39,9 +35,14 @@ const NewsPage = () => {
       limit,
       source: filters.source || undefined,
       category: filters.category || undefined,
+      region: filters.region || undefined,
     }),
     {
       keepPreviousData: true,
+      retry: 2,
+      onError: (error) => {
+        console.error('News fetch error:', error);
+      },
     }
   );
 
@@ -111,6 +112,7 @@ const NewsPage = () => {
           ...filters,
           availableSources: sources?.sources || [],
           availableCategories: categories?.categories || [],
+          regions: ['Global', 'India', 'US', 'UK'],
         }}
         onFilterChange={handleFilterChange}
       />

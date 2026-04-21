@@ -13,7 +13,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  DatePicker,
   Alert,
   Chip,
 } from '@mui/material';
@@ -22,7 +21,6 @@ import moment from 'moment';
 
 import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';
-import Loading from '../components/common/Loading';
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useState({
@@ -53,14 +51,12 @@ const SearchPage = () => {
 
   const {
     data: sources,
-    isLoading: sourcesLoading,
   } = useQuery('newsSources', newsService.getSources, {
     staleTime: 30 * 60 * 1000, // 30 minutes
   });
 
   const {
     data: categories,
-    isLoading: categoriesLoading,
   } = useQuery('newsCategories', newsService.getCategories, {
     staleTime: 30 * 60 * 1000,
   });

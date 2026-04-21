@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from datetime import datetime
 import uvicorn
 import logging
 import os
@@ -10,15 +11,24 @@ from .config import settings
 from .models import get_db, create_tables
 from .api import news, analysis, trends
 
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, settings.LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(settings.LOG_FILE),
-        logging.StreamHandler()
-    ]
-)
+# Configure logging for serverless deployment
+if os.getenv("VERCEL"):
+    # Serverless environment - only use console logging
+    logging.basicConfig(
+        level=getattr(logging, settings.LOG_LEVEL),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
+else:
+    # Local development - use both file and console logging
+    logging.basicConfig(
+        level=getattr(logging, settings.LOG_LEVEL),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(settings.LOG_FILE),
+            logging.StreamHandler()
+        ]
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +44,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # React dev server
+    allow_origins=["*"],  # Allow all origins for Vercel deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,13 +60,27 @@ async def startup_event():
     """Initialize database and other startup tasks"""
     logger.info("Starting News Analyzer AI...")
     
-    # Create data directory if it doesn't exist
-    os.makedirs(os.path.dirname(settings.LOG_FILE), exist_ok=True)
-    os.makedirs(os.path.dirname(settings.DATABASE_URL.replace("sqlite:///", "")), exist_ok=True)
-    
-    # Create database tables
-    create_tables()
-    logger.info("Database tables created successfully")
+    try:
+        # For serverless deployment, handle database initialization differently
+        if os.getenv("VERCEL"):
+            # In serverless, create database on-demand
+            logger.info("Serverless deployment detected - database will be created on demand")
+        else:
+            # Create data directory if it doesn't exist
+            log_dir = os.path.dirname(settings.LOG_FILE)
+            if log_dir:
+                os.makedirs(log_dir, exist_ok=True)
+            
+            db_dir = os.path.dirname(settings.DATABASE_URL.replace("sqlite:///", ""))
+            if db_dir and db_dir != '.':
+                os.makedirs(db_dir, exist_ok=True)
+            
+            # Create database tables
+            create_tables()
+            logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.error(f"Startup error: {e}")
+        # Don't fail startup, log the error and continue
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -70,13 +94,14 @@ async def root():
         "message": "News Analyzer AI API",
         "version": "1.0.0",
         "docs": "/docs",
-        "status": "running"
+        "status": "running",
+        "environment": "serverless" if os.getenv("VERCEL") else "local"
     }
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "message": "Service is running"}
+    return {"status": "healthy", "timestamp": str(datetime.utcnow())}
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):

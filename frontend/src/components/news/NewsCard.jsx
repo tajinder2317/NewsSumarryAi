@@ -9,7 +9,6 @@ import {
   Button,
   IconButton,
   Tooltip,
-  Paper,
   Fade,
   Avatar,
 } from '@mui/material';
@@ -217,27 +216,41 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
           </Box>
 
           {/* Topics if available */}
-          {article.topics && Array.isArray(JSON.parse(article.topics || '[]')) && JSON.parse(article.topics || '[]').length > 0 && (
+          {(() => {
+            try {
+              const topics = JSON.parse(article.topics || '[]');
+              return topics && Array.isArray(topics) && topics.length > 0;
+            } catch (e) {
+              return false;
+            }
+          })() && (
             <Box sx={{ mb: 2 }}>
               <Typography variant="caption" color="text.secondary" sx={{ mr: 1, fontWeight: 500 }}>
                 Topics:
               </Typography>
-              {JSON.parse(article.topics || '[]').slice(0, 3).map((topic, index) => (
-                <Chip
-                  key={index}
-                  label={topic}
-                  size="small"
-                  variant="filled"
-                  sx={{
-                    mr: 0.5,
-                    mb: 0.5,
-                    bgcolor: 'grey.100',
-                    color: 'text.secondary',
-                    fontSize: '0.7rem',
-                    height: 20
-                  }}
-                />
-              ))}
+              {(() => {
+                try {
+                  const topics = JSON.parse(article.topics || '[]');
+                  return topics.slice(0, 3).map((topic, index) => (
+                    <Chip
+                      key={index}
+                      label={topic}
+                      size="small"
+                      variant="filled"
+                      sx={{
+                        mr: 0.5,
+                        mb: 0.5,
+                        bgcolor: 'grey.100',
+                        color: 'text.secondary',
+                        fontSize: '0.7rem',
+                        height: 20
+                      }}
+                    />
+                  ));
+                } catch (e) {
+                  return null;
+                }
+              })()}
             </Box>
           )}
         </CardContent>
