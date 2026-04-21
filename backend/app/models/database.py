@@ -67,6 +67,36 @@ except Exception as e:
 # Global variable to track if tables are created
 _tables_created = False
 
+def _ensure_news_articles_schema(db):
+    """
+    Best-effort schema fixups for existing databases.
+
+    This repo doesn't use Alembic migrations, but the deployed DB may already exist
+    (e.g., SQLite file) with an older schema. Ensure required columns exist so ORM
+    queries don't crash at runtime.
+    """
+    try:
+        bind = db.get_bind()
+        dialect = getattr(bind, "dialect", None)
+        dialect_name = getattr(dialect, "name", "")
+
+        if dialect_name == "sqlite":
+            cols = db.execute(text("PRAGMA table_info(news_articles)")).fetchall()
+            col_names = {c[1] for c in cols}  # (cid, name, type, notnull, dflt_value, pk)
+            if "region" not in col_names:
+                db.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
+                db.commit()
+        else:
+            # Postgres supports IF NOT EXISTS; MySQL may not in all versions.
+            db.execute(text("ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS region VARCHAR"))
+            db.commit()
+    except Exception:
+        # Ignore any failure (already exists, permissions, unsupported SQL, race, etc.).
+        try:
+            db.rollback()
+        except Exception:
+            pass
+
 def get_db():
     global _tables_created
     # Create tables on first database access
@@ -87,6 +117,7 @@ def get_db():
         return
 
     try:
+        _ensure_news_articles_schema(db)
         yield db
     finally:
         db.close()
