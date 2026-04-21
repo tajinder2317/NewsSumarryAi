@@ -103,6 +103,11 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "timestamp": str(datetime.utcnow())}
 
+@app.get("/api/health")
+async def health_check_api():
+    """Health check endpoint under /api for Vercel routing setups"""
+    return {"status": "healthy", "timestamp": str(datetime.utcnow())}
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     """Global exception handler"""

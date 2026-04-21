@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, timedelta
-import os
 
 from ..models import get_db, NewsArticle
 from ..services.trend_detector_simple import TrendDetector
@@ -15,8 +14,8 @@ async def get_trending_topics(
     db: Session = Depends(get_db)
 ):
     """Get trending topics from recent articles"""
-    # Use mock data in serverless environment
-    if os.getenv("VERCEL") or db is None:
+    # Use mock data when DB is unavailable
+    if db is None:
         return {
             "trending_topics": [
                 {"topic_name": "Artificial Intelligence", "article_count": 3, "top_terms": ["AI", "technology", "innovation"]},

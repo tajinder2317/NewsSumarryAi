@@ -7,8 +7,9 @@ class Settings:
     # Database
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/database.db")
     
-    # For Vercel serverless deployment, use file-based SQLite
-    if os.getenv("VERCEL"):
+    # On Vercel, prefer a real external database if provided.
+    # (A local SQLite file/in-memory DB will not persist between invocations.)
+    if os.getenv("VERCEL") and not os.getenv("DATABASE_URL"):
         DATABASE_URL = "sqlite:///./database.db"
     
     # API

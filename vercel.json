@@ -9,14 +9,14 @@
       }
     },
     {
-      "src": "backend/api/simple_handler.py",
+      "src": "backend/api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/api/simple_handler.py"
+      "dest": "/backend/api/index.py"
     },
     {
       "src": "/(.*)",
@@ -25,6 +25,6 @@
   ],
   "env": {
     "PYTHON_VERSION": "3.12",
-    "REACT_APP_API_URL": "https://news-sumarry-ai-backend.vercel.app/api"
+    "REACT_APP_API_URL": "https://news-sumarry-ai-backend.vercel.app"
   }
 }

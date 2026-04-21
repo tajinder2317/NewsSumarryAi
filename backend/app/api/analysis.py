@@ -20,8 +20,8 @@ async def analyze_sentiment(
     db: Session = Depends(get_db)
 ):
     """Analyze sentiment for specified articles"""
-    # Use mock analysis in serverless environment
-    if os.getenv("VERCEL") or db is None:
+    # Use mock analysis when DB is unavailable
+    if db is None:
         return {
             "positive": 0.6,
             "negative": 0.1,
@@ -81,8 +81,8 @@ async def analyze_topics(
     db: Session = Depends(get_db)
 ):
     """Extract topics from specified articles"""
-    # Use mock analysis in serverless environment
-    if os.getenv("VERCEL") or db is None:
+    # Use mock analysis when DB is unavailable
+    if db is None:
         return {
             "topics": [
                 {"topic_id": 0, "label": "Artificial Intelligence", "words": ["AI", "technology", "innovation"]},
@@ -137,8 +137,8 @@ async def summarize_articles(
     db: Session = Depends(get_db)
 ):
     """Summarize specified articles"""
-    # Use mock analysis in serverless environment
-    if os.getenv("VERCEL") or db is None:
+    # Use mock analysis when DB is unavailable
+    if db is None:
         article_ids = request.get("article_ids", [])
         max_sentences = request.get("max_sentences", 3)
         
@@ -206,8 +206,8 @@ async def extract_keywords(
     db: Session = Depends(get_db)
 ):
     """Extract keywords from specified articles"""
-    # Use mock analysis in serverless environment
-    if os.getenv("VERCEL") or db is None:
+    # Use mock analysis when DB is unavailable
+    if db is None:
         return {
             "keywords": {
                 "artificial intelligence": 5,
@@ -290,8 +290,8 @@ async def categorize_articles(
 @router.get("/statistics")
 def get_analysis_statistics(db: Session = Depends(get_db)):
     """Get analysis statistics"""
-    # Use mock statistics in serverless environment
-    if os.getenv("VERCEL") or db is None:
+    # Use mock statistics when DB is unavailable
+    if db is None:
         return {
             "total_articles": 9,
             "analyzed_articles": 9,

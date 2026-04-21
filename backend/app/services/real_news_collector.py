@@ -95,6 +95,27 @@ class RealNewsCollector:
                 'region': 'India'
             }
         ]
+
+    def collect_articles(self, timeout: int = 30, max_articles_per_feed: int = 3) -> List[Dict[str, Any]]:
+        """Collect articles from all configured RSS feeds and return raw article dicts."""
+        all_articles: List[Dict[str, Any]] = []
+
+        logger.info(f"Starting news collection from {len(self.rss_feeds)} sources")
+
+        for feed_info in self.rss_feeds:
+            try:
+                articles = self.fetch_feed_articles(
+                    feed_info,
+                    max_articles=max_articles_per_feed,
+                    request_timeout=timeout,
+                )
+                all_articles.extend(articles)
+            except Exception as e:
+                logger.error(f"Failed to collect from {feed_info['name']}: {e}")
+                continue
+
+        logger.info(f"Collected {len(all_articles)} articles total")
+        return all_articles
     
     def clean_html(self, html_content: str) -> str:
         """Remove HTML tags and clean text"""
@@ -130,7 +151,12 @@ class RealNewsCollector:
         
         return content[:max_length] + "..." if len(content) > max_length else content
     
-    def fetch_feed_articles(self, feed_info: Dict[str, Any], max_articles: int = 5) -> List[Dict[str, Any]]:
+    def fetch_feed_articles(
+        self,
+        feed_info: Dict[str, Any],
+        max_articles: int = 5,
+        request_timeout: int = 10,
+    ) -> List[Dict[str, Any]]:
         """Fetch articles from a single RSS feed"""
         articles = []
         
@@ -138,7 +164,7 @@ class RealNewsCollector:
             logger.info(f"Fetching from {feed_info['name']}")
             
             # Fetch RSS feed with timeout
-            response = self.session.get(feed_info['url'], timeout=10)
+            response = self.session.get(feed_info['url'], timeout=request_timeout)
             response.raise_for_status()
             
             # Parse RSS feed
@@ -206,24 +232,13 @@ class RealNewsCollector:
         return articles
     
     def collect_all_sources(self, timeout: int = 30) -> int:
-        """Collect news from all RSS feeds"""
-        all_articles = []
-        
-        logger.info(f"Starting news collection from {len(self.rss_feeds)} sources")
-        
-        for feed_info in self.rss_feeds:
-            try:
-                articles = self.fetch_feed_articles(feed_info, max_articles=3)  # Limit per feed for speed
-                all_articles.extend(articles)
-                
-            except Exception as e:
-                logger.error(f"Failed to collect from {feed_info['name']}: {e}")
-                continue
-        
-        # Store articles in the article store
+        """Collect news from all RSS feeds and store in the in-memory article store."""
+        all_articles = self.collect_articles(timeout=timeout, max_articles_per_feed=3)
         new_articles_count = article_store.store_articles(all_articles)
-        
-        logger.info(f"Collection completed. Total articles stored: {len(article_store.articles)}, New articles: {new_articles_count}")
+
+        logger.info(
+            f"Collection completed. Total articles stored: {len(article_store.articles)}, New articles: {new_articles_count}"
+        )
         return new_articles_count
     
     def get_sample_articles(self) -> List[Dict[str, Any]]:

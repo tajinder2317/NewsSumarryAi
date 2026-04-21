@@ -1,6 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Float, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Float, Boolean, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine.url import make_url
 from datetime import datetime
 import os
 from ..config import settings
@@ -19,6 +20,7 @@ class NewsArticle(Base):
     author = Column(String)
     published_date = Column(DateTime, index=True)  # Add index for date ordering
     collected_date = Column(DateTime, default=datetime.utcnow)
+    region = Column(String, index=True)
     
     # Analysis fields
     sentiment_score = Column(Float)
@@ -42,11 +44,17 @@ class AnalysisResult(Base):
 
 # Database setup - handle serverless environment
 try:
-    # For serverless deployment, use in-memory SQLite
-    if os.getenv("VERCEL"):
-        engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
-    else:
-        engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
+    url = make_url(settings.DATABASE_URL)
+
+    connect_args = {}
+    if url.drivername.startswith("sqlite"):
+        connect_args = {"check_same_thread": False}
+
+    engine = create_engine(
+        settings.DATABASE_URL,
+        connect_args=connect_args,
+        pool_pre_ping=True,
+    )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 except Exception as e:
     import logging
@@ -82,6 +90,18 @@ def get_db():
 def create_tables():
     try:
         Base.metadata.create_all(bind=engine)
+
+        # Lightweight schema patching for existing databases (no Alembic in this repo).
+        # Add `region` column if the table already exists without it.
+        try:
+            with engine.begin() as conn:
+                if engine.dialect.name == "sqlite":
+                    conn.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
+                else:
+                    conn.execute(text("ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS region VARCHAR"))
+        except Exception:
+            # Column already exists or dialect doesn't support IF NOT EXISTS.
+            pass
     except Exception as e:
         import logging
         logger = logging.getLogger(__name__)

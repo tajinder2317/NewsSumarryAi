@@ -14,11 +14,8 @@ from ..models.mock_data import (
     get_mock_articles, get_mock_article_by_id, get_mock_sources, 
     get_mock_categories, get_mock_stats
 )
-# from ..services import NewsCollector  # Commented out to avoid import issues
-# from ..services.real_news_collector import RealNewsCollector  # Commented out to avoid import issues
 from ..services.article_store import article_store
 from ..config import settings
-import os
 
 router = APIRouter()
 
@@ -32,9 +29,9 @@ async def get_news(
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
-    # Use article store in serverless environment or when database fails
-    if os.getenv("VERCEL") or db is None:
-        logger.info("Using article store for serverless deployment")
+    # Use article store when database fails/unavailable
+    if db is None:
+        logger.info("Database unavailable; using article store fallback")
         
         # Ensure article store is initialized with sample data
         if len(article_store.articles) == 0:
@@ -63,6 +60,9 @@ async def get_news(
         
         if category:
             query = query.filter(NewsArticle.category == category)
+
+        if region:
+            query = query.filter(NewsArticle.region == region)
         
         # Order and limit for better performance
         articles = query.order_by(NewsArticle.published_date.desc()).offset(skip).limit(limit).all()
@@ -76,9 +76,9 @@ async def get_news(
 @router.get("/{article_id}", response_model=NewsArticleResponse)
 async def get_article(article_id: int, db: Session = Depends(get_db)):
     """Get a specific news article by ID"""
-    # Use article store in serverless environment or when database fails
-    if os.getenv("VERCEL") or db is None:
-        logger.info("Using article store for article retrieval")
+    # Use article store when database fails/unavailable
+    if db is None:
+        logger.info("Database unavailable; using article store for article retrieval")
         article = article_store.get_article_by_id(article_id)
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
@@ -100,110 +100,75 @@ async def get_article(article_id: int, db: Session = Depends(get_db)):
 @router.post("/collect")
 async def collect_news(
     timeout: int = Query(5, ge=3, le=15, description="Timeout in seconds for RSS feed collection"),
+    max_per_source: int = Query(3, ge=1, le=20, description="Max articles to fetch per RSS source"),
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""
-    # Use article store in serverless environment
-    if os.getenv("VERCEL"):
-        logger.info("Using article store for news collection in serverless deployment")
-        try:
-            # Import RealNewsCollector only when needed
-            from ..services.real_news_collector import RealNewsCollector
-            collector = RealNewsCollector()
-            collected_count = collector.collect_all_sources(timeout=timeout)
-            
-            return {
-                "message": f"Successfully collected {collected_count} articles from real RSS feeds!",
-                "collected_count": collected_count,
-                "total_articles": collected_count,
-                "articles_processed": collected_count,
-                "timeout": False
-            }
-        except Exception as e:
-            logger.error(f"Real news collection failed: {e}")
-            # Fallback to sample articles
-            return {
-                "message": "Real news collection encountered issues. Sample articles are now available.",
-                "collected_count": 5,
-                "total_articles": 5,
-                "articles_processed": 5,
-                "timeout": False
-            }
-    
-    # Handle database errors gracefully
-    if db is None:
-        logger.error("Database connection failed for news collection")
-        return {
-            "message": "Database connection failed. Please try again later.",
-            "collected_count": 0,
-            "total_articles": 0,
-            "articles_processed": 0,
-            "timeout": False,
-            "error": "database_error"
-        }
-    
+    from ..services.real_news_collector import RealNewsCollector
+
     try:
-        import asyncio
-        from concurrent.futures import ThreadPoolExecutor
-        
-        collector = NewsCollector()
-        
-        # Get total articles before collection
-        try:
-            total_before = db.query(NewsArticle).count()
-        except Exception as e:
-            logger.error(f"Error counting articles before collection: {e}")
-            total_before = 0
-        
-        # Run collection in a separate thread with timeout
-        loop = asyncio.get_event_loop()
-        
-        def collect_with_timeout():
-            return collector.collect_all_sources(timeout=timeout)
-        
-        try:
-            collected_count = await asyncio.wait_for(
-                loop.run_in_executor(ThreadPoolExecutor(max_workers=1), collect_with_timeout),
-                timeout=timeout + 2  # Small buffer for API processing
-            )
-        except asyncio.TimeoutError:
-            logger.error(f"News collection timed out after {timeout + 2} seconds")
+        collector = RealNewsCollector()
+        articles = collector.collect_articles(timeout=timeout, max_articles_per_feed=max_per_source)
+
+        # If no DB is available, at least keep data in-memory for the session.
+        if db is None:
+            collected_count = article_store.store_articles(articles)
             return {
-                "message": f"News collection timed out after {timeout} seconds. Please try again with a longer timeout or check your internet connection.",
-                "collected_count": 0,
-                "total_articles": total_before,
-                "articles_processed": 0,
-                "timeout": True
+                "message": f"Collected {collected_count} articles into in-memory store (no database configured).",
+                "collected_count": collected_count,
+                "total_articles": len(article_store.articles),
+                "articles_processed": len(articles),
+                "timeout": False,
+                "storage": "memory"
             }
-        
-        # Get total articles after collection
+
+        total_before = db.query(NewsArticle).count()
+
+        urls = [a.get("url") for a in articles if a.get("url")]
+        existing_urls = set()
+        if urls:
+            existing_urls = {
+                row[0] for row in db.query(NewsArticle.url).filter(NewsArticle.url.in_(urls)).all()
+            }
+
+        new_count = 0
+        for a in articles:
+            url = a.get("url")
+            if not url or url in existing_urls:
+                continue
+
+            article = NewsArticle(
+                title=a.get("title") or "Untitled",
+                content=a.get("content") or "",
+                summary=a.get("summary"),
+                url=url,
+                source=a.get("source") or "Unknown",
+                author=a.get("author"),
+                published_date=a.get("published_date"),
+                collected_date=a.get("collected_date"),
+                category=a.get("category"),
+                region=a.get("region"),
+                sentiment_score=a.get("sentiment_score"),
+                sentiment_label=a.get("sentiment_label"),
+                topics=a.get("topics"),
+            )
+            db.add(article)
+            new_count += 1
+
+        db.commit()
+
         total_after = db.query(NewsArticle).count()
-        articles_processed = total_after - total_before
-        
-        if collected_count == 0 and articles_processed > 0:
-            message = f"Processed {articles_processed} articles from RSS feeds, but all were already in database"
-        elif collected_count > 0:
-            message = f"Successfully collected {collected_count} new articles (processed {articles_processed} total)"
-        else:
-            message = f"No new articles found. {total_after} articles already in database"
-        
         return {
-            "message": message,
-            "collected_count": collected_count,
+            "message": f"Collected {new_count} new articles (processed {len(articles)}).",
+            "collected_count": new_count,
             "total_articles": total_after,
-            "articles_processed": articles_processed,
-            "timeout": False
+            "articles_processed": len(articles),
+            "timeout": False,
+            "storage": "database"
         }
     except Exception as e:
         logger.error(f"Error in collect_news: {e}")
-        # Fallback to mock response
-        return {
-            "message": "Mock news collection completed successfully. 5 sample articles are now available.",
-            "collected_count": 5,
-            "total_articles": 5,
-            "articles_processed": 5,
-            "timeout": False
-        }
+        raise HTTPException(status_code=500, detail=f"News collection failed: {str(e)}")
 
 @router.post("/search", response_model=List[NewsArticleResponse])
 async def search_news(
@@ -211,6 +176,22 @@ async def search_news(
     db: Session = Depends(get_db)
 ):
     """Search news articles with various filters"""
+    if db is None:
+        # Minimal in-memory search fallback
+        results = article_store.get_articles(
+            limit=search_request.limit,
+            skip=search_request.offset,
+            source=search_request.source,
+            category=search_request.category,
+        )
+        if search_request.query:
+            q = search_request.query.lower()
+            results = [
+                a for a in results
+                if q in (a.get("title", "").lower()) or q in (a.get("content", "").lower())
+            ]
+        return results
+
     query = db.query(NewsArticle)
     
     # Text search
@@ -247,9 +228,9 @@ async def search_news(
 @router.get("/sources/list")
 async def get_news_sources(db: Session = Depends(get_db)):
     """Get list of all news sources"""
-    # Use article store in serverless environment or when database fails
-    if os.getenv("VERCEL") or db is None:
-        logger.info("Using article store for sources")
+    # Use article store when database fails/unavailable
+    if db is None:
+        logger.info("Database unavailable; using article store for sources")
         return {"sources": article_store.get_sources()}
     
     try:
@@ -263,9 +244,9 @@ async def get_news_sources(db: Session = Depends(get_db)):
 @router.get("/categories/list")
 async def get_news_categories(db: Session = Depends(get_db)):
     """Get list of all news categories"""
-    # Use article store in serverless environment or when database fails
-    if os.getenv("VERCEL") or db is None:
-        logger.info("Using article store for categories")
+    # Use article store when database fails/unavailable
+    if db is None:
+        logger.info("Database unavailable; using article store for categories")
         return {"categories": article_store.get_categories()}
     
     try:
@@ -279,9 +260,9 @@ async def get_news_categories(db: Session = Depends(get_db)):
 @router.get("/stats/summary")
 async def get_news_stats(db: Session = Depends(get_db)):
     """Get news statistics summary"""
-    # Use article store in serverless environment or when database fails
-    if os.getenv("VERCEL") or db is None:
-        logger.info("Using article store for stats")
+    # Use article store when database fails/unavailable
+    if db is None:
+        logger.info("Database unavailable; using article store for stats")
         return article_store.get_stats()
     
     try:

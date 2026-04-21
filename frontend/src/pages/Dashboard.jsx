@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import {
   Container,
   Typography,
@@ -72,6 +72,15 @@ const Dashboard = () => {
     refetchStats();
   };
 
+  const {
+    mutate: collectNews,
+    isLoading: collecting,
+  } = useMutation(() => newsService.collectNews(), {
+    onSuccess: () => {
+      refetchStats();
+    },
+  });
+
   if (statsLoading || trendsLoading) {
     return <Loading message="Loading dashboard..." />;
   }
@@ -103,6 +112,13 @@ const Dashboard = () => {
             disabled={statsLoading}
           >
             Refresh
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => collectNews()}
+            disabled={collecting}
+          >
+            {collecting ? 'Collecting…' : 'Collect News'}
           </Button>
         </Box>
       </Box>

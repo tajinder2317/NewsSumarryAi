@@ -231,5 +231,5 @@ def initialize_article_store():
         print(f"Error initializing article store: {e}")
         # Don't fail startup, just log the error
 
-# Initialize on import
-initialize_article_store()
+# Do not auto-initialize on import. Endpoints will call `initialize_article_store()`
+# only when the DB is unavailable and the in-memory store is needed.
