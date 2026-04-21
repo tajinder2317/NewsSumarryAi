@@ -8,29 +8,15 @@ export const newsService = {
       const response = await newsAPI.getNews(params);
       console.log("News API response:", response);
 
-      // Handle different response formats
-      if (response && typeof response === "object") {
-        // If response is an array, it's the articles directly
-        if (Array.isArray(response)) {
-          return { articles: response };
-        }
-        // If response has data property, use that
-        if (response.data) {
-          if (Array.isArray(response.data)) {
-            return { articles: response.data };
-          }
-          return response.data;
-        }
-        // If response has articles property, use that
-        if (response.articles) {
-          return { articles: response.articles };
-        }
-        // Otherwise, return the response as articles
+      // Simple response handling - just return what we get
+      if (response && response.data) {
+        return { articles: response.data };
+      } else if (response && Array.isArray(response)) {
         return { articles: response };
-      } else if (response && typeof response === "string") {
-        return { message: response };
+      } else if (response && response.articles) {
+        return { articles: response.articles };
       } else {
-        console.warn("Unexpected API response format:", response);
+        console.warn("Unexpected response format:", response);
         return { articles: [] };
       }
     } catch (error) {

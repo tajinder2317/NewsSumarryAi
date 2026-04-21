@@ -82,7 +82,7 @@ export const newsAPI = {
   
   // Get news categories
   getCategories: () => {
-    return api.get('/api/v1/news/categories/list');
+    return api.get('/api/v1/news/categories');
   },
   
   // Get news statistics

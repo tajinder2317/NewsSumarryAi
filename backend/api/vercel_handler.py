@@ -28,6 +28,24 @@ def handler(request):
                     'category': 'Technology'
                 }
             ]
+        elif '/api/v1/news/sources' in path:
+            response_data = [
+                'BBC News',
+                'CNN',
+                'Reuters',
+                'TechCrunch',
+                'The Guardian'
+            ]
+        elif '/api/v1/news/categories' in path:
+            response_data = [
+                'Technology',
+                'Business',
+                'Sports',
+                'Health',
+                'Entertainment',
+                'Science',
+                'Politics'
+            ]  # Added missing closing bracket
         elif '/api/v1/news/stats/summary' in path:
             response_data = {
                 'total_articles': 156,

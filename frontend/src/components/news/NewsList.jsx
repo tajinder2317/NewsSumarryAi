@@ -112,7 +112,7 @@ const NewsList = ({
           <Typography variant="h6" gutterBottom>
             Filters
           </Typography>
-          
+
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Source</InputLabel>
@@ -122,7 +122,7 @@ const NewsList = ({
                 onChange={(e) => handleFilterChange('source', e.target.value || null)}
               >
                 <MenuItem value="">All Sources</MenuItem>
-                {filters.availableSources?.map((source) => (
+                {filters.availableSources && filters.availableSources.map((source) => (
                   <MenuItem key={source} value={source}>
                     {source}
                   </MenuItem>
@@ -153,7 +153,7 @@ const NewsList = ({
                 onChange={(e) => handleFilterChange('category', e.target.value || null)}
               >
                 <MenuItem value="">All Categories</MenuItem>
-                {filters.availableCategories?.map((category) => (
+                {filters.availableCategories && filters.availableCategories.map((category) => (
                   <MenuItem key={category} value={category}>
                     {category}
                   </MenuItem>
@@ -225,7 +225,7 @@ const NewsList = ({
             ? `Showing ${articles.length} of ${totalCount} articles`
             : `${articles.length} articles`}
         </Typography>
-        
+
         {onRefresh && (
           <Button
             variant="outlined"
