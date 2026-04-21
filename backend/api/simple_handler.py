@@ -1,12 +1,30 @@
 import json
+from urllib.parse import parse_qs
 
-def handler(request):
+def handler(environ, start_response):
     """
-    Simple Vercel serverless handler for News API
+    Vercel serverless handler for News API - uses WSGI interface
     """
     try:
-        # Get the request path
-        path = request.url if hasattr(request, 'url') else str(request)
+        # Get request method and path
+        method = environ.get('REQUEST_METHOD', 'GET')
+        path = environ.get('PATH_INFO', '/')
+        query_string = environ.get('QUERY_STRING', '')
+        
+        # Parse query parameters
+        query_params = {}
+        if query_string:
+            query_params = parse_qs(query_string)
+            # Convert lists to single values
+            query_params = {k: v[0] if len(v) == 1 else v for k, v in query_params.items()}
+        
+        # Get request body for POST requests
+        content_length = environ.get('CONTENT_LENGTH')
+        body = b''
+        if method in ['POST', 'PUT', 'PATCH'] and content_length:
+            wsgi_input = environ.get('wsgi.input')
+            if wsgi_input:
+                body = wsgi_input.read(int(content_length))
         
         # Simple routing with mock data
         if '/api/health' in path:
@@ -90,25 +108,26 @@ def handler(request):
         else:
             response_data = {'message': 'API endpoint not found', 'path': path}
         
-        # Return JSON response with CORS headers
-        return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-            },
-            'body': json.dumps(response_data)
-        }
+        # Convert to JSON
+        response_body = json.dumps(response_data).encode('utf-8')
+        
+        # Start response with WSGI interface
+        start_response('200 OK', [
+            ('Content-Type', 'application/json'),
+            ('Content-Length', str(len(response_body))),
+            ('Access-Control-Allow-Origin', '*'),
+            ('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'),
+            ('Access-Control-Allow-Headers', 'Content-Type, Authorization'),
+        ])
+        
+        return [response_body]
         
     except Exception as e:
         # Error response
-        return {
-            'statusCode': 500,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body': json.dumps({'error': str(e)})
-        }
+        error_body = json.dumps({'error': str(e)}).encode('utf-8')
+        start_response('500 Internal Server Error', [
+            ('Content-Type', 'application/json'),
+            ('Content-Length', str(len(error_body))),
+            ('Access-Control-Allow-Origin', '*'),
+        ])
+        return [error_body]

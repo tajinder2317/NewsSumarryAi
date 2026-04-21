@@ -19,7 +19,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # Import the simple API handler
-from api.simple_handler import handler as api_handler
+from api.simple_handler import handler
 
 # Export the handler for Vercel
-handler = api_handler
+app = handler

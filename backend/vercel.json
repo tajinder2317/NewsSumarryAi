@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/simple_handler.py"
+      "dest": "api/simple_handler.py"
     }
   ],
   "env": {
