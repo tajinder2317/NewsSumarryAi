@@ -9,14 +9,14 @@
       }
     },
     {
-      "src": "backend/api/vercel_handler.py",
+      "src": "backend/api/simple_handler.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/api/index.py"
+      "dest": "/backend/api/simple_handler.py"
     },
     {
       "src": "/(.*)",
