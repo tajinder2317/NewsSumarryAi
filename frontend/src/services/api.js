@@ -17,6 +17,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error('API Request Error:', error);
     return Promise.reject(error);
   }
 );
@@ -24,10 +25,20 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
+    console.log('API Response:', response.status, response.data);
     return response;
   },
   (error) => {
-    console.error('API Error:', error.response?.data || error.message);
+    console.error('API Response Error:', error.response?.status, error.response?.data);
+    
+    // Log specific errors for debugging
+    if (error.response?.status === 404) {
+      console.error('API Endpoint Not Found:', error.config?.url);
+    } else if (error.response?.status >= 500) {
+      console.error('Server Error:', error.response?.data);
+    } else if (error.code === 'ECONNABORTED') {
+      console.error('Request Timeout:', error.message);
+    }
     
     // Handle common error cases
     if (error.response?.status === 404) {
