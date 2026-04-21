@@ -96,16 +96,21 @@ def create_tables():
         Base.metadata.create_all(bind=engine)
 
         # Lightweight schema patching for existing databases (no Alembic in this repo).
-        # Add `region` column if the table already exists without it.
-        try:
-            with engine.begin() as conn:
+        # Ensure `region` exists even if the DB was created before this column was added.
+        with engine.connect() as conn:
+            try:
                 if engine.dialect.name == "sqlite":
-                    conn.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
+                    cols = conn.execute(text("PRAGMA table_info(news_articles)")).fetchall()
+                    col_names = {c[1] for c in cols}  # (cid, name, type, notnull, dflt_value, pk)
+                    if "region" not in col_names:
+                        conn.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
+                        conn.commit()
                 else:
                     conn.execute(text("ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS region VARCHAR"))
-        except Exception:
-            # Column already exists or dialect doesn't support IF NOT EXISTS.
-            pass
+                    conn.commit()
+            except Exception:
+                # Best-effort migration: ignore if it fails (e.g., already exists, permissions).
+                pass
     except Exception as e:
         import logging
         logger = logging.getLogger(__name__)
