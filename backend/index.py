@@ -18,8 +18,8 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./database.db")
 import logging
 logging.basicConfig(level=logging.INFO)
 
-# Import the simple API handler
-from api.simple_handler import handler
+# Import the Vercel API handler
+from api.vercel_api import handler
 
 # Export the handler for Vercel
 app = handler
