@@ -14,12 +14,13 @@ const normalizeBaseURL = (url) => {
 
 // Create axios instance with default configuration
 const api = axios.create({
-  // Production (Vercel) expects same-origin `/api/*` routing via `vercel.json`.
-  // For local dev, set `REACT_APP_API_URL=http://localhost:8000` (or your backend URL).
+  // If frontend and backend are deployed as separate Vercel projects, set
+  // `REACT_APP_API_URL=https://<your-backend-domain>` in the frontend project env.
+  // If you deploy them together with rewrites, you can leave it empty and same-origin will work.
   baseURL:
     process.env.NODE_ENV === 'development'
       ? (normalizeBaseURL(process.env.REACT_APP_API_URL) || 'http://localhost:8000')
-      : '',
+      : (normalizeBaseURL(process.env.REACT_APP_API_URL) || ''),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
