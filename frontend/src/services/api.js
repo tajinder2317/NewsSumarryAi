@@ -48,6 +48,10 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error('API Response Error:', error.response?.status, error.response?.data);
+
+    // Prefer backend-provided error details when available (FastAPI commonly returns `{ detail: "..." }`).
+    const detailMessage =
+      typeof error.response?.data?.detail === 'string' ? error.response.data.detail : null;
     
     // Log specific errors for debugging
     if (error.response?.status === 404) {
@@ -62,7 +66,7 @@ api.interceptors.response.use(
     if (error.response?.status === 404) {
       throw new Error('Resource not found');
     } else if (error.response?.status === 500) {
-      throw new Error('Server error. Please try again later.');
+      throw new Error(detailMessage || 'Server error. Please try again later.');
     } else if (error.code === 'ECONNABORTED') {
       throw new Error('Request timeout. Please check your connection.');
     }
