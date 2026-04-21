@@ -36,7 +36,6 @@ pnpm-debug.log*
 /backend/data/*.sqlite3
 
 # Logs
-logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
