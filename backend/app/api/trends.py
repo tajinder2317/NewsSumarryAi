@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+import time
 
 from ..models import get_db, NewsArticle
 from ..services.trend_detector_simple import TrendDetector
 
 router = APIRouter()
+_TRENDING_CACHE = {}
+_TRENDING_CACHE_TTL_SECONDS = 180
 
 @router.get("/topics")
 async def get_trending_topics(
@@ -13,6 +16,11 @@ async def get_trending_topics(
     db: Session = Depends(get_db)
 ):
     """Get trending topics from recent articles"""
+    now = time.time()
+    cached = _TRENDING_CACHE.get(hours)
+    if cached and (now - cached["ts"] < _TRENDING_CACHE_TTL_SECONDS):
+        return cached["data"]
+
     try:
         # Get recent articles
         cutoff_time = datetime.utcnow() - timedelta(hours=hours)
@@ -38,11 +46,13 @@ async def get_trending_topics(
         detector = TrendDetector()
         trending_topics = detector.detect_trending_topics(article_dicts, hours)
         
-        return {
+        result = {
             "trending_topics": trending_topics,
             "time_window_hours": hours,
             "articles_analyzed": len(article_dicts)
         }
+        _TRENDING_CACHE[hours] = {"ts": now, "data": result}
+        return result
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error detecting trends: {str(e)}")

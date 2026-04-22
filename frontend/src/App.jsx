@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
 import { QueryClientProvider, QueryClient } from "react-query";
@@ -6,11 +6,13 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import ErrorBoundary from "./components/common/ErrorBoundary";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import Analysis from "./pages/Analysis";
-import Search from "./pages/Search";
-import News from "./pages/News";
+import Loading from "./components/common/Loading";
+
+const Home = lazy(() => import("./pages/Home"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Analysis = lazy(() => import("./pages/Analysis"));
+const Search = lazy(() => import("./pages/Search"));
+const News = lazy(() => import("./pages/News"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,13 +33,15 @@ function App() {
         <main className="main-content">
           <Container maxWidth="xl">
             <ErrorBoundary>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/analysis" element={<Analysis />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/news" element={<News />} />
-              </Routes>
+              <Suspense fallback={<Loading message="Loading page..." />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/analysis" element={<Analysis />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/news" element={<News />} />
+                </Routes>
+              </Suspense>
             </ErrorBoundary>
           </Container>
         </main>

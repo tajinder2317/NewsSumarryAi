@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const normalizeBaseURL = (url) => {
   if (!url || typeof url !== 'string') return '';
 
@@ -33,11 +35,15 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // You can add auth token here if needed
-    console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
+    if (isDev) {
+      console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
+    }
     return config;
   },
   (error) => {
-    console.error('API Request Error:', error);
+    if (isDev) {
+      console.error('API Request Error:', error);
+    }
     return Promise.reject(error);
   }
 );
@@ -45,11 +51,15 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response.status, response.data);
+    if (isDev) {
+      console.log('API Response:', response.status, response.data);
+    }
     return response;
   },
   (error) => {
-    console.error('API Response Error:', error.response?.status, error.response?.data);
+    if (isDev) {
+      console.error('API Response Error:', error.response?.status, error.response?.data);
+    }
 
     // Prefer backend-provided error details when available (FastAPI commonly returns `{ detail: "..." }`).
     const detailMessage =
@@ -57,11 +67,17 @@ api.interceptors.response.use(
     
     // Log specific errors for debugging
     if (error.response?.status === 404) {
-      console.error('API Endpoint Not Found:', error.config?.url);
+      if (isDev) {
+        console.error('API Endpoint Not Found:', error.config?.url);
+      }
     } else if (error.response?.status >= 500) {
-      console.error('Server Error:', error.response?.data);
+      if (isDev) {
+        console.error('Server Error:', error.response?.data);
+      }
     } else if (error.code === 'ECONNABORTED') {
-      console.error('Request Timeout:', error.message);
+      if (isDev) {
+        console.error('Request Timeout:', error.message);
+      }
     }
     
     // Handle common error cases

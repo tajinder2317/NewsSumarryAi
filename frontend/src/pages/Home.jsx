@@ -28,7 +28,6 @@ import {
 } from '@mui/icons-material';
 
 import { newsService, trendsService } from '../services/newsService';
-import Loading from '../components/common/Loading';
 
 const Home = () => {
   const {
@@ -106,10 +105,6 @@ const Home = () => {
       color: 'warning',
     },
   ];
-
-  if (statsLoading || trendsLoading) {
-    return <Loading message="Loading dashboard..." />;
-  }
 
   return (
     <Container maxWidth="xl" sx={{ py: 0, minHeight: '100vh' }}>
@@ -251,7 +246,7 @@ const Home = () => {
                       <Article sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
-                      {stats?.total_articles?.toLocaleString() || '0'}
+                      {statsLoading ? '...' : (stats?.total_articles?.toLocaleString() || '0')}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Total Articles
@@ -279,7 +274,7 @@ const Home = () => {
                       <TrendingUp sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
-                      {stats?.recent_articles_24h || '0'}
+                      {statsLoading ? '...' : (stats?.recent_articles_24h || '0')}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Last 24 Hours
@@ -307,7 +302,7 @@ const Home = () => {
                       <Analytics sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
-                      {stats.sources?.length || 0}
+                      {statsLoading ? '...' : (stats?.sources?.length || 0)}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       News Sources
@@ -335,7 +330,7 @@ const Home = () => {
                       <Search sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
-                      {trends?.trending_topics?.length || 0}
+                      {trendsLoading ? '...' : (trends?.trending_topics?.length || 0)}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Trending Topics

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
 from datetime import datetime, timedelta
+import time
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,6 +13,8 @@ from ..models import (
 )
 
 router = APIRouter()
+_NEWS_STATS_CACHE = {"ts": 0.0, "data": None}
+_NEWS_STATS_CACHE_TTL_SECONDS = 60
 
 @router.get("/", response_model=List[NewsArticleResponse])
 async def get_news(
@@ -106,6 +109,8 @@ async def collect_news(
         db.commit()
 
         total_after = db.query(NewsArticle).count()
+        _NEWS_STATS_CACHE["ts"] = 0.0
+        _NEWS_STATS_CACHE["data"] = None
         return {
             "message": f"Collected {new_count} new articles (processed {len(articles)}).",
             "collected_count": new_count,
@@ -180,6 +185,10 @@ async def get_news_categories(db: Session = Depends(get_db)):
 @router.get("/stats/summary")
 async def get_news_stats(db: Session = Depends(get_db)):
     """Get news statistics summary"""
+    now = time.time()
+    if _NEWS_STATS_CACHE["data"] is not None and (now - _NEWS_STATS_CACHE["ts"] < _NEWS_STATS_CACHE_TTL_SECONDS):
+        return _NEWS_STATS_CACHE["data"]
+
     try:
         total_articles = db.query(NewsArticle).count()
         
@@ -193,12 +202,15 @@ async def get_news_stats(db: Session = Depends(get_db)):
         # Sentiment distribution
         sentiment_counts = db.query(NewsArticle.sentiment_label, func.count(NewsArticle.id)).group_by(NewsArticle.sentiment_label).all()
         
-        return {
+        result = {
             "total_articles": total_articles,
             "recent_articles_24h": recent_articles,
             "sources": [{"source": source, "count": count} for source, count in source_counts],
             "sentiment_distribution": [{"sentiment": sentiment, "count": count} for sentiment, count in sentiment_counts]
         }
+        _NEWS_STATS_CACHE["ts"] = now
+        _NEWS_STATS_CACHE["data"] = result
+        return result
     except Exception as e:
         logger.error(f"Error fetching stats: {e}")
         raise HTTPException(status_code=500, detail=f"Error fetching stats: {str(e)}")
@@ -212,5 +224,7 @@ async def delete_article(article_id: int, db: Session = Depends(get_db)):
     
     db.delete(article)
     db.commit()
+    _NEWS_STATS_CACHE["ts"] = 0.0
+    _NEWS_STATS_CACHE["data"] = None
     
     return {"message": "Article deleted successfully"}
