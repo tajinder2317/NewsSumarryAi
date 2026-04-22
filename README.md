@@ -1,389 +1,129 @@
 # News Analyzer AI
 
-An AI-powered news analysis and summarization platform built with Python FastAPI backend and React frontend.
+AI-powered news collection + analysis with a FastAPI backend and a React (MUI) frontend. Designed to run locally, or deploy on Vercel (frontend + backend) with a real database for persistent articles.
 
-## Features
+## Live
 
-- **Real-time News Collection**: Automatically collect news from multiple RSS feeds and news APIs
-- **AI-Powered Analysis**: Sentiment analysis, topic extraction, and automatic categorization
-- **Trend Detection**: Identify trending topics and breaking news as they happen
-- **Smart Summarization**: Get concise summaries of articles and topic clusters
-- **Search & Filtering**: Advanced search capabilities with multiple filters
-- **Interactive Dashboard**: Visualize trends and analytics with charts
-- **Beginner-Friendly**: Clean, documented codebase with easy setup
+- Frontend: `https://news-sumarry-ai.vercel.app`
+- Backend: `https://news-sumarry-ai-backend.vercel.app`
+- Backend API docs: `https://news-sumarry-ai-backend.vercel.app/docs`
 
-## Technology Stack
+## What You Get
 
-### Backend
+- Global RSS coverage (Asia, Europe, Americas, Middle East, Africa) + on-demand collection
+- Article storage in a database (SQLite locally, Postgres in production)
+- Sentiment + lightweight NLP analysis per article
+- “Fresh” feed (last 5 minutes) + time ranges: Today / Yesterday / This Week / This Month / This Year
+- Server-side pagination (50 articles/page) with total counts
+- Futuristic, minimal UI with Light/Dark mode toggle
 
-- **Python 3.8+**
-- **FastAPI** - Modern, fast web framework
-- **SQLAlchemy** - Database ORM
-- **PostgreSQL** - Production database (Vercel Postgres, Neon, Supabase)
-- **SQLite** - Development database
-- **Newspaper3k** - News article extraction
-- **TextBlob** - Text processing and sentiment analysis
-- **Scikit-learn** - Machine learning for topic modeling
-- **NLTK** - Natural language processing
-
-### Frontend
-
-- **React 18** - Modern UI framework
-- **Material-UI** - React UI components
-- **React Query** - Data fetching and caching
-- **Chart.js** - Data visualization
-- **Axios** - HTTP client
-
-## Project Structure
+## Repo Layout
 
 ```
-NewsAnalyzerAI/
-    backend/
-        app/
-            main.py              # FastAPI application
-            config.py            # Configuration settings
-            models/              # Database models and schemas
-            services/            # Business logic (news collection, analysis)
-            api/                 # API endpoints
-            utils/               # Utility functions
-        requirements.txt
-        run.py
-    frontend/
-        src/
-            components/         # React components
-            pages/              # Page components
-            services/           # API services
-            hooks/              # Custom React hooks
-            utils/              # Utility functions
-        package.json
-    data/
-        database.db
-        logs/
+backend/   FastAPI app + collectors + database models
+frontend/  React app (MUI) consuming the API
 ```
 
-## Quick Start
+## Quick Start (Local)
 
-### Prerequisites
+Prereqs:
+- Python `3.12+`
+- Node.js `18+`
 
-- Python 3.8 or higher
-- Node.js 14 or higher
-- npm or yarn
+Backend:
 
-### Backend Setup
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python3 run.py
+```
 
-1. **Navigate to backend directory**
+Frontend:
 
-   ```bash
-   cd backend
-   ```
+```bash
+cd frontend
+npm install
+npm start
+```
 
-2. **Create virtual environment**
+Defaults:
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8000` (docs at `http://localhost:8000/docs`)
 
-   ```bash
-   python -m venv venv
+## Environment Variables
 
-   # Windows
-   venv\Scripts\activate
-
-   # macOS/Linux
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment variables**
-
-   ```bash
-   copy .env.example .env
-   ```
-
-   Edit `.env` file and configure:
-   - `NEWS_API_KEY` (optional, get from https://newsapi.org/)
-   - `RSS_FEEDS` (comma-separated list of RSS feed URLs)
-   - Other settings as needed
-
-5. **Create data directory**
-
-   ```bash
-   mkdir data
-   mkdir data\logs
-   ```
-
-6. **Start the backend server**
-
-   ```bash
-   python run.py
-   ```
-
-   The API will be available at `http://localhost:8000`
-   - API documentation: `http://localhost:8000/docs`
-   - Health check: `http://localhost:8000/health`
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
-
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Start the frontend development server**
-
-   ```bash
-   npm start
-   ```
-
-   The application will be available at `http://localhost:3000`
-
-## Vercel Deployment
-
-### Live Demo
-
-- **Frontend**: https://news-sumarry-ai.vercel.app
-- **Backend**: https://news-sumarry-ai-backend.vercel.app
-- **API Docs**: https://news-sumarry-ai-backend.vercel.app/docs
-
-### Quick Deploy
-
-1. **Deploy Backend**
-
-   ```bash
-   cd backend
-   vercel --prod
-   ```
-
-2. **Deploy Frontend**
-   ```bash
-   cd frontend
-   vercel --prod
-   ```
-
-### Database Setup
-
-The app requires a PostgreSQL database for production deployment:
-
-1. **Vercel Postgres (Recommended)**
-   - Create database in Vercel Dashboard
-   - Add `POSTGRES_PRISMA_URL` to environment variables
-
-2. **Alternative Options**
-   - **Neon**: Add `NEON_DATABASE_URL`
-   - **Supabase**: Add `SUPABASE_URL` + `SUPABASE_PASSWORD`
-
-3. **Environment Variables**
-   ```env
-   DATABASE_URL=your_postgres_connection_string
-   POSTGRES_URL=your_postgres_connection_string
-   POSTGRES_PRISMA_URL=your_postgres_connection_string
-   VERCEL=true
-   ```
-
-### Separate Deployment
-
-For separate frontend/backend deployments:
-
-1. Update `frontend/.env.production`:
-
-   ```env
-   REACT_APP_API_URL=https://your-backend-domain.vercel.app
-   ```
-
-2. Deploy both projects separately
-
-## Usage
-
-### 1. Collect News
-
-- Click "Collect News" on the home page to fetch articles from configured sources
-- News is automatically analyzed for sentiment, topics, and categories
-
-### 2. View Dashboard
-
-- Navigate to `/dashboard` to see statistics and trending topics
-- View sentiment distribution, source analysis, and recent trends
-
-### 3. Search and Filter
-
-- Navigate to `/search` to find specific articles
-- Filter by source, category, sentiment, date range, or keywords
-
-### 4. Analyze Articles
-
-- Navigate to `/analysis` to perform detailed analysis
-- Summarize articles, extract topics, and analyze sentiment
-
-## API Endpoints
-
-### News Endpoints
-
-- `GET /api/v1/news/` - Get news articles
-- `POST /api/v1/news/collect` - Collect news from sources
-- `POST /api/v1/news/search` - Search news articles
-- `GET /api/v1/news/stats/summary` - Get news statistics
-
-### Analysis Endpoints
-
-- `POST /api/v1/analysis/sentiment` - Analyze sentiment
-- `POST /api/v1/analysis/topics` - Extract topics
-- `POST /api/v1/analysis/summarize` - Summarize articles
-- `POST /api/v1/analysis/keywords` - Extract keywords
-
-### Trends Endpoints
-
-- `GET /api/v1/trends/topics` - Get trending topics
-- `GET /api/v1/trends/breaking` - Get breaking news
-- `GET /api/v1/trends/analysis` - Get topic trends
-- `GET /api/v1/trends/summary` - Get trends summary
-
-## Configuration
-
-### Environment Variables
-
-#### Backend (.env)
+Backend (`backend/.env`):
 
 ```env
-# Database
+# Local dev (SQLite)
 DATABASE_URL=sqlite:///./data/database.db
 
-# API
-API_HOST=0.0.0.0
-API_PORT=8000
-DEBUG=True
+# Production (Postgres)
+# DATABASE_URL=postgresql://...
+# POSTGRES_PRISMA_URL=postgresql://...   # common Vercel naming
 
-# News Sources
-NEWS_API_KEY=your_news_api_key_here
-RSS_FEEDS=https://feeds.bbci.co.uk/news/rss.xml,https://rss.cnn.com/rss/edition.rss
-
-# Analysis Features
-SENTIMENT_ANALYSIS_ENABLED=True
-TOPIC_MODELING_ENABLED=True
-SUMMARIZATION_ENABLED=True
-
-# Logging
 LOG_LEVEL=INFO
-LOG_FILE=./data/logs/app.log
 ```
 
-#### Frontend
-
-Create `.env` file in frontend directory:
+Frontend (`frontend/.env`):
 
 ```env
+# If deployed separately, point to backend URL.
 REACT_APP_API_URL=http://localhost:8000
 ```
 
-## Development
+Notes:
+- In production on Vercel, set `DATABASE_URL` (or `POSTGRES_PRISMA_URL`) on the backend project.
+- If frontend + backend are deployed as separate projects, set `REACT_APP_API_URL` on the frontend project.
 
-### Running Tests
+## API Highlights
+
+News:
+- `POST /api/v1/news/collect` Collect latest articles from configured feeds
+- `GET /api/v1/news/latest?minutes=5&refresh=true` Fresh feed (optionally triggers a lightweight refresh)
+- `GET /api/v1/news/paged?page=1&page_size=50&date_from=...&date_to=...` Paged news with total counts
+- `GET /api/v1/news/stats/summary` High-level counts and distribution
+
+Trends:
+- `GET /api/v1/trends/topics?hours=24` Trending topics window
+
+## Vercel Deploy
+
+Deploy backend:
 
 ```bash
-# Backend tests
 cd backend
-pytest
-
-# Frontend tests
-cd frontend
-npm test
+vercel --prod
 ```
 
-### Code Style
+Deploy frontend:
 
-- Backend follows PEP 8 Python style guidelines
-- Frontend uses ESLint and Prettier for consistent formatting
+```bash
+cd frontend
+vercel --prod
+```
 
-### Adding New Features
+Recommended:
+- Use Vercel Postgres (or any Postgres provider) and set `DATABASE_URL` (and/or `POSTGRES_PRISMA_URL`) on the backend project.
 
-1. Backend: Add service in `backend/app/services/`
-2. API: Add endpoints in `backend/app/api/`
-3. Frontend: Add components in `frontend/src/components/`
-4. Update API services in `frontend/src/services/`
+## Performance Tips
+
+- Use `GET /api/v1/news/paged` for the main feed (it avoids downloading huge lists).
+- Keep collection small per source in serverless (the collector is tuned for short timeouts).
+- If you need “always-fresh” updates, schedule a cron job to hit `POST /api/v1/news/collect` every few minutes (Vercel Cron or external).
 
 ## Troubleshooting
 
-### Common Issues
-
-1. **Backend won't start**
-   - Check Python version (3.8+ required)
-   - Ensure all dependencies installed: `pip install -r requirements.txt`
-   - Check if port 8000 is available
-
-2. **Frontend won't start**
-   - Check Node.js version (14+ required)
-   - Ensure dependencies installed: `npm install`
-   - Check if port 3000 is available
-
-3. **News collection fails**
-   - Verify RSS feed URLs are accessible
-   - Check internet connection
-   - Ensure NewsAPI key is valid (if using NewsAPI)
-
-4. **Database errors**
-   - Ensure data directory exists
-   - Check database file permissions
-   - Verify DATABASE_URL in .env file
-
-### Vercel Deployment Issues
-
-1. **News collection fails with database errors**
-   - Add PostgreSQL connection string to Vercel environment variables
-   - Use `POSTGRES_PRISMA_URL` for Vercel Postgres
-   - Redeploy backend after adding environment variables
-
-2. **Frontend shows 404 errors for manifest.json or static files**
-   - Check `frontend/vercel.json` routing configuration
-   - Ensure static files are served before fallback to index.html
-
-3. **Frontend can't connect to backend**
-   - Verify `REACT_APP_API_URL` in `frontend/.env.production`
-   - For separate deployments: set to backend domain
-   - For combined deployments: leave empty for same-origin
-
-4. **Database schema errors (missing columns)**
-   - Trigger migration: `POST /api/v1/fixdb`
-   - Or manually add environment variables and redeploy
-
-### Getting Help
-
-- Check the logs in `data/logs/app.log`
-- Review API documentation at `http://localhost:8000/docs`
-- Open an issue on GitHub with detailed error information
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make changes and commit: `git commit -m 'Add feature'`
-4. Push to branch: `git push origin feature-name`
-5. Submit a pull request
+- Frontend can’t reach backend:
+  - Set `REACT_APP_API_URL` on the frontend Vercel project to your backend URL.
+- Backend returns `503 Database unavailable`:
+  - Set `DATABASE_URL` (or `POSTGRES_PRISMA_URL`) on the backend Vercel project and redeploy.
+- “Today” looks off:
+  - Time-range filters are computed in the browser (local time) and sent as ISO datetimes to the backend.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
-- [React](https://reactjs.org/) - JavaScript library for building UIs
-- [Material-UI](https://mui.com/) - React UI component library
-- [Newspaper3k](https://newspaper.readthedocs.io/) - News article extraction
-- [TextBlob](https://textblob.readthedocs.io/) - Text processing library
-
-## Roadmap
-
-- [ ] Add user authentication and preferences
-- [ ] Implement real-time WebSocket updates
-- [ ] Add more visualization options
-- [ ] Support for more news sources
-- [ ] Mobile app development
-- [ ] Advanced ML models for better analysis
-- [ ] Multi-language support
+MIT
