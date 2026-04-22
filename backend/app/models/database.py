@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import make_url
 from datetime import datetime
+from fastapi import HTTPException, status
 import os
 from ..config import settings
 
@@ -73,7 +74,12 @@ except Exception as e:
     import logging
     logger = logging.getLogger(__name__)
     logger.error(f"Database setup failed: {e}")
-    # Fallback to in-memory database
+    if os.getenv("VERCEL"):
+        raise RuntimeError(
+            "Database setup failed in Vercel. "
+            "Verify DATABASE_URL/POSTGRES_PRISMA_URL and PostgreSQL connectivity."
+        ) from e
+    # Local development fallback
     engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -143,12 +149,13 @@ def get_db():
     try:
         db = SessionLocal()
     except Exception as e:
-        # If database connection fails, provide `None` to let endpoints fall back gracefully.
         import logging
         logger = logging.getLogger(__name__)
         logger.error(f"Database connection error: {e}")
-        yield None
-        return
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database unavailable. Check backend DATABASE_URL/POSTGRES_PRISMA_URL configuration."
+        )
 
     try:
         _ensure_news_articles_schema(db)

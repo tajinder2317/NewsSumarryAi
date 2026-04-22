@@ -12,6 +12,8 @@ const normalizeBaseURL = (url) => {
   return normalized;
 };
 
+const DEFAULT_PROD_BACKEND_URL = 'https://news-sumarry-ai-backend.vercel.app';
+
 // Create axios instance with default configuration
 const api = axios.create({
   // If frontend and backend are deployed as separate Vercel projects, set
@@ -20,7 +22,7 @@ const api = axios.create({
   baseURL:
     process.env.NODE_ENV === 'development'
       ? (normalizeBaseURL(process.env.REACT_APP_API_URL) || 'http://localhost:8000')
-      : (normalizeBaseURL(process.env.REACT_APP_API_URL) || ''),
+      : (normalizeBaseURL(process.env.REACT_APP_API_URL) || DEFAULT_PROD_BACKEND_URL),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

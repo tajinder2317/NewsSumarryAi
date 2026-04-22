@@ -10,12 +10,6 @@ logger = logging.getLogger(__name__)
 from ..models import (
     get_db, NewsArticle, NewsArticleResponse, SearchRequest
 )
-from ..models.mock_data import (
-    get_mock_articles, get_mock_article_by_id, get_mock_sources, 
-    get_mock_categories, get_mock_stats
-)
-from ..services.article_store import article_store
-from ..config import settings
 
 router = APIRouter()
 
@@ -29,28 +23,6 @@ async def get_news(
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
-    # Use article store when database fails/unavailable
-    if db is None:
-        logger.info("Database unavailable; using article store fallback")
-        
-        # Ensure article store is initialized with sample data
-        if len(article_store.articles) == 0:
-            logger.info("Article store empty, initializing with sample data")
-            from ..services.article_store import initialize_article_store
-            initialize_article_store()
-        
-        store_articles = article_store.get_articles(limit=limit, skip=skip, source=source, category=category, region=region)
-        logger.info(f"Returning {len(store_articles)} articles from store")
-        
-        # Fallback to mock data if store is empty
-        if len(store_articles) == 0:
-            logger.info("Article store empty, using fallback mock data")
-            from ..models.mock_data import get_mock_articles
-            mock_articles = get_mock_articles(limit=limit, skip=skip, source=source, category=category)
-            return mock_articles
-        
-        return store_articles
-    
     try:
         # Use a more efficient query with indexes
         query = db.query(NewsArticle)
@@ -69,33 +41,21 @@ async def get_news(
         return articles
     except Exception as e:
         logger.error(f"Error fetching news: {e}")
-        # Fallback to mock data
-        mock_articles = get_mock_articles(limit=limit, source=source, category=category)
-        return mock_articles[skip:skip+limit]
+        raise HTTPException(status_code=500, detail=f"Error fetching news: {str(e)}")
 
 @router.get("/{article_id}", response_model=NewsArticleResponse)
 async def get_article(article_id: int, db: Session = Depends(get_db)):
     """Get a specific news article by ID"""
-    # Use article store when database fails/unavailable
-    if db is None:
-        logger.info("Database unavailable; using article store for article retrieval")
-        article = article_store.get_article_by_id(article_id)
-        if not article:
-            raise HTTPException(status_code=404, detail="Article not found")
-        return article
-    
     try:
         article = db.query(NewsArticle).filter(NewsArticle.id == article_id).first()
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
         return article
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching article: {e}")
-        # Fallback to mock data
-        article = get_mock_article_by_id(article_id)
-        if not article:
-            raise HTTPException(status_code=404, detail="Article not found")
-        return article
+        raise HTTPException(status_code=500, detail=f"Error fetching article: {str(e)}")
 
 @router.post("/collect")
 async def collect_news(
@@ -109,18 +69,6 @@ async def collect_news(
     try:
         collector = RealNewsCollector()
         articles = collector.collect_articles(timeout=timeout, max_articles_per_feed=max_per_source)
-
-        # If no DB is available, at least keep data in-memory for the session.
-        if db is None:
-            collected_count = article_store.store_articles(articles)
-            return {
-                "message": f"Collected {collected_count} articles into in-memory store (no database configured).",
-                "collected_count": collected_count,
-                "total_articles": len(article_store.articles),
-                "articles_processed": len(articles),
-                "timeout": False,
-                "storage": "memory"
-            }
 
         total_before = db.query(NewsArticle).count()
 
@@ -176,22 +124,6 @@ async def search_news(
     db: Session = Depends(get_db)
 ):
     """Search news articles with various filters"""
-    if db is None:
-        # Minimal in-memory search fallback
-        results = article_store.get_articles(
-            limit=search_request.limit,
-            skip=search_request.offset,
-            source=search_request.source,
-            category=search_request.category,
-        )
-        if search_request.query:
-            q = search_request.query.lower()
-            results = [
-                a for a in results
-                if q in (a.get("title", "").lower()) or q in (a.get("content", "").lower())
-            ]
-        return results
-
     query = db.query(NewsArticle)
     
     # Text search
@@ -228,43 +160,26 @@ async def search_news(
 @router.get("/sources/list")
 async def get_news_sources(db: Session = Depends(get_db)):
     """Get list of all news sources"""
-    # Use article store when database fails/unavailable
-    if db is None:
-        logger.info("Database unavailable; using article store for sources")
-        return {"sources": article_store.get_sources()}
-    
     try:
         sources = db.query(NewsArticle.source).distinct().all()
         return {"sources": [source[0] for source in sources]}
     except Exception as e:
         logger.error(f"Error fetching sources: {e}")
-        # Fallback to article store
-        return {"sources": article_store.get_sources()}
+        raise HTTPException(status_code=500, detail=f"Error fetching sources: {str(e)}")
 
 @router.get("/categories/list")
 async def get_news_categories(db: Session = Depends(get_db)):
     """Get list of all news categories"""
-    # Use article store when database fails/unavailable
-    if db is None:
-        logger.info("Database unavailable; using article store for categories")
-        return {"categories": article_store.get_categories()}
-    
     try:
         categories = db.query(NewsArticle.category).distinct().filter(NewsArticle.category.isnot(None)).all()
         return {"categories": [category[0] for category in categories]}
     except Exception as e:
         logger.error(f"Error fetching categories: {e}")
-        # Fallback to article store
-        return {"categories": article_store.get_categories()}
+        raise HTTPException(status_code=500, detail=f"Error fetching categories: {str(e)}")
 
 @router.get("/stats/summary")
 async def get_news_stats(db: Session = Depends(get_db)):
     """Get news statistics summary"""
-    # Use article store when database fails/unavailable
-    if db is None:
-        logger.info("Database unavailable; using article store for stats")
-        return article_store.get_stats()
-    
     try:
         total_articles = db.query(NewsArticle).count()
         
@@ -286,8 +201,7 @@ async def get_news_stats(db: Session = Depends(get_db)):
         }
     except Exception as e:
         logger.error(f"Error fetching stats: {e}")
-        # Fallback to article store
-        return article_store.get_stats()
+        raise HTTPException(status_code=500, detail=f"Error fetching stats: {str(e)}")
 
 @router.delete("/{article_id}")
 async def delete_article(article_id: int, db: Session = Depends(get_db)):
