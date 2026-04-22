@@ -99,6 +99,27 @@ def _ensure_news_articles_schema(db):
             if "region" not in col_names:
                 db.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
                 db.commit()
+        elif dialect_name == "postgresql":
+            # Check if column exists first for PostgreSQL
+            try:
+                result = db.execute(text("""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'news_articles' 
+                    AND column_name = 'region'
+                """))
+                region_exists = result.fetchone() is not None
+                
+                if not region_exists:
+                    db.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
+                    db.commit()
+            except Exception:
+                # Fallback: Try adding column directly
+                try:
+                    db.execute(text("ALTER TABLE news_articles ADD COLUMN region VARCHAR"))
+                    db.commit()
+                except Exception:
+                    pass
         else:
             # Postgres supports IF NOT EXISTS; MySQL may not in all versions.
             db.execute(text("ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS region VARCHAR"))

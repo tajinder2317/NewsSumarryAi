@@ -54,6 +54,8 @@ app.add_middleware(
 app.include_router(news.router, prefix="/api/v1/news", tags=["news"])
 app.include_router(analysis.router, prefix="/api/v1/analysis", tags=["analysis"])
 app.include_router(trends.router, prefix="/api/v1/trends", tags=["trends"])
+from .api import migrate
+app.include_router(migrate.router, prefix="/api/v1", tags=["migration"])
 
 @app.on_event("startup")
 async def startup_event():
