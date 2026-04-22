@@ -62,8 +62,8 @@ async def get_article(article_id: int, db: Session = Depends(get_db)):
 
 @router.post("/collect")
 async def collect_news(
-    timeout: int = Query(5, ge=3, le=15, description="Timeout in seconds for RSS feed collection"),
-    max_per_source: int = Query(3, ge=1, le=20, description="Max articles to fetch per RSS source"),
+    timeout: int = Query(4, ge=2, le=12, description="Timeout in seconds for RSS feed collection"),
+    max_per_source: int = Query(2, ge=1, le=10, description="Max latest articles to fetch per RSS source"),
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""
@@ -77,15 +77,26 @@ async def collect_news(
 
         urls = [a.get("url") for a in articles if a.get("url")]
         existing_urls = set()
+        existing_by_url = {}
         if urls:
-            existing_urls = {
-                row[0] for row in db.query(NewsArticle.url).filter(NewsArticle.url.in_(urls)).all()
-            }
+            existing_rows = db.query(NewsArticle).filter(NewsArticle.url.in_(urls)).all()
+            existing_by_url = {row.url: row for row in existing_rows}
+            existing_urls = set(existing_by_url.keys())
 
         new_count = 0
         for a in articles:
             url = a.get("url")
             if not url or url in existing_urls:
+                # Improve existing rows that were previously neutral/unscored.
+                if url and url in existing_by_url:
+                    existing = existing_by_url[url]
+                    if (existing.sentiment_label in (None, "neutral")) and (existing.sentiment_score is None or abs(existing.sentiment_score) < 0.001):
+                        existing.sentiment_score = a.get("sentiment_score")
+                        existing.sentiment_label = a.get("sentiment_label")
+                    if not existing.region and a.get("region"):
+                        existing.region = a.get("region")
+                    if not existing.category and a.get("category"):
+                        existing.category = a.get("category")
                 continue
 
             article = NewsArticle(

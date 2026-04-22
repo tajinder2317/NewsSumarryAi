@@ -22,10 +22,11 @@ class TextAnalyzer:
             blob = TextBlob(text)
             polarity = blob.sentiment.polarity
             
-            # Convert polarity to label
-            if polarity > 0.1:
+            # Convert polarity to label.
+            # Lower thresholds help avoid everything being classified as neutral for concise headlines.
+            if polarity > 0.03:
                 label = "positive"
-            elif polarity < -0.1:
+            elif polarity < -0.03:
                 label = "negative"
             else:
                 label = "neutral"

@@ -7,93 +7,61 @@ from datetime import datetime, timedelta
 import logging
 from typing import List, Dict, Any
 import re
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from bs4 import BeautifulSoup
 
 from .article_store import article_store
+from .analyzer_simple import TextAnalyzer
 
 logger = logging.getLogger(__name__)
 
 class RealNewsCollector:
     def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update({
+        self.request_headers = {
             'User-Agent': 'NewsAnalyzerAI/1.0 (News Aggregator Bot)'
-        })
+        }
+        self.analyzer = TextAnalyzer()
         
-        # Reliable RSS feeds that work well in serverless environment
+        # Broad global feed coverage across Asia, Europe, Americas, Middle East, and Africa.
         self.rss_feeds = [
-            {
-                'name': 'BBC News',
-                'url': 'http://feeds.bbci.co.uk/news/rss.xml',
-                'category': 'General',
-                'region': 'Global'
-            },
-            {
-                'name': 'Reuters',
-                'url': 'https://feeds.reuters.com/reuters/topNews',
-                'category': 'General',
-                'region': 'Global'
-            },
-            {
-                'name': 'CNN',
-                'url': 'https://rss.cnn.com/rss/edition.rss',
-                'category': 'General',
-                'region': 'Global'
-            },
-            {
-                'name': 'TechCrunch',
-                'url': 'https://feeds.feedburner.com/techcrunch',
-                'category': 'Technology',
-                'region': 'Global'
-            },
-            {
-                'name': 'BBC Technology',
-                'url': 'http://feeds.bbci.co.uk/news/technology/rss.xml',
-                'category': 'Technology',
-                'region': 'Global'
-            },
-            {
-                'name': 'The Hindu',
-                'url': 'https://www.thehindu.com/news/feeder/default.rss',
-                'category': 'General',
-                'region': 'India'
-            },
-            {
-                'name': 'Danik Bhaskar',
-                'url': 'https://www.dainikbhaskar.com/rssfeed.xml',
-                'category': 'General',
-                'region': 'India'
-            },
-            {
-                'name': 'Times of India',
-                'url': 'https://timesofindia.indiatimes.com/rssfeedsdefault.cms',
-                'category': 'General',
-                'region': 'India'
-            },
-            {
-                'name': 'NDTV',
-                'url': 'https://feeds.feedburner.com/ndtvnews-latest',
-                'category': 'General',
-                'region': 'India'
-            },
-            {
-                'name': 'Indian Express',
-                'url': 'https://indianexpress.com/section/india/feed/',
-                'category': 'General',
-                'region': 'India'
-            },
-            {
-                'name': 'Hindustan Times',
-                'url': 'https://www.hindustantimes.com/rssfeeds/topstories.xml',
-                'category': 'General',
-                'region': 'India'
-            },
-            {
-                'name': 'Financial Express',
-                'url': 'https://www.financialexpress.com/feed/',
-                'category': 'Business',
-                'region': 'India'
-            }
+            # Global wires / international
+            {'name': 'Reuters', 'url': 'https://feeds.reuters.com/reuters/topNews', 'category': 'General', 'region': 'Global'},
+            {'name': 'BBC World', 'url': 'http://feeds.bbci.co.uk/news/world/rss.xml', 'category': 'General', 'region': 'Europe'},
+            {'name': 'Al Jazeera', 'url': 'https://www.aljazeera.com/xml/rss/all.xml', 'category': 'General', 'region': 'Middle East'},
+            {'name': 'DW', 'url': 'https://rss.dw.com/xml/rss-en-all', 'category': 'General', 'region': 'Europe'},
+
+            # Americas
+            {'name': 'CNN', 'url': 'https://rss.cnn.com/rss/edition.rss', 'category': 'General', 'region': 'Americas'},
+            {'name': 'AP Top News', 'url': 'https://feeds.apnews.com/apnews/topnews', 'category': 'General', 'region': 'Americas'},
+            {'name': 'NYT Home', 'url': 'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml', 'category': 'General', 'region': 'Americas'},
+            {'name': 'Washington Post', 'url': 'https://feeds.washingtonpost.com/rss/world', 'category': 'General', 'region': 'Americas'},
+
+            # Europe
+            {'name': 'The Guardian World', 'url': 'https://www.theguardian.com/world/rss', 'category': 'General', 'region': 'Europe'},
+            {'name': 'France24', 'url': 'https://www.france24.com/en/rss', 'category': 'General', 'region': 'Europe'},
+            {'name': 'Euronews', 'url': 'https://www.euronews.com/rss?format=mrss', 'category': 'General', 'region': 'Europe'},
+
+            # Asia
+            {'name': 'The Hindu', 'url': 'https://www.thehindu.com/news/feeder/default.rss', 'category': 'General', 'region': 'Asia'},
+            {'name': 'Times of India', 'url': 'https://timesofindia.indiatimes.com/rssfeedsdefault.cms', 'category': 'General', 'region': 'Asia'},
+            {'name': 'Indian Express', 'url': 'https://indianexpress.com/section/india/feed/', 'category': 'General', 'region': 'Asia'},
+            {'name': 'NDTV', 'url': 'https://feeds.feedburner.com/ndtvnews-latest', 'category': 'General', 'region': 'Asia'},
+            {'name': 'Channel NewsAsia', 'url': 'https://www.channelnewsasia.com/rssfeeds/8395986', 'category': 'General', 'region': 'Asia'},
+            {'name': 'Nikkei Asia', 'url': 'https://asia.nikkei.com/rss/feed/nar', 'category': 'Business', 'region': 'Asia'},
+            {'name': 'SCMP', 'url': 'https://www.scmp.com/rss/91/feed', 'category': 'General', 'region': 'Asia'},
+
+            # Middle East
+            {'name': 'Arab News', 'url': 'https://www.arabnews.com/rss.xml', 'category': 'General', 'region': 'Middle East'},
+            {'name': 'Jerusalem Post', 'url': 'https://www.jpost.com/rss/rssfeedsheadlines.aspx', 'category': 'General', 'region': 'Middle East'},
+
+            # Africa
+            {'name': 'AllAfrica', 'url': 'https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf', 'category': 'General', 'region': 'Africa'},
+            {'name': 'News24 Africa', 'url': 'https://feeds.24.com/articles/news24/Africa/rss', 'category': 'General', 'region': 'Africa'},
+
+            # Technology / business cross-region
+            {'name': 'TechCrunch', 'url': 'https://techcrunch.com/feed/', 'category': 'Technology', 'region': 'Global'},
+            {'name': 'Ars Technica', 'url': 'https://feeds.arstechnica.com/arstechnica/index', 'category': 'Technology', 'region': 'Global'},
+            {'name': 'Bloomberg Markets', 'url': 'https://feeds.bloomberg.com/markets/news.rss', 'category': 'Business', 'region': 'Global'},
         ]
 
     def collect_articles(self, timeout: int = 30, max_articles_per_feed: int = 3) -> List[Dict[str, Any]]:
@@ -102,17 +70,39 @@ class RealNewsCollector:
 
         logger.info(f"Starting news collection from {len(self.rss_feeds)} sources")
 
-        for feed_info in self.rss_feeds:
-            try:
-                articles = self.fetch_feed_articles(
+        max_workers = min(10, max(4, len(self.rss_feeds)))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [
+                executor.submit(
+                    self.fetch_feed_articles,
                     feed_info,
-                    max_articles=max_articles_per_feed,
-                    request_timeout=timeout,
+                    max_articles_per_feed,
+                    timeout,
                 )
-                all_articles.extend(articles)
-            except Exception as e:
-                logger.error(f"Failed to collect from {feed_info['name']}: {e}")
+                for feed_info in self.rss_feeds
+            ]
+            for future in as_completed(futures):
+                try:
+                    all_articles.extend(future.result())
+                except Exception as e:
+                    logger.error(f"Feed collection worker failed: {e}")
+                    continue
+
+        # Keep only the latest unique article per URL, and return newest-first.
+        unique_by_url = {}
+        for article in all_articles:
+            url = article.get("url")
+            if not url:
                 continue
+            existing = unique_by_url.get(url)
+            if existing is None or article.get("published_date", datetime.min) > existing.get("published_date", datetime.min):
+                unique_by_url[url] = article
+
+        all_articles = sorted(
+            unique_by_url.values(),
+            key=lambda a: a.get("published_date", datetime.min),
+            reverse=True,
+        )
 
         logger.info(f"Collected {len(all_articles)} articles total")
         return all_articles
@@ -164,7 +154,7 @@ class RealNewsCollector:
             logger.info(f"Fetching from {feed_info['name']}")
             
             # Fetch RSS feed with timeout
-            response = self.session.get(feed_info['url'], timeout=request_timeout)
+            response = requests.get(feed_info['url'], headers=self.request_headers, timeout=request_timeout)
             response.raise_for_status()
             
             # Parse RSS feed
@@ -197,6 +187,7 @@ class RealNewsCollector:
                     # Clean content
                     clean_content = self.clean_html(content)
                     summary = self.extract_summary(clean_content)
+                    sentiment = self.analyzer.analyze_sentiment(f"{title}. {clean_content}")
                     
                     # Create article dict
                     article = {
@@ -210,8 +201,8 @@ class RealNewsCollector:
                         'collected_date': datetime.utcnow(),
                         'category': feed_info['category'],
                         'region': feed_info.get('region', 'Global'),
-                        'sentiment_score': 0.0,  # Will be analyzed later
-                        'sentiment_label': 'neutral',
+                        'sentiment_score': sentiment.get('polarity', 0.0),
+                        'sentiment_label': sentiment.get('label', 'neutral'),
                         'topics': '[]'  # JSON string, will be analyzed later
                     }
                     
