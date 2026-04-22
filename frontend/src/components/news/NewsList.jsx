@@ -108,13 +108,13 @@ const NewsList = ({
     <Box>
       {/* Filters Section */}
       {filters && (
-        <Box sx={{ mb: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
+        <Box sx={{ mb: 3, p: { xs: 1.5, md: 2 }, bgcolor: 'background.paper', borderRadius: 1 }}>
           <Typography variant="h6" gutterBottom>
             Filters
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
               <InputLabel>Source</InputLabel>
               <Select
                 value={filters.source || ''}
@@ -130,7 +130,7 @@ const NewsList = ({
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
               <InputLabel>Region</InputLabel>
               <Select
                 value={filters.region || ''}
@@ -145,7 +145,7 @@ const NewsList = ({
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
               <InputLabel>Category</InputLabel>
               <Select
                 value={filters.category || ''}
@@ -161,7 +161,7 @@ const NewsList = ({
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
               <InputLabel>Sentiment</InputLabel>
               <Select
                 value={filters.sentiment || ''}
@@ -219,7 +219,7 @@ const NewsList = ({
       )}
 
       {/* Results count and refresh */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 2, gap: 1.5, flexDirection: { xs: 'column', sm: 'row' } }}>
         <Typography variant="body2" color="text.secondary">
           {totalCount !== undefined
             ? `Showing ${articles.length} of ${totalCount} articles`
@@ -233,6 +233,7 @@ const NewsList = ({
             startIcon={<Refresh />}
             onClick={onRefresh}
             disabled={loading}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Refresh
           </Button>

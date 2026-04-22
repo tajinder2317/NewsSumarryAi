@@ -118,8 +118,8 @@ const Home = () => {
         sx={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
-          py: 8,
-          mb: 6,
+          py: { xs: 5, md: 8 },
+          mb: { xs: 4, md: 6 },
           borderRadius: 0,
           position: 'relative',
           overflow: 'hidden',
@@ -149,10 +149,11 @@ const Home = () => {
                 sx={{
                   fontWeight: 700,
                   mb: 2,
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                  fontSize: { xs: '2rem', sm: '2.8rem', md: '3.75rem' },
                 }}
               >
-                📰 News Analyzer AI
+                News Analyzer AI
               </Typography>
               <Typography
                 variant="h5"
@@ -161,12 +162,13 @@ const Home = () => {
                   opacity: 0.9,
                   maxWidth: 600,
                   mx: 'auto',
-                  lineHeight: 1.6
+                  lineHeight: 1.6,
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
                 }}
               >
                 AI-powered news analysis and summarization platform that helps you stay informed with intelligent insights
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap', flexDirection: { xs: 'column', sm: 'row' } }}>
                 <Button
                   variant="contained"
                   size="large"
@@ -178,6 +180,7 @@ const Home = () => {
                     px: 4,
                     py: 1.5,
                     fontWeight: 600,
+                    width: { xs: '100%', sm: 'auto' },
                     '&:hover': {
                       bgcolor: 'grey.100',
                       transform: 'translateY(-2px)',
@@ -199,6 +202,7 @@ const Home = () => {
                     px: 4,
                     py: 1.5,
                     fontWeight: 600,
+                    width: { xs: '100%', sm: 'auto' },
                     '&:hover': {
                       borderColor: 'white',
                       bgcolor: 'rgba(255,255,255,0.1)',
@@ -226,12 +230,12 @@ const Home = () => {
 
         {stats && (
           <Slide in timeout={600} direction="up">
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 4 }}>
               <Grid item xs={12} sm={6} md={3}>
                 <Card
                   sx={{
                     textAlign: 'center',
-                    p: 3,
+                    p: { xs: 1.5, sm: 2, md: 3 },
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     color: 'white',
                     transition: 'all 0.3s ease',
@@ -246,7 +250,7 @@ const Home = () => {
                     <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <Article sx={{ fontSize: 28 }} />
                     </Avatar>
-                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
+                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {stats?.total_articles?.toLocaleString() || '0'}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -259,7 +263,7 @@ const Home = () => {
                 <Card
                   sx={{
                     textAlign: 'center',
-                    p: 3,
+                    p: { xs: 1.5, sm: 2, md: 3 },
                     background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
                     color: 'white',
                     transition: 'all 0.3s ease',
@@ -274,7 +278,7 @@ const Home = () => {
                     <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <TrendingUp sx={{ fontSize: 28 }} />
                     </Avatar>
-                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
+                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {stats?.recent_articles_24h || '0'}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -287,7 +291,7 @@ const Home = () => {
                 <Card
                   sx={{
                     textAlign: 'center',
-                    p: 3,
+                    p: { xs: 1.5, sm: 2, md: 3 },
                     background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                     color: 'white',
                     transition: 'all 0.3s ease',
@@ -302,7 +306,7 @@ const Home = () => {
                     <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <Analytics sx={{ fontSize: 28 }} />
                     </Avatar>
-                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
+                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {stats.sources?.length || 0}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -315,7 +319,7 @@ const Home = () => {
                 <Card
                   sx={{
                     textAlign: 'center',
-                    p: 3,
+                    p: { xs: 1.5, sm: 2, md: 3 },
                     background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
                     color: 'white',
                     transition: 'all 0.3s ease',
@@ -330,7 +334,7 @@ const Home = () => {
                     <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <Search sx={{ fontSize: 28 }} />
                     </Avatar>
-                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
+                    <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {trends?.trending_topics?.length || 0}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -345,7 +349,7 @@ const Home = () => {
       </Container>
 
       {/* Action Buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 6 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 6, px: { xs: 1, sm: 0 } }}>
         <Button
           variant="contained"
           size="large"
@@ -356,6 +360,7 @@ const Home = () => {
             px: 4,
             py: 2,
             fontWeight: 600,
+            width: { xs: '100%', sm: 'auto' },
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
@@ -379,12 +384,13 @@ const Home = () => {
             sx={{
               mb: 4,
               fontWeight: 600,
-              color: 'text.primary'
+              color: 'text.primary',
+              fontSize: { xs: '1.7rem', md: '2.125rem' },
             }}
           >
             Powerful Features
           </Typography>
-          <Grid container spacing={4}>
+          <Grid container spacing={{ xs: 2, md: 4 }}>
             {features.map((feature, index) => (
               <Grid item xs={12} sm={6} md={3} key={index}>
                 <Fade in timeout={1000 + index * 200}>
@@ -407,7 +413,7 @@ const Home = () => {
                       border: '1px solid rgba(0,0,0,0.08)'
                     }}
                   >
-                    <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: 3 }}>
+                    <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: { xs: 2, md: 3 } }}>
                       <Avatar
                         className="feature-icon"
                         sx={{
@@ -476,12 +482,13 @@ const Home = () => {
               sx={{
                 fontWeight: 600,
                 mb: 3,
-                color: 'text.primary'
+                color: 'text.primary',
+                fontSize: { xs: '1.6rem', md: '2.125rem' },
               }}
             >
-              🔥 Trending Topics
+              Trending Topics
             </Typography>
-            <Grid container spacing={3}>
+            <Grid container spacing={{ xs: 2, md: 3 }}>
               {trends.trending_topics.slice(0, 6).map((topic, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Fade in timeout={1200 + index * 100}>
@@ -497,7 +504,7 @@ const Home = () => {
                         border: '1px solid rgba(0,0,0,0.08)'
                       }}
                     >
-                      <CardContent sx={{ p: 3 }}>
+                      <CardContent sx={{ p: { xs: 2, md: 3 } }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                           <Avatar
                             sx={{

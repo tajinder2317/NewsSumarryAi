@@ -153,8 +153,8 @@ const AnalysisPage = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
         News Analysis
       </Typography>
 
@@ -167,7 +167,7 @@ const AnalysisPage = () => {
                 Select Articles
               </Typography>
 
-              <Box sx={{ mb: 2, display: 'flex', gap: 1 }}>
+              <Box sx={{ mb: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 <Button
                   size="small"
                   variant="outlined"
@@ -190,7 +190,7 @@ const AnalysisPage = () => {
                 {selectedArticles.length} of {articles?.length || 0} selected
               </Typography>
 
-              <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+              <Box sx={{ maxHeight: { xs: 320, md: 400 }, overflowY: 'auto' }}>
                 {articles?.map((article) => (
                   <Card
                     key={article.id}
@@ -207,7 +207,7 @@ const AnalysisPage = () => {
                     }}
                     onClick={() => handleArticleToggle(article.id)}
                   >
-                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                    <CardContent sx={{ p: { xs: 1.5, md: 2 }, '&:last-child': { pb: { xs: 1.5, md: 2 } } }}>
                       <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
                         {article.title.substring(0, 60)}...
                       </Typography>
@@ -331,9 +331,9 @@ const AnalysisPage = () => {
                     negative: { current_percentage: (sentimentResult?.negative || 0) * 100 },
                     neutral: { current_percentage: (sentimentResult?.neutral || 0) * 100 },
                   }} />
-                  <Box sx={{ mt: 2 }}>
-                    <Chip label={`Positive: ${((sentimentResult?.positive || 0) * 100).toFixed(1)}%`} color="success" sx={{ mr: 1 }} />
-                    <Chip label={`Negative: ${((sentimentResult?.negative || 0) * 100).toFixed(1)}%`} color="error" sx={{ mr: 1 }} />
+                  <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    <Chip label={`Positive: ${((sentimentResult?.positive || 0) * 100).toFixed(1)}%`} color="success" />
+                    <Chip label={`Negative: ${((sentimentResult?.negative || 0) * 100).toFixed(1)}%`} color="error" />
                     <Chip label={`Neutral: ${((sentimentResult?.neutral || 0) * 100).toFixed(1)}%`} color="default" />
                   </Box>
                 </Box>
@@ -392,7 +392,7 @@ const AnalysisPage = () => {
                           <Typography variant="subtitle2" gutterBottom>
                             Key Points:
                           </Typography>
-                          <ul>
+                          <ul style={{ paddingLeft: '18px', margin: 0 }}>
                             {summaryResult.key_points.map((point, index) => (
                               <li key={index}>
                                 <Typography variant="body2">{point}</Typography>

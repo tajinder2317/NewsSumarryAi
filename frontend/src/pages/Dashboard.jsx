@@ -86,13 +86,13 @@ const Dashboard = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" component="h1">
+    <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, mb: 4, gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+        <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
           Dashboard
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
+        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
+          <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
             <InputLabel>Time Range</InputLabel>
             <Select
               value={timeRange}
@@ -110,6 +110,7 @@ const Dashboard = () => {
             startIcon={<Refresh />}
             onClick={handleRefresh}
             disabled={statsLoading}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Refresh
           </Button>
@@ -117,6 +118,7 @@ const Dashboard = () => {
             variant="contained"
             onClick={() => collectNews()}
             disabled={collecting}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             {collecting ? 'Collecting…' : 'Collect News'}
           </Button>
@@ -130,7 +132,7 @@ const Dashboard = () => {
       )}
 
       {/* Key Metrics */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ textAlign: 'center', p: 2, height: '100%' }}>
             <CardContent>
@@ -187,16 +189,16 @@ const Dashboard = () => {
       </Grid>
 
       {/* Charts Section */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 4 }}>
         {/* Sentiment Distribution */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: 400 }}>
+          <Card sx={{ height: { xs: 360, md: 400 } }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Sentiment Distribution
               </Typography>
               {sentimentLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: { xs: 240, md: 300 } }}>
                   <CircularProgress />
                 </Box>
               ) : (
@@ -208,13 +210,13 @@ const Dashboard = () => {
 
         {/* Source Trends */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: 400 }}>
+          <Card sx={{ height: { xs: 360, md: 400 } }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Top News Sources
               </Typography>
               {sourceLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: { xs: 240, md: 300 } }}>
                   <CircularProgress />
                 </Box>
               ) : (

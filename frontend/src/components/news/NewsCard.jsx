@@ -103,12 +103,12 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
       >
         <CardContent sx={{ pb: 2 }}>
           {/* Header with source avatar and date */}
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' }, mb: 2, gap: 1, flexWrap: 'wrap' }}>
             <Avatar
               sx={{
                 width: 32,
                 height: 32,
-                mr: 2,
+                mr: { xs: 1, sm: 2 },
                 bgcolor: 'primary.main',
                 fontSize: '0.875rem',
                 fontWeight: 'bold'
@@ -137,6 +137,7 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
                 variant="filled"
                 sx={{
                   fontWeight: 500,
+                  ml: { xs: 0, sm: 1 },
                   '& .MuiChip-icon': {
                     fontSize: 16
                   }
@@ -154,6 +155,7 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
             sx={{
               fontWeight: 600,
               lineHeight: 1.3,
+              fontSize: { xs: '1rem', sm: '1.25rem' },
               mb: 2,
               transition: 'color 0.2s ease',
               display: '-webkit-box',
@@ -260,17 +262,21 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
             justifyContent: 'space-between',
             px: 2,
             pb: 2,
-            pt: 0,
-            borderTop: '1px solid rgba(0,0,0,0.06)'
+            pt: 1,
+            borderTop: '1px solid rgba(0,0,0,0.06)',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            gap: 1.5,
           }}>
-            <Box>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               <Button
                 size="small"
                 startIcon={<OpenInNew />}
                 onClick={() => window.open(article.url, '_blank')}
                 sx={{
                   textTransform: 'none',
-                  fontWeight: 500
+                  fontWeight: 500,
+                  width: { xs: '100%', sm: 'auto' },
                 }}
               >
                 Read More
@@ -282,9 +288,9 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
                   variant="outlined"
                   onClick={() => onAnalyze(article.id)}
                   sx={{
-                    ml: 1,
                     textTransform: 'none',
-                    fontWeight: 500
+                    fontWeight: 500,
+                    width: { xs: '100%', sm: 'auto' },
                   }}
                 >
                   Analyze
@@ -292,7 +298,7 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
               )}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <Box sx={{ display: 'flex', gap: 0.5, justifyContent: { xs: 'flex-end', sm: 'flex-start' } }}>
               <Tooltip title="Share">
                 <IconButton
                   size="small"

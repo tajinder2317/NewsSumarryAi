@@ -25,7 +25,7 @@ code {
 
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 16px;
 }
 
 .loading-spinner {
@@ -130,7 +130,7 @@ code {
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 10px;
+    padding: 8px;
   }
   
   .chart-container {

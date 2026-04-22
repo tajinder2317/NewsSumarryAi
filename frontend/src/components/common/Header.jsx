@@ -55,7 +55,13 @@ const Header = () => {
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
       }}
     >
-      <Toolbar sx={{ py: 1 }}>
+      <Toolbar
+        sx={{
+          py: { xs: 0.5, md: 1 },
+          px: { xs: 1, sm: 2 },
+          minHeight: { xs: 56, sm: 64 },
+        }}
+      >
         <Typography
           variant="h6"
           component="div"
@@ -66,6 +72,10 @@ const Header = () => {
             display: 'flex',
             alignItems: 'center',
             gap: 1,
+            fontSize: { xs: '1rem', sm: '1.15rem' },
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
             '&:hover': {
               transform: 'scale(1.02)',
               transition: 'transform 0.2s ease'
@@ -73,7 +83,7 @@ const Header = () => {
           }}
           onClick={() => navigate('/')}
         >
-          ? News Analyzer AI
+          News Analyzer AI
         </Typography>
 
         {/* Desktop Navigation */}

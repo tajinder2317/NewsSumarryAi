@@ -87,9 +87,9 @@ const NewsPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" component="h1">
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 4, gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+        <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
           Latest News
         </Typography>
         <Button
@@ -97,6 +97,7 @@ const NewsPage = () => {
           startIcon={<Refresh />}
           onClick={handleRefresh}
           disabled={isLoading}
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
           Refresh
         </Button>

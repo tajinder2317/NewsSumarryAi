@@ -102,8 +102,8 @@ const SearchPage = () => {
                            searchParams.date_to;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
         Search News
       </Typography>
 
@@ -228,12 +228,13 @@ const SearchPage = () => {
 
             {/* Action Buttons */}
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-start' }}>
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-start', flexDirection: { xs: 'column', sm: 'row' } }}>
                 <Button
                   variant="contained"
                   startIcon={<Search />}
                   onClick={handleSearch}
                   disabled={!hasSearchCriteria || isLoading}
+                  sx={{ width: { xs: '100%', sm: 'auto' } }}
                 >
                   {isLoading ? 'Searching...' : 'Search'}
                 </Button>
@@ -241,6 +242,7 @@ const SearchPage = () => {
                   variant="outlined"
                   startIcon={<Clear />}
                   onClick={handleClear}
+                  sx={{ width: { xs: '100%', sm: 'auto' } }}
                 >
                   Clear
                 </Button>
