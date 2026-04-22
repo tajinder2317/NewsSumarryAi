@@ -47,13 +47,26 @@ try:
     url = make_url(settings.DATABASE_URL)
 
     connect_args = {}
+    engine_kwargs = {"pool_pre_ping": True}
+    
     if url.drivername.startswith("sqlite"):
         connect_args = {"check_same_thread": False}
+    elif url.drivername.startswith("postgresql"):
+        # PostgreSQL specific settings for Vercel
+        engine_kwargs.update({
+            "pool_size": 1,
+            "max_overflow": 0,
+            "pool_timeout": 30,
+            "pool_recycle": 300,
+        })
+        # SSL configuration for Vercel Postgres
+        if os.getenv("VERCEL"):
+            connect_args = {"sslmode": "require"}
 
     engine = create_engine(
         settings.DATABASE_URL,
         connect_args=connect_args,
-        pool_pre_ping=True,
+        **engine_kwargs
     )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 except Exception as e:

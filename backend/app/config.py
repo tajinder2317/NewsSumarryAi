@@ -4,13 +4,33 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
-    # Database
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/database.db")
+    # Database - prioritize external databases for Vercel deployment
+    # Support all available Vercel database options
+    DATABASE_URL = os.getenv("DATABASE_URL", 
+        os.getenv("POSTGRES_URL", 
+        os.getenv("POSTGRES_PRISMA_URL", 
+        os.getenv("POSTGRES_URL_NON_POOLING",
+        os.getenv("NEON_DATABASE_URL",
+        os.getenv("SUPABASE_URL",
+        os.getenv("NILE_DATABASE_URL",
+        "sqlite:///./data/database.db")))))))
+    
+    # Handle Supabase connection string format
+    if os.getenv("SUPABASE_URL") and os.getenv("SUPABASE_PASSWORD"):
+        supabase_db_url = f"{os.getenv('SUPABASE_URL')}/postgres?password={os.getenv('SUPABASE_PASSWORD')}"
+        DATABASE_URL = supabase_db_url
     
     # On Vercel, prefer a real external database if provided.
     # (A local SQLite file/in-memory DB will not persist between invocations.)
-    if os.getenv("VERCEL") and not os.getenv("DATABASE_URL"):
-        DATABASE_URL = "sqlite:///./database.db"
+    if os.getenv("VERCEL") and not any([
+        os.getenv("DATABASE_URL"), 
+        os.getenv("POSTGRES_URL"), 
+        os.getenv("POSTGRES_PRISMA_URL"),
+        os.getenv("NEON_DATABASE_URL"),
+        os.getenv("SUPABASE_URL"),
+        os.getenv("NILE_DATABASE_URL")
+    ]):
+        DATABASE_URL = "sqlite:///:memory:"  # Use in-memory for serverless fallback
     
     # API
     API_HOST = os.getenv("API_HOST", "0.0.0.0")
