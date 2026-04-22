@@ -15,16 +15,19 @@ An AI-powered news analysis and summarization platform built with Python FastAPI
 ## Technology Stack
 
 ### Backend
+
 - **Python 3.8+**
 - **FastAPI** - Modern, fast web framework
 - **SQLAlchemy** - Database ORM
-- **SQLite** - Database (easy setup)
+- **PostgreSQL** - Production database (Vercel Postgres, Neon, Supabase)
+- **SQLite** - Development database
 - **Newspaper3k** - News article extraction
 - **TextBlob** - Text processing and sentiment analysis
 - **Scikit-learn** - Machine learning for topic modeling
 - **NLTK** - Natural language processing
 
 ### Frontend
+
 - **React 18** - Modern UI framework
 - **Material-UI** - React UI components
 - **React Query** - Data fetching and caching
@@ -61,6 +64,7 @@ NewsAnalyzerAI/
 ## Quick Start
 
 ### Prerequisites
+
 - Python 3.8 or higher
 - Node.js 14 or higher
 - npm or yarn
@@ -68,47 +72,53 @@ NewsAnalyzerAI/
 ### Backend Setup
 
 1. **Navigate to backend directory**
+
    ```bash
    cd backend
    ```
 
 2. **Create virtual environment**
+
    ```bash
    python -m venv venv
-   
+
    # Windows
    venv\Scripts\activate
-   
+
    # macOS/Linux
    source venv/bin/activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Configure environment variables**
+
    ```bash
    copy .env.example .env
    ```
-   
+
    Edit `.env` file and configure:
    - `NEWS_API_KEY` (optional, get from https://newsapi.org/)
    - `RSS_FEEDS` (comma-separated list of RSS feed URLs)
    - Other settings as needed
 
 5. **Create data directory**
+
    ```bash
    mkdir data
    mkdir data\logs
    ```
 
 6. **Start the backend server**
+
    ```bash
    python run.py
    ```
-   
+
    The API will be available at `http://localhost:8000`
    - API documentation: `http://localhost:8000/docs`
    - Health check: `http://localhost:8000/health`
@@ -116,55 +126,120 @@ NewsAnalyzerAI/
 ### Frontend Setup
 
 1. **Navigate to frontend directory**
+
    ```bash
    cd frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start the frontend development server**
+
    ```bash
    npm start
    ```
-   
+
    The application will be available at `http://localhost:3000`
+
+## Vercel Deployment
+
+### Live Demo
+
+- **Frontend**: https://news-sumarry-ai.vercel.app
+- **Backend**: https://news-sumarry-ai-backend.vercel.app
+- **API Docs**: https://news-sumarry-ai-backend.vercel.app/docs
+
+### Quick Deploy
+
+1. **Deploy Backend**
+
+   ```bash
+   cd backend
+   vercel --prod
+   ```
+
+2. **Deploy Frontend**
+   ```bash
+   cd frontend
+   vercel --prod
+   ```
+
+### Database Setup
+
+The app requires a PostgreSQL database for production deployment:
+
+1. **Vercel Postgres (Recommended)**
+   - Create database in Vercel Dashboard
+   - Add `POSTGRES_PRISMA_URL` to environment variables
+
+2. **Alternative Options**
+   - **Neon**: Add `NEON_DATABASE_URL`
+   - **Supabase**: Add `SUPABASE_URL` + `SUPABASE_PASSWORD`
+
+3. **Environment Variables**
+   ```env
+   DATABASE_URL=your_postgres_connection_string
+   POSTGRES_URL=your_postgres_connection_string
+   POSTGRES_PRISMA_URL=your_postgres_connection_string
+   VERCEL=true
+   ```
+
+### Separate Deployment
+
+For separate frontend/backend deployments:
+
+1. Update `frontend/.env.production`:
+
+   ```env
+   REACT_APP_API_URL=https://your-backend-domain.vercel.app
+   ```
+
+2. Deploy both projects separately
 
 ## Usage
 
 ### 1. Collect News
+
 - Click "Collect News" on the home page to fetch articles from configured sources
 - News is automatically analyzed for sentiment, topics, and categories
 
 ### 2. View Dashboard
+
 - Navigate to `/dashboard` to see statistics and trending topics
 - View sentiment distribution, source analysis, and recent trends
 
 ### 3. Search and Filter
+
 - Navigate to `/search` to find specific articles
 - Filter by source, category, sentiment, date range, or keywords
 
 ### 4. Analyze Articles
+
 - Navigate to `/analysis` to perform detailed analysis
 - Summarize articles, extract topics, and analyze sentiment
 
 ## API Endpoints
 
 ### News Endpoints
+
 - `GET /api/v1/news/` - Get news articles
 - `POST /api/v1/news/collect` - Collect news from sources
 - `POST /api/v1/news/search` - Search news articles
 - `GET /api/v1/news/stats/summary` - Get news statistics
 
 ### Analysis Endpoints
+
 - `POST /api/v1/analysis/sentiment` - Analyze sentiment
 - `POST /api/v1/analysis/topics` - Extract topics
 - `POST /api/v1/analysis/summarize` - Summarize articles
 - `POST /api/v1/analysis/keywords` - Extract keywords
 
 ### Trends Endpoints
+
 - `GET /api/v1/trends/topics` - Get trending topics
 - `GET /api/v1/trends/breaking` - Get breaking news
 - `GET /api/v1/trends/analysis` - Get topic trends
@@ -175,6 +250,7 @@ NewsAnalyzerAI/
 ### Environment Variables
 
 #### Backend (.env)
+
 ```env
 # Database
 DATABASE_URL=sqlite:///./data/database.db
@@ -199,7 +275,9 @@ LOG_FILE=./data/logs/app.log
 ```
 
 #### Frontend
+
 Create `.env` file in frontend directory:
+
 ```env
 REACT_APP_API_URL=http://localhost:8000
 ```
@@ -207,6 +285,7 @@ REACT_APP_API_URL=http://localhost:8000
 ## Development
 
 ### Running Tests
+
 ```bash
 # Backend tests
 cd backend
@@ -218,10 +297,12 @@ npm test
 ```
 
 ### Code Style
+
 - Backend follows PEP 8 Python style guidelines
 - Frontend uses ESLint and Prettier for consistent formatting
 
 ### Adding New Features
+
 1. Backend: Add service in `backend/app/services/`
 2. API: Add endpoints in `backend/app/api/`
 3. Frontend: Add components in `frontend/src/components/`
@@ -251,7 +332,28 @@ npm test
    - Check database file permissions
    - Verify DATABASE_URL in .env file
 
+### Vercel Deployment Issues
+
+1. **News collection fails with database errors**
+   - Add PostgreSQL connection string to Vercel environment variables
+   - Use `POSTGRES_PRISMA_URL` for Vercel Postgres
+   - Redeploy backend after adding environment variables
+
+2. **Frontend shows 404 errors for manifest.json or static files**
+   - Check `frontend/vercel.json` routing configuration
+   - Ensure static files are served before fallback to index.html
+
+3. **Frontend can't connect to backend**
+   - Verify `REACT_APP_API_URL` in `frontend/.env.production`
+   - For separate deployments: set to backend domain
+   - For combined deployments: leave empty for same-origin
+
+4. **Database schema errors (missing columns)**
+   - Trigger migration: `POST /api/v1/fixdb`
+   - Or manually add environment variables and redeploy
+
 ### Getting Help
+
 - Check the logs in `data/logs/app.log`
 - Review API documentation at `http://localhost:8000/docs`
 - Open an issue on GitHub with detailed error information
