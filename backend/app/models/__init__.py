@@ -1,6 +1,6 @@
 from .database import NewsArticle, AnalysisResult, get_db, create_tables, get_db_diagnostic
 from .schemas import (
-    NewsArticleBase, NewsArticleCreate, NewsArticleResponse, NewsArticleUpdate,
+    NewsArticleBase, NewsArticleCreate, NewsArticleResponse, NewsArticleUpdate, NewsArticlePage,
     AnalysisRequest, AnalysisResponse, TrendAnalysis, SearchRequest,
     SentimentAnalysis, TopicAnalysis
 )
@@ -8,6 +8,7 @@ from .schemas import (
 __all__ = [
     "NewsArticle", "AnalysisResult", "get_db", "create_tables", "get_db_diagnostic",
     "NewsArticleBase", "NewsArticleCreate", "NewsArticleResponse", "NewsArticleUpdate",
+    "NewsArticlePage",
     "AnalysisRequest", "AnalysisResponse", "TrendAnalysis", "SearchRequest",
     "SentimentAnalysis", "TopicAnalysis"
 ]

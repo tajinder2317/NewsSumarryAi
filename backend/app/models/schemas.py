@@ -26,6 +26,12 @@ class NewsArticleResponse(NewsArticleBase):
     class Config:
         from_attributes = True
 
+class NewsArticlePage(BaseModel):
+    items: List[NewsArticleResponse]
+    total: int
+    page: int
+    page_size: int
+
 class NewsArticleUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None

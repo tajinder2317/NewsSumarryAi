@@ -7,6 +7,8 @@ import {
   Button,
   Alert,
   Divider,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 
@@ -14,8 +16,22 @@ import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';
 import NewsCard from '../components/news/NewsCard';
 
+const startOfLocalDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+const endOfLocalDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+const startOfLocalMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1, 0, 0, 0, 0);
+const startOfLocalYear = (d) => new Date(d.getFullYear(), 0, 1, 0, 0, 0, 0);
+const startOfLocalWeekMonday = (d) => {
+  const day = d.getDay(); // 0=Sun .. 6=Sat
+  const diff = day === 0 ? 6 : day - 1; // days since Monday
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - diff);
+  return startOfLocalDay(monday);
+};
+
 const NewsPage = () => {
   const FRESH_MINUTES = 5;
+  const PAGE_SIZE = 50;
+  const [timeRange, setTimeRange] = useState('today');
   const [filters, setFilters] = useState({
     source: '',
     category: '',
@@ -23,7 +39,35 @@ const NewsPage = () => {
     region: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 20;
+
+  const getDateRangeParams = () => {
+    const now = new Date();
+    if (timeRange === 'all') return {};
+
+    if (timeRange === 'today') {
+      return { date_from: startOfLocalDay(now).toISOString(), date_to: now.toISOString() };
+    }
+
+    if (timeRange === 'yesterday') {
+      const y = new Date(now);
+      y.setDate(now.getDate() - 1);
+      return { date_from: startOfLocalDay(y).toISOString(), date_to: endOfLocalDay(y).toISOString() };
+    }
+
+    if (timeRange === 'week') {
+      return { date_from: startOfLocalWeekMonday(now).toISOString(), date_to: now.toISOString() };
+    }
+
+    if (timeRange === 'month') {
+      return { date_from: startOfLocalMonth(now).toISOString(), date_to: now.toISOString() };
+    }
+
+    if (timeRange === 'year') {
+      return { date_from: startOfLocalYear(now).toISOString(), date_to: now.toISOString() };
+    }
+
+    return {};
+  };
 
   const {
     data: latestArticles = [],
@@ -54,18 +98,20 @@ const NewsPage = () => {
 
   // Fetch news articles
   const {
-    data: articles = [],
+    data: pageData,
     isLoading,
     error,
     refetch,
   } = useQuery(
-    ['news', { page: currentPage, limit, ...filters }],
-    () => newsService.fetchNews({
-      skip: (currentPage - 1) * limit,
-      limit,
+    ['newsPaged', { page: currentPage, page_size: PAGE_SIZE, timeRange, ...filters }],
+    () => newsService.fetchNewsPaged({
+      page: currentPage,
+      page_size: PAGE_SIZE,
+      ...getDateRangeParams(),
       source: filters.source || undefined,
       category: filters.category || undefined,
       region: filters.region || undefined,
+      sentiment: filters.sentiment || undefined,
     }),
     {
       keepPreviousData: true,
@@ -117,11 +163,14 @@ const NewsPage = () => {
     refetch();
   };
 
+  const articles = pageData?.items || [];
+  const totalCount = typeof pageData?.total === 'number' ? pageData.total : undefined;
+
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 4, gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
         <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
-          Latest News (updates every 2 min)
+          Latest News
         </Typography>
         <Button
           variant="outlined"
@@ -132,6 +181,40 @@ const NewsPage = () => {
         >
           Refresh
         </Button>
+      </Box>
+
+      <Box sx={{ mb: 3, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'space-between' }}>
+        <ToggleButtonGroup
+          value={timeRange}
+          exclusive
+          onChange={(e, next) => {
+            if (!next) return;
+            setTimeRange(next);
+            setCurrentPage(1);
+          }}
+          size="small"
+          sx={{
+            flexWrap: 'wrap',
+            '& .MuiToggleButton-root': {
+              textTransform: 'none',
+              px: 1.5,
+              borderColor: 'rgba(15, 23, 42, 0.18)',
+            },
+          }}
+        >
+          <ToggleButton value="today">Today</ToggleButton>
+          <ToggleButton value="yesterday">Yesterday</ToggleButton>
+          <ToggleButton value="week">This Week</ToggleButton>
+          <ToggleButton value="month">This Month</ToggleButton>
+          <ToggleButton value="year">This Year</ToggleButton>
+          <ToggleButton value="all">All Time</ToggleButton>
+        </ToggleButtonGroup>
+
+        <Typography variant="body2" color="text.secondary" sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
+          {totalCount !== undefined ? `${totalCount.toLocaleString()} articles` : `${articles.length} articles`}
+          {' · '}
+          {PAGE_SIZE} per page
+        </Typography>
       </Box>
 
       {(error || latestError) && (
@@ -167,10 +250,10 @@ const NewsPage = () => {
         onRefresh={handleRefresh}
         pagination={{
           page: currentPage,
-          limit,
+          limit: PAGE_SIZE,
         }}
         onPageChange={handlePageChange}
-        totalCount={articles?.length >= limit ? undefined : articles?.length}
+        totalCount={totalCount}
         filters={{
           ...filters,
           availableSources: sources?.sources || [],

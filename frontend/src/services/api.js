@@ -100,6 +100,11 @@ export const newsAPI = {
     return api.get('/api/v1/news/', { params });
   },
 
+  // Server-side paged news (returns { items, total, page, page_size })
+  getNewsPaged: (params = {}) => {
+    return api.get('/api/v1/news/paged', { params });
+  },
+
   // Get freshest news (optionally triggers a lightweight refresh on the backend)
   getLatest: (params = {}) => {
     return api.get('/api/v1/news/latest', { params });

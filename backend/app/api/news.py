@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from ..models import (
-    get_db, NewsArticle, NewsArticleResponse, SearchRequest
+    get_db, NewsArticle, NewsArticleResponse, NewsArticlePage, SearchRequest
 )
 
 router = APIRouter()
@@ -23,7 +23,10 @@ async def get_news(
     source: Optional[str] = Query(None),
     category: Optional[str] = Query(None),
     region: Optional[str] = Query(None),
+    sentiment: Optional[str] = Query(None, description="Filter by sentiment label (positive/negative/neutral)"),
     minutes: Optional[int] = Query(None, ge=1, le=7 * 24 * 60, description="Only return articles published in the last N minutes"),
+    date_from: Optional[datetime] = Query(None, description="Return articles published on/after this UTC datetime"),
+    date_to: Optional[datetime] = Query(None, description="Return articles published on/before this UTC datetime"),
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
@@ -40,15 +43,82 @@ async def get_news(
         if region:
             query = query.filter(NewsArticle.region == region)
 
+        if sentiment:
+            query = query.filter(NewsArticle.sentiment_label == sentiment)
+
         if minutes:
             cutoff = datetime.utcnow() - timedelta(minutes=minutes)
             query = query.filter(NewsArticle.published_date >= cutoff)
+
+        if date_from:
+            query = query.filter(NewsArticle.published_date >= date_from)
+
+        if date_to:
+            query = query.filter(NewsArticle.published_date <= date_to)
         
         # Order and limit for better performance
         articles = query.order_by(NewsArticle.published_date.desc()).offset(skip).limit(limit).all()
         return articles
     except Exception as e:
         logger.error(f"Error fetching news: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching news: {str(e)}")
+
+@router.get("/paged", response_model=NewsArticlePage)
+async def get_news_paged(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(50, ge=1, le=50),
+    source: Optional[str] = Query(None),
+    category: Optional[str] = Query(None),
+    region: Optional[str] = Query(None),
+    sentiment: Optional[str] = Query(None),
+    minutes: Optional[int] = Query(None, ge=1, le=7 * 24 * 60),
+    date_from: Optional[datetime] = Query(None),
+    date_to: Optional[datetime] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """Server-side paginated news endpoint with total counts (for real pagination UI)."""
+    try:
+        query = db.query(NewsArticle)
+
+        if source:
+            query = query.filter(NewsArticle.source.ilike(f"%{source}%"))
+
+        if category:
+            query = query.filter(NewsArticle.category == category)
+
+        if region:
+            query = query.filter(NewsArticle.region == region)
+
+        if sentiment:
+            query = query.filter(NewsArticle.sentiment_label == sentiment)
+
+        if minutes:
+            cutoff = datetime.utcnow() - timedelta(minutes=minutes)
+            query = query.filter(NewsArticle.published_date >= cutoff)
+
+        if date_from:
+            query = query.filter(NewsArticle.published_date >= date_from)
+
+        if date_to:
+            query = query.filter(NewsArticle.published_date <= date_to)
+
+        total = query.count()
+        skip = (page - 1) * page_size
+        items = (
+            query.order_by(NewsArticle.published_date.desc())
+            .offset(skip)
+            .limit(page_size)
+            .all()
+        )
+
+        return {
+            "items": items,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+        }
+    except Exception as e:
+        logger.error(f"Error fetching paged news: {e}")
         raise HTTPException(status_code=500, detail=f"Error fetching news: {str(e)}")
 
 @router.get("/latest", response_model=List[NewsArticleResponse])

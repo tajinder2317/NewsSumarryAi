@@ -6,6 +6,15 @@ const normalizeArticles = (data) => {
   return [];
 };
 
+const normalizePage = (data) => {
+  if (!data || typeof data !== 'object') return { items: [], total: 0, page: 1, page_size: 50 };
+  const items = Array.isArray(data.items) ? data.items : normalizeArticles(data);
+  const total = typeof data.total === 'number' ? data.total : items.length;
+  const page = typeof data.page === 'number' ? data.page : 1;
+  const page_size = typeof data.page_size === 'number' ? data.page_size : 50;
+  return { items, total, page, page_size };
+};
+
 const normalizeStringList = (data) => {
   if (Array.isArray(data)) return data;
   return [];
@@ -33,6 +42,16 @@ export const newsService = {
       return normalizeArticles(response?.data);
     } catch (error) {
       throw new Error(`Failed to fetch latest news: ${error.message}`);
+    }
+  },
+
+  // Fetch paged news with totals (for proper pagination UI)
+  fetchNewsPaged: async (params = {}) => {
+    try {
+      const response = await newsAPI.getNewsPaged(params);
+      return normalizePage(response?.data);
+    } catch (error) {
+      throw new Error(`Failed to fetch news: ${error.message}`);
     }
   },
 
