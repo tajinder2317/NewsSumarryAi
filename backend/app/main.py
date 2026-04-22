@@ -8,7 +8,7 @@ import logging
 import os
 
 from .config import settings
-from .models import get_db, create_tables
+from .models import get_db, create_tables, get_db_diagnostic
 from .api import news, analysis, trends
 
 # Configure logging for serverless deployment
@@ -110,6 +110,27 @@ async def health_check():
 async def health_check_api():
     """Health check endpoint under /api for Vercel routing setups"""
     return {"status": "healthy", "timestamp": str(datetime.utcnow())}
+
+@app.get("/healthz")
+async def healthz():
+    """
+    Diagnostic health endpoint that stays available even if DB is misconfigured.
+    Useful for debugging deployment issues.
+    """
+    db = get_db_diagnostic()
+    app_status = "ok" if db.get("ready") else "degraded"
+    return {
+        "status": app_status,
+        "service": "news-analyzer-ai-backend",
+        "timestamp": str(datetime.utcnow()),
+        "environment": "serverless" if os.getenv("VERCEL") else "local",
+        "database": db,
+    }
+
+@app.get("/api/healthz")
+async def healthz_api():
+    """Healthz endpoint under /api for Vercel routing setups"""
+    return await healthz()
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):

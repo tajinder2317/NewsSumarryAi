@@ -8,6 +8,7 @@ import os
 from ..config import settings
 
 Base = declarative_base()
+DB_INIT_ERROR = None
 
 class NewsArticle(Base):
     __tablename__ = "news_articles"
@@ -43,7 +44,7 @@ class AnalysisResult(Base):
     def __repr__(self):
         return f"<AnalysisResult(id={self.id}, type='{self.analysis_type}')>"
 
-# Database setup - handle serverless environment
+# Database setup - keep app bootable even if DB init fails.
 try:
     url = make_url(settings.DATABASE_URL)
 
@@ -74,14 +75,9 @@ except Exception as e:
     import logging
     logger = logging.getLogger(__name__)
     logger.error(f"Database setup failed: {e}")
-    if os.getenv("VERCEL"):
-        raise RuntimeError(
-            "Database setup failed in Vercel. "
-            "Verify DATABASE_URL/POSTGRES_PRISMA_URL and PostgreSQL connectivity."
-        ) from e
-    # Local development fallback
-    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    DB_INIT_ERROR = str(e)
+    engine = None
+    SessionLocal = None
 
 # Global variable to track if tables are created
 _tables_created = False
@@ -139,6 +135,17 @@ def _ensure_news_articles_schema(db):
 
 def get_db():
     global _tables_created
+    if SessionLocal is None:
+        detail = "Database unavailable. Check backend DATABASE_URL/POSTGRES_PRISMA_URL configuration."
+        if settings.DB_CONFIG_WARNING:
+            detail = settings.DB_CONFIG_WARNING
+        elif DB_INIT_ERROR:
+            detail = f"Database initialization failed: {DB_INIT_ERROR}"
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=detail,
+        )
+
     # Create tables on first database access
     if not _tables_created:
         try:
@@ -164,6 +171,9 @@ def get_db():
         db.close()
 
 def create_tables():
+    if engine is None:
+        return
+
     try:
         Base.metadata.create_all(bind=engine)
 
@@ -188,3 +198,38 @@ def create_tables():
         logger = logging.getLogger(__name__)
         logger.warning(f"Could not create tables: {e}")
         # Don't raise error, just log it
+
+def get_db_diagnostic():
+    """Lightweight DB diagnostic for health endpoints."""
+    if settings.DB_CONFIG_WARNING:
+        return {
+            "status": "warning",
+            "ready": False,
+            "detail": settings.DB_CONFIG_WARNING,
+            "driver": None,
+        }
+
+    if SessionLocal is None or engine is None:
+        return {
+            "status": "error",
+            "ready": False,
+            "detail": f"Database not initialized: {DB_INIT_ERROR or 'unknown error'}",
+            "driver": None,
+        }
+
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {
+            "status": "ok",
+            "ready": True,
+            "detail": "Database connection successful",
+            "driver": engine.dialect.name if engine.dialect else None,
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "ready": False,
+            "detail": f"Database connectivity failed: {str(e)}",
+            "driver": engine.dialect.name if engine and engine.dialect else None,
+        }

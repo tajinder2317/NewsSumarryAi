@@ -21,9 +21,10 @@ class Settings:
         supabase_db_url = f"{os.getenv('SUPABASE_URL')}/postgres?password={os.getenv('SUPABASE_PASSWORD')}"
         DATABASE_URL = supabase_db_url
     
-    # In Vercel serverless, require external DB. SQLite is non-persistent and should not be used.
+    # In Vercel serverless, SQLite is non-persistent. Keep app booting so `/healthz` can report config issues.
+    DB_CONFIG_WARNING = None
     if os.getenv("VERCEL") and DATABASE_URL.startswith("sqlite"):
-        raise RuntimeError(
+        DB_CONFIG_WARNING = (
             "Missing external database configuration for Vercel. "
             "Set DATABASE_URL or POSTGRES_PRISMA_URL in backend project environment variables."
         )
