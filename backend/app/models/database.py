@@ -2,9 +2,10 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, F
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import make_url
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 import os
+import time
 from ..config import settings
 
 Base = declarative_base()
@@ -21,7 +22,7 @@ class NewsArticle(Base):
     source = Column(String, nullable=False, index=True)  # Add index for source filtering
     author = Column(String)
     published_date = Column(DateTime, index=True)  # Add index for date ordering
-    collected_date = Column(DateTime, default=datetime.utcnow)
+    collected_date = Column(DateTime, default=datetime.utcnow, index=True)
     region = Column(String, index=True)
     
     # Analysis fields
@@ -81,6 +82,41 @@ except Exception as e:
 
 # Global variable to track if tables are created
 _tables_created = False
+
+_RETENTION_CACHE = {"ts": 0.0}
+_RETENTION_TTL_SECONDS = 15 * 60  # best-effort cleanup, at most once per 15 minutes
+
+def cleanup_old_news_articles(db, max_age_days: int = 2) -> int:
+    """
+    Best-effort retention: delete news older than `max_age_days` based on `collected_date`.
+
+    In serverless deployments we typically don't have a background worker, so we run this
+    opportunistically (throttled by `_RETENTION_TTL_SECONDS`) on read/write endpoints.
+    """
+    now = time.time()
+    if now - _RETENTION_CACHE["ts"] < _RETENTION_TTL_SECONDS:
+        return 0
+
+    cutoff = datetime.utcnow() - timedelta(days=max_age_days)
+    try:
+        deleted = (
+            db.query(NewsArticle)
+            .filter(NewsArticle.collected_date.isnot(None))
+            .filter(NewsArticle.collected_date < cutoff)
+            .delete(synchronize_session=False)
+        )
+        if deleted:
+            db.commit()
+        _RETENTION_CACHE["ts"] = now
+        return int(deleted or 0)
+    except Exception:
+        try:
+            db.rollback()
+        except Exception:
+            pass
+        # Avoid hammering DB in case of repeated failures.
+        _RETENTION_CACHE["ts"] = now
+        return 0
 
 def _ensure_news_articles_schema(db):
     """

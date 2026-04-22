@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from ..models import (
-    get_db, NewsArticle, NewsArticleResponse, NewsArticlePage, SearchRequest
+    get_db, cleanup_old_news_articles, NewsArticle, NewsArticleResponse, NewsArticlePage, SearchRequest
 )
 
 router = APIRouter()
@@ -31,6 +31,8 @@ async def get_news(
 ):
     """Get news articles with optional filtering"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Use a more efficient query with indexes
         query = db.query(NewsArticle)
         
@@ -78,6 +80,8 @@ async def get_news_paged(
 ):
     """Server-side paginated news endpoint with total counts (for real pagination UI)."""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         query = db.query(NewsArticle)
 
         if source:
@@ -136,6 +140,8 @@ async def get_latest_news(
     On serverless deployments, we don't have a background scheduler by default,
     so this endpoint can optionally trigger a small collection pass first.
     """
+    cleanup_old_news_articles(db, max_age_days=2)
+
     if refresh:
         from ..services.real_news_collector import RealNewsCollector
 
@@ -213,6 +219,8 @@ async def collect_news(
     from ..services.real_news_collector import RealNewsCollector
 
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         collector = RealNewsCollector()
         articles = collector.collect_articles(timeout=timeout, max_articles_per_feed=max_per_source)
 
@@ -283,6 +291,7 @@ async def search_news(
     db: Session = Depends(get_db)
 ):
     """Search news articles with various filters"""
+    cleanup_old_news_articles(db, max_age_days=2)
     query = db.query(NewsArticle)
     
     # Text search
@@ -344,6 +353,8 @@ async def get_news_stats(db: Session = Depends(get_db)):
         return _NEWS_STATS_CACHE["data"]
 
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         total_articles = db.query(NewsArticle).count()
         
         # Articles in last 24 hours

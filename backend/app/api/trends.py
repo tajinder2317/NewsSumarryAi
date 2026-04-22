@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import time
 
-from ..models import get_db, NewsArticle
+from ..models import get_db, cleanup_old_news_articles, NewsArticle
 from ..services.trend_detector_simple import TrendDetector
 
 router = APIRouter()
@@ -22,6 +22,8 @@ async def get_trending_topics(
         return cached["data"]
 
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Get recent articles
         cutoff_time = datetime.utcnow() - timedelta(hours=hours)
         articles = db.query(NewsArticle).filter(
@@ -64,6 +66,8 @@ async def get_topic_trends(
 ):
     """Analyze topic trends over time"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Get articles for the specified period
         cutoff_time = datetime.utcnow() - timedelta(days=days)
         articles = db.query(NewsArticle).filter(
@@ -103,6 +107,8 @@ async def get_breaking_news(
 ):
     """Get breaking news alerts"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Get recent articles
         cutoff_time = datetime.utcnow() - timedelta(minutes=minutes)
         articles = db.query(NewsArticle).filter(
@@ -143,6 +149,8 @@ async def get_sentiment_trends(
 ):
     """Get sentiment trends over time"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Get articles for the specified period
         cutoff_time = datetime.utcnow() - timedelta(days=days)
         articles = db.query(NewsArticle).filter(
@@ -211,6 +219,8 @@ async def get_source_trends(
 ):
     """Get trends by news source"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Get articles for the specified period
         cutoff_time = datetime.utcnow() - timedelta(days=days)
         articles = db.query(NewsArticle).filter(

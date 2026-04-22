@@ -22,6 +22,21 @@ import moment from 'moment';
 import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';
 
+const startOfLocalDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+const endOfLocalDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+const fromDateInput = (value) => {
+  if (!value) return null;
+  const [y, m, day] = value.split('-').map((x) => parseInt(x, 10));
+  if (!y || !m || !day) return null;
+  return startOfLocalDay(new Date(y, m - 1, day));
+};
+const toDateInput = (value) => {
+  if (!value) return null;
+  const [y, m, day] = value.split('-').map((x) => parseInt(x, 10));
+  if (!y || !m || !day) return null;
+  return endOfLocalDay(new Date(y, m - 1, day));
+};
+
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useState({
     query: '',
@@ -206,7 +221,7 @@ const SearchPage = () => {
                 label="From Date"
                 type="date"
                 value={searchParams.date_from ? moment(searchParams.date_from).format('YYYY-MM-DD') : ''}
-                onChange={(e) => handleFilterChange('date_from', e.target.value ? new Date(e.target.value) : null)}
+                onChange={(e) => handleFilterChange('date_from', fromDateInput(e.target.value))}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -219,7 +234,7 @@ const SearchPage = () => {
                 label="To Date"
                 type="date"
                 value={searchParams.date_to ? moment(searchParams.date_to).format('YYYY-MM-DD') : ''}
-                onChange={(e) => handleFilterChange('date_to', e.target.value ? new Date(e.target.value) : null)}
+                onChange={(e) => handleFilterChange('date_to', toDateInput(e.target.value))}
                 InputLabelProps={{
                   shrink: true,
                 }}

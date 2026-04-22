@@ -5,7 +5,7 @@ from typing import List
 import json
 
 from ..models import (
-    get_db, NewsArticle,
+    get_db, cleanup_old_news_articles, NewsArticle,
     SentimentAnalysis, TopicAnalysis
 )
 from ..services.analyzer_simple import TextAnalyzer
@@ -20,6 +20,8 @@ async def analyze_sentiment(
 ):
     """Analyze sentiment for specified articles"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Extract parameters from request body
         article_ids = request.get("article_ids", [])
         
@@ -73,6 +75,8 @@ async def analyze_topics(
 ):
     """Extract topics from specified articles"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Extract parameters from request body
         article_ids = request.get("article_ids", [])
         
@@ -118,6 +122,7 @@ async def summarize_articles(
     db: Session = Depends(get_db)
 ):
     """Summarize specified articles"""
+    cleanup_old_news_articles(db, max_age_days=2)
     try:
         # Extract parameters from request body
         article_ids = request.get("article_ids", [])
@@ -175,6 +180,8 @@ async def extract_keywords(
 ):
     """Extract keywords from specified articles"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         # Extract parameters from request body
         article_ids = request.get("article_ids", [])
         num_keywords = request.get("num_keywords", 10)
@@ -214,6 +221,8 @@ async def categorize_articles(
 ):
     """Categorize specified articles"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         article_ids = request.get("article_ids", [])
 
         # Get articles
@@ -249,6 +258,8 @@ async def categorize_articles(
 def get_analysis_statistics(db: Session = Depends(get_db)):
     """Get analysis statistics"""
     try:
+        cleanup_old_news_articles(db, max_age_days=2)
+
         total_articles = db.query(NewsArticle).count()
         
         # Sentiment distribution
