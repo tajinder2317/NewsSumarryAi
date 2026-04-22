@@ -9,6 +9,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Tooltip,
+  useTheme,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -17,9 +19,13 @@ import {
   Analytics,
   Search,
   Article,
+  DarkMode,
+  LightMode,
 } from '@mui/icons-material';
 
-const Header = () => {
+const Header = ({ mode = 'dark', onToggleMode = () => {} }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -50,9 +56,13 @@ const Header = () => {
       position="sticky"
       elevation={0}
       sx={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        backgroundColor: isDark ? 'rgba(10, 16, 28, 0.94)' : 'rgba(255, 255, 255, 0.92)',
+        borderBottom: isDark
+          ? '1px solid rgba(159, 176, 200, 0.2)'
+          : '1px solid rgba(15, 23, 42, 0.12)',
+        color: isDark ? '#e7edf8' : '#0f172a',
         backdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+        boxShadow: 'none',
       }}
     >
       <Toolbar
@@ -86,6 +96,19 @@ const Header = () => {
           News Analyzer AI
         </Typography>
 
+        <Tooltip title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+          <IconButton
+            onClick={onToggleMode}
+            color="inherit"
+            sx={{
+              mr: { xs: 0.5, md: 1 },
+              border: isDark ? '1px solid rgba(159, 176, 200, 0.35)' : '1px solid rgba(15, 23, 42, 0.2)',
+            }}
+          >
+            {mode === 'dark' ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
+          </IconButton>
+        </Tooltip>
+
         {/* Desktop Navigation */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
           {menuItems.map((item) => (
@@ -96,7 +119,7 @@ const Header = () => {
               onClick={() => navigate(item.path)}
               variant={location.pathname === item.path ? 'outlined' : 'text'}
               sx={{
-                borderColor: 'rgba(255, 255, 255, 0.7)',
+                borderColor: 'rgba(159, 176, 200, 0.4)',
                 borderRadius: 2,
                 px: 2,
                 py: 1,
@@ -104,15 +127,15 @@ const Header = () => {
                 textTransform: 'none',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  backgroundColor: 'rgba(125, 211, 252, 0.12)',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.24)'
                 },
                 ...(location.pathname === item.path && {
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  borderColor: 'rgba(255, 255, 255, 0.9)',
+                  backgroundColor: 'rgba(125, 211, 252, 0.18)',
+                  borderColor: 'rgba(125, 211, 252, 0.55)',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                    backgroundColor: 'rgba(125, 211, 252, 0.22)',
                   }
                 })
               }}
@@ -147,11 +170,12 @@ const Header = () => {
             sx={{
               display: { xs: 'block', md: 'none' },
               '& .MuiPaper-root': {
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
+                backgroundColor: isDark ? '#0e1625' : '#ffffff',
+                color: isDark ? '#e7edf8' : '#0f172a',
                 minWidth: 200,
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                borderRadius: 2,
+                borderRadius: 2.5,
+                border: isDark ? '1px solid rgba(159, 176, 200, 0.25)' : '1px solid rgba(15, 23, 42, 0.14)',
                 mt: 1
               }
             }}
@@ -162,17 +186,17 @@ const Header = () => {
                 onClick={() => handleNavigation(item.path)}
                 selected={location.pathname === item.path}
                 sx={{
-                  color: 'white',
+                  color: isDark ? '#e7edf8' : '#0f172a',
                   fontWeight: 500,
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                    backgroundColor: 'rgba(125, 211, 252, 0.12)',
                     transform: 'translateX(4px)'
                   },
                   '&.Mui-selected': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    backgroundColor: 'rgba(125, 211, 252, 0.16)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.25)'
+                      backgroundColor: 'rgba(125, 211, 252, 0.2)'
                     }
                   }
                 }}

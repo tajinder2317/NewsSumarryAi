@@ -14,6 +14,7 @@ import {
   Slide,
   Avatar,
   Chip,
+  useTheme,
 } from '@mui/material';
 import {
   TrendingUp,
@@ -30,6 +31,8 @@ import {
 import { newsService, trendsService } from '../services/newsService';
 
 const Home = () => {
+  const isDark = useTheme().palette.mode === 'dark';
+
   const {
     data: stats,
     isLoading: statsLoading,
@@ -111,23 +114,14 @@ const Home = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          backgroundColor: isDark ? 'rgba(14, 22, 37, 0.95)' : '#ffffff',
+          border: isDark ? '1px solid rgba(159, 176, 200, 0.22)' : '1px solid rgba(15, 23, 42, 0.08)',
+          color: 'text.primary',
           py: { xs: 5, md: 8 },
           mb: { xs: 4, md: 6 },
-          borderRadius: 0,
+          borderRadius: 3,
           position: 'relative',
           overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.1)',
-            zIndex: 1,
-          },
           '& > *': {
             position: 'relative',
             zIndex: 2,
@@ -144,7 +138,6 @@ const Home = () => {
                 sx={{
                   fontWeight: 700,
                   mb: 2,
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
                   fontSize: { xs: '2rem', sm: '2.8rem', md: '3.75rem' },
                 }}
               >
@@ -154,7 +147,7 @@ const Home = () => {
                 variant="h5"
                 sx={{
                   mb: 4,
-                  opacity: 0.9,
+                  opacity: 1,
                   maxWidth: 600,
                   mx: 'auto',
                   lineHeight: 1.6,
@@ -170,14 +163,14 @@ const Home = () => {
                   startIcon={<Search />}
                   onClick={() => window.location.href = '/news'}
                   sx={{
-                    bgcolor: 'white',
-                    color: 'primary.main',
+                    bgcolor: 'primary.main',
+                    color: isDark ? '#05111d' : '#ffffff',
                     px: 4,
                     py: 1.5,
                     fontWeight: 600,
                     width: { xs: '100%', sm: 'auto' },
                     '&:hover': {
-                      bgcolor: 'grey.100',
+                      bgcolor: isDark ? '#93ddfc' : '#0c3f6d',
                       transform: 'translateY(-2px)',
                       boxShadow: 4
                     },
@@ -192,15 +185,15 @@ const Home = () => {
                   startIcon={<Analytics />}
                   onClick={() => window.location.href = '/dashboard'}
                   sx={{
-                    borderColor: 'white',
-                    color: 'white',
+                    borderColor: 'rgba(159, 176, 200, 0.5)',
+                    color: 'text.primary',
                     px: 4,
                     py: 1.5,
                     fontWeight: 600,
                     width: { xs: '100%', sm: 'auto' },
                     '&:hover': {
-                      borderColor: 'white',
-                      bgcolor: 'rgba(255,255,255,0.1)',
+                      borderColor: 'rgba(125, 211, 252, 0.5)',
+                      bgcolor: 'rgba(125, 211, 252, 0.08)',
                       transform: 'translateY(-2px)',
                       boxShadow: 4
                     },
@@ -231,8 +224,8 @@ const Home = () => {
                   sx={{
                     textAlign: 'center',
                     p: { xs: 1.5, sm: 2, md: 3 },
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
+                    backgroundColor: isDark ? 'rgba(16, 25, 39, 0.95)' : '#ffffff',
+                    color: 'text.primary',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-8px)',
@@ -242,13 +235,13 @@ const Home = () => {
                   }}
                 >
                   <CardContent>
-                    <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
+                    <Avatar sx={{ bgcolor: 'rgba(125, 211, 252, 0.2)', color: 'primary.main', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <Article sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {statsLoading ? '...' : (stats?.total_articles?.toLocaleString() || '0')}
                     </Typography>
-                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    <Typography variant="body2" color="text.secondary">
                       Total Articles
                     </Typography>
                   </CardContent>
@@ -259,8 +252,8 @@ const Home = () => {
                   sx={{
                     textAlign: 'center',
                     p: { xs: 1.5, sm: 2, md: 3 },
-                    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                    color: 'white',
+                    backgroundColor: isDark ? 'rgba(16, 25, 39, 0.95)' : '#ffffff',
+                    color: 'text.primary',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-8px)',
@@ -270,13 +263,13 @@ const Home = () => {
                   }}
                 >
                   <CardContent>
-                    <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
+                    <Avatar sx={{ bgcolor: 'rgba(125, 211, 252, 0.2)', color: 'primary.main', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <TrendingUp sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {statsLoading ? '...' : (stats?.recent_articles_24h || '0')}
                     </Typography>
-                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    <Typography variant="body2" color="text.secondary">
                       Last 24 Hours
                     </Typography>
                   </CardContent>
@@ -287,8 +280,8 @@ const Home = () => {
                   sx={{
                     textAlign: 'center',
                     p: { xs: 1.5, sm: 2, md: 3 },
-                    background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                    color: 'white',
+                    backgroundColor: isDark ? 'rgba(16, 25, 39, 0.95)' : '#ffffff',
+                    color: 'text.primary',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-8px)',
@@ -298,13 +291,13 @@ const Home = () => {
                   }}
                 >
                   <CardContent>
-                    <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
+                    <Avatar sx={{ bgcolor: 'rgba(125, 211, 252, 0.2)', color: 'primary.main', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <Analytics sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {statsLoading ? '...' : (stats?.sources?.length || 0)}
                     </Typography>
-                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    <Typography variant="body2" color="text.secondary">
                       News Sources
                     </Typography>
                   </CardContent>
@@ -315,8 +308,8 @@ const Home = () => {
                   sx={{
                     textAlign: 'center',
                     p: { xs: 1.5, sm: 2, md: 3 },
-                    background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-                    color: 'white',
+                    backgroundColor: isDark ? 'rgba(16, 25, 39, 0.95)' : '#ffffff',
+                    color: 'text.primary',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-8px)',
@@ -326,13 +319,13 @@ const Home = () => {
                   }}
                 >
                   <CardContent>
-                    <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 2, mx: 'auto', width: 56, height: 56 }}>
+                    <Avatar sx={{ bgcolor: 'rgba(125, 211, 252, 0.2)', color: 'primary.main', mb: 2, mx: 'auto', width: 56, height: 56 }}>
                       <Search sx={{ fontSize: 28 }} />
                     </Avatar>
                     <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                       {trendsLoading ? '...' : (trends?.trending_topics?.length || 0)}
                     </Typography>
-                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    <Typography variant="body2" color="text.secondary">
                       Trending Topics
                     </Typography>
                   </CardContent>
@@ -356,9 +349,10 @@ const Home = () => {
             py: 2,
             fontWeight: 600,
             width: { xs: '100%', sm: 'auto' },
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundColor: 'primary.main',
+            color: isDark ? '#05111d' : '#ffffff',
             '&:hover': {
-              background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
+              backgroundColor: isDark ? '#93ddfc' : '#0c3f6d',
               transform: 'translateY(-2px)',
               boxShadow: 4
             },

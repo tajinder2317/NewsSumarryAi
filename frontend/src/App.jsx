@@ -13,10 +13,10 @@ const Analysis = lazy(() => import("./pages/Analysis"));
 const Search = lazy(() => import("./pages/Search"));
 const News = lazy(() => import("./pages/News"));
 
-function App() {
+function App({ mode, onToggleMode }) {
   return (
     <div className="app-container">
-      <Header />
+      <Header mode={mode} onToggleMode={onToggleMode} />
 
       <main className="main-content">
         <Container maxWidth="xl">

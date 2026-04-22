@@ -1,7 +1,11 @@
 import React from 'react';
 import { Box, CircularProgress, Typography, Paper, Fade } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const Loading = ({ message = 'Loading...', size = 40, fullScreen = false }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+
   return (
     <Fade in timeout={300}>
       <Box
@@ -19,7 +23,7 @@ const Loading = ({ message = 'Loading...', size = 40, fullScreen = false }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            bgcolor: isDark ? 'rgba(7, 12, 20, 0.9)' : 'rgba(243, 246, 251, 0.9)',
             zIndex: 9999,
           })
         }}
@@ -32,9 +36,10 @@ const Loading = ({ message = 'Loading...', size = 40, fullScreen = false }) => {
             alignItems: 'center',
             gap: 2,
             borderRadius: 3,
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
+            boxShadow: '0 12px 30px rgba(0, 0, 0, 0.28)',
+            backgroundColor: isDark ? '#0e1625' : '#ffffff',
+            border: isDark ? '1px solid rgba(159, 176, 200, 0.22)' : '1px solid rgba(15, 23, 42, 0.12)',
+            color: isDark ? '#e7edf8' : '#0f172a',
             minWidth: 300,
           }}
         >
@@ -42,7 +47,7 @@ const Loading = ({ message = 'Loading...', size = 40, fullScreen = false }) => {
             <CircularProgress
               size={size}
               sx={{
-                color: 'rgba(255, 255, 255, 0.3)',
+                color: isDark ? 'rgba(159, 176, 200, 0.3)' : 'rgba(15, 23, 42, 0.2)',
                 '& .MuiCircularProgress-circle': {
                   strokeLinecap: 'round',
                 },
@@ -50,14 +55,14 @@ const Loading = ({ message = 'Loading...', size = 40, fullScreen = false }) => {
             />
             <CircularProgress
               size={size}
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                color: 'white',
-                animationDuration: '1s',
-                '& .MuiCircularProgress-circle': {
-                  strokeLinecap: 'round',
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  color: isDark ? '#7dd3fc' : '#0f4c81',
+                  animationDuration: '1s',
+                  '& .MuiCircularProgress-circle': {
+                    strokeLinecap: 'round',
                 },
               }}
               variant="determinate"

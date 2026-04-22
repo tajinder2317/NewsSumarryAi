@@ -18,111 +18,117 @@ const queryClient = new QueryClient({
   },
 });
 
-// Create Material-UI theme
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#7dd3fc',
-    },
-    secondary: {
-      main: '#94a3b8',
-    },
-    text: {
-      primary: '#e7edf8',
-      secondary: '#9fb0c8',
-    },
-    background: {
-      default: '#070c14',
-      paper: '#0e1625',
-    },
-  },
-  typography: {
-    fontFamily: '"Plus Jakarta Sans", "Space Grotesk", "Manrope", sans-serif',
-    h4: {
-      letterSpacing: '-0.01em',
-    },
-    h5: {
-      letterSpacing: '-0.01em',
-    },
-    h6: {
-      letterSpacing: '-0.01em',
-    },
-    button: {
-      fontWeight: 600,
-      letterSpacing: '0.01em',
-      textTransform: 'none',
-    },
-    h1: {
-      fontSize: '2.5rem',
-      fontWeight: 700,
-    },
-    h2: {
-      fontSize: '2rem',
-      fontWeight: 700,
-    },
-    h3: {
-      fontSize: '1.75rem',
-      fontWeight: 700,
-    },
-  },
-  shape: {
-    borderRadius: 14,
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          background:
-            'radial-gradient(circle at 10% 0%, rgba(125, 211, 252, 0.08), transparent 32%), radial-gradient(circle at 90% 100%, rgba(148, 163, 184, 0.08), transparent 30%), #070c14',
-        },
+const getDesignTokens = (mode) => {
+  const isDark = mode === 'dark';
+  return {
+    palette: {
+      mode,
+      primary: {
+        main: isDark ? '#7dd3fc' : '#0f4c81',
+      },
+      secondary: {
+        main: isDark ? '#94a3b8' : '#4b5563',
+      },
+      text: {
+        primary: isDark ? '#e7edf8' : '#0f172a',
+        secondary: isDark ? '#9fb0c8' : '#475569',
+      },
+      background: {
+        default: isDark ? '#070c14' : '#f3f6fb',
+        paper: isDark ? '#0e1625' : '#ffffff',
       },
     },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          background: 'linear-gradient(180deg, rgba(16, 24, 38, 0.95), rgba(12, 19, 31, 0.95))',
-          border: '1px solid rgba(159, 176, 200, 0.18)',
-          boxShadow: '0 12px 30px rgba(0, 0, 0, 0.28)',
-        },
+    typography: {
+      fontFamily: '"Plus Jakarta Sans", "Space Grotesk", "Manrope", sans-serif',
+      h4: { letterSpacing: '-0.01em' },
+      h5: { letterSpacing: '-0.01em' },
+      h6: { letterSpacing: '-0.01em' },
+      button: {
+        fontWeight: 600,
+        letterSpacing: '0.01em',
+        textTransform: 'none',
       },
+      h1: { fontSize: '2.5rem', fontWeight: 700 },
+      h2: { fontSize: '2rem', fontWeight: 700 },
+      h3: { fontSize: '1.75rem', fontWeight: 700 },
     },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-        containedPrimary: {
-          color: '#05111d',
-          background: 'linear-gradient(135deg, #7dd3fc, #67b8e4)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #8ad8fc, #74bee6)',
+    shape: {
+      borderRadius: 14,
+    },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            background: isDark ? '#070c14' : '#f3f6fb',
           },
         },
-        outlined: {
-          borderColor: 'rgba(159, 176, 200, 0.4)',
-          color: '#d5dfef',
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            background: isDark ? 'rgba(14, 22, 37, 0.95)' : '#ffffff',
+            border: isDark ? '1px solid rgba(159, 176, 200, 0.18)' : '1px solid rgba(15, 23, 42, 0.08)',
+            boxShadow: isDark
+              ? '0 12px 30px rgba(0, 0, 0, 0.28)'
+              : '0 10px 24px rgba(15, 23, 42, 0.08)',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+          },
+          containedPrimary: {
+            color: isDark ? '#05111d' : '#ffffff',
+            background: isDark ? '#7dd3fc' : '#0f4c81',
+            '&:hover': {
+              background: isDark ? '#93ddfc' : '#0c3f6d',
+            },
+          },
+          outlined: {
+            borderColor: isDark ? 'rgba(159, 176, 200, 0.4)' : 'rgba(15, 23, 42, 0.2)',
+            color: isDark ? '#d5dfef' : '#0f172a',
+          },
+        },
+      },
+      MuiContainer: {
+        defaultProps: {
+          maxWidth: 'xl',
         },
       },
     },
-    MuiContainer: {
-      defaultProps: {
-        maxWidth: 'xl',
-      },
-    },
-  },
-});
+  };
+};
+
+function ThemedApp() {
+  const [mode, setMode] = React.useState(() => localStorage.getItem('news-ui-mode') || 'dark');
+
+  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
+  const toggleMode = React.useCallback(() => {
+    setMode((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('news-ui-mode', next);
+      return next;
+    });
+  }, []);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <App mode={mode} onToggleMode={toggleMode} />
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ThemeProvider>
+      <ThemedApp />
     </QueryClientProvider>
   </React.StrictMode>
 );
