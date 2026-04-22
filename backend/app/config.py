@@ -15,6 +15,10 @@ class Settings:
         or os.getenv("NILE_DATABASE_URL")
         or "sqlite:///./data/database.db"
     )
+
+    # Vercel/Postgres providers may return `postgres://...`, while SQLAlchemy expects `postgresql://...`.
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     
     # Handle Supabase connection string format
     if os.getenv("SUPABASE_URL") and os.getenv("SUPABASE_PASSWORD"):
