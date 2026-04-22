@@ -23,6 +23,7 @@ async def get_news(
     source: Optional[str] = Query(None),
     category: Optional[str] = Query(None),
     region: Optional[str] = Query(None),
+    minutes: Optional[int] = Query(None, ge=1, le=7 * 24 * 60, description="Only return articles published in the last N minutes"),
     db: Session = Depends(get_db)
 ):
     """Get news articles with optional filtering"""
@@ -38,6 +39,10 @@ async def get_news(
 
         if region:
             query = query.filter(NewsArticle.region == region)
+
+        if minutes:
+            cutoff = datetime.utcnow() - timedelta(minutes=minutes)
+            query = query.filter(NewsArticle.published_date >= cutoff)
         
         # Order and limit for better performance
         articles = query.order_by(NewsArticle.published_date.desc()).offset(skip).limit(limit).all()
@@ -45,6 +50,74 @@ async def get_news(
     except Exception as e:
         logger.error(f"Error fetching news: {e}")
         raise HTTPException(status_code=500, detail=f"Error fetching news: {str(e)}")
+
+@router.get("/latest", response_model=List[NewsArticleResponse])
+async def get_latest_news(
+    minutes: int = Query(5, ge=1, le=24 * 60, description="Freshness window in minutes"),
+    limit: int = Query(20, ge=1, le=50),
+    refresh: bool = Query(True, description="Try to collect fresh news before returning results"),
+    timeout: int = Query(6, ge=2, le=12, description="Timeout in seconds for RSS feed collection"),
+    max_per_source: int = Query(3, ge=1, le=10, description="Max latest articles to fetch per RSS source"),
+    db: Session = Depends(get_db),
+):
+    """
+    Return the freshest news (default: last 5 minutes).
+
+    On serverless deployments, we don't have a background scheduler by default,
+    so this endpoint can optionally trigger a small collection pass first.
+    """
+    if refresh:
+        from ..services.real_news_collector import RealNewsCollector
+
+        try:
+            collector = RealNewsCollector()
+            articles = collector.collect_articles(timeout=timeout, max_articles_per_feed=max_per_source)
+
+            urls = [a.get("url") for a in articles if a.get("url")]
+            existing_urls = set()
+            if urls:
+                existing_rows = db.query(NewsArticle).filter(NewsArticle.url.in_(urls)).all()
+                existing_urls = {row.url for row in existing_rows}
+
+            for a in articles:
+                url = a.get("url")
+                if not url or url in existing_urls:
+                    continue
+
+                db.add(
+                    NewsArticle(
+                        title=a.get("title") or "Untitled",
+                        content=a.get("content") or "",
+                        summary=a.get("summary"),
+                        url=url,
+                        source=a.get("source") or "Unknown",
+                        author=a.get("author"),
+                        published_date=a.get("published_date"),
+                        collected_date=a.get("collected_date"),
+                        category=a.get("category"),
+                        region=a.get("region"),
+                        sentiment_score=a.get("sentiment_score"),
+                        sentiment_label=a.get("sentiment_label"),
+                        topics=a.get("topics"),
+                    )
+                )
+
+            db.commit()
+        except Exception as e:
+            logger.warning(f"Latest refresh collection failed: {e}")
+            try:
+                db.rollback()
+            except Exception:
+                pass
+
+    cutoff = datetime.utcnow() - timedelta(minutes=minutes)
+    return (
+        db.query(NewsArticle)
+        .filter(NewsArticle.published_date >= cutoff)
+        .order_by(NewsArticle.published_date.desc())
+        .limit(limit)
+        .all()
+    )
 
 @router.get("/{article_id}", response_model=NewsArticleResponse)
 async def get_article(article_id: int, db: Session = Depends(get_db)):
@@ -62,8 +135,8 @@ async def get_article(article_id: int, db: Session = Depends(get_db)):
 
 @router.post("/collect")
 async def collect_news(
-    timeout: int = Query(4, ge=2, le=12, description="Timeout in seconds for RSS feed collection"),
-    max_per_source: int = Query(2, ge=1, le=10, description="Max latest articles to fetch per RSS source"),
+    timeout: int = Query(6, ge=2, le=12, description="Timeout in seconds for RSS feed collection"),
+    max_per_source: int = Query(3, ge=1, le=10, description="Max latest articles to fetch per RSS source"),
     db: Session = Depends(get_db)
 ):
     """Trigger news collection from all sources"""

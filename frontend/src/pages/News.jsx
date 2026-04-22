@@ -6,13 +6,16 @@ import {
   Box,
   Button,
   Alert,
+  Divider,
 } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 
 import { newsService } from '../services/newsService';
 import NewsList from '../components/news/NewsList';
+import NewsCard from '../components/news/NewsCard';
 
 const NewsPage = () => {
+  const FRESH_MINUTES = 5;
   const [filters, setFilters] = useState({
     source: '',
     category: '',
@@ -21,6 +24,33 @@ const NewsPage = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 20;
+
+  const {
+    data: latestArticles = [],
+    isLoading: latestLoading,
+    error: latestError,
+    refetch: refetchLatest,
+  } = useQuery(
+    ['latestNews', { minutes: FRESH_MINUTES, ...filters }],
+    () => newsService.fetchLatest({
+      minutes: FRESH_MINUTES,
+      limit: 20,
+      refresh: true,
+      // Keep latest view consistent with filters when they’re applied.
+      source: filters.source || undefined,
+      category: filters.category || undefined,
+      region: filters.region || undefined,
+    }),
+    {
+      retry: 1,
+      staleTime: 30 * 1000,
+      refetchInterval: 120 * 1000,
+      keepPreviousData: true,
+      onError: (error) => {
+        console.error('Latest news fetch error:', error);
+      },
+    }
+  );
 
   // Fetch news articles
   const {
@@ -83,6 +113,7 @@ const NewsPage = () => {
   };
 
   const handleRefresh = () => {
+    refetchLatest();
     refetch();
   };
 
@@ -90,24 +121,44 @@ const NewsPage = () => {
     <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 4, gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
         <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
-          Latest News
+          Latest News (updates every 2 min)
         </Typography>
         <Button
           variant="outlined"
           startIcon={<Refresh />}
           onClick={handleRefresh}
-          disabled={isLoading}
+          disabled={isLoading || latestLoading}
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
           Refresh
         </Button>
       </Box>
 
-      {error && (
+      {(error || latestError) && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          Error loading news: {error.message}
+          Error loading news: {(latestError || error).message}
         </Alert>
       )}
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          Fresh (last {FRESH_MINUTES} minutes)
+        </Typography>
+        {!latestLoading && (latestArticles || []).length === 0 && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            No articles were published in the last {FRESH_MINUTES} minutes from the current sources. Showing the most recent articles below.
+          </Alert>
+        )}
+        {(latestArticles || []).map((article) => (
+          <NewsCard key={article.url || article.id} article={article} />
+        ))}
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
+
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        All News
+      </Typography>
 
       <NewsList
         articles={articles || []}

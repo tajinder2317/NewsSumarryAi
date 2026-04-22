@@ -99,6 +99,11 @@ export const newsAPI = {
   getNews: (params = {}) => {
     return api.get('/api/v1/news/', { params });
   },
+
+  // Get freshest news (optionally triggers a lightweight refresh on the backend)
+  getLatest: (params = {}) => {
+    return api.get('/api/v1/news/latest', { params });
+  },
   
   // Get specific article by ID
   getArticle: (id) => {

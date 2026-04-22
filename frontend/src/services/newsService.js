@@ -26,6 +26,16 @@ export const newsService = {
     }
   },
 
+  // Fetch the freshest news (default: last 5 minutes)
+  fetchLatest: async (params = {}) => {
+    try {
+      const response = await newsAPI.getLatest(params);
+      return normalizeArticles(response?.data);
+    } catch (error) {
+      throw new Error(`Failed to fetch latest news: ${error.message}`);
+    }
+  },
+
   // Fetch single article
   fetchArticle: async (id) => {
     try {

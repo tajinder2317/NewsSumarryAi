@@ -4,6 +4,7 @@ Real news collector that fetches from RSS feeds for serverless deployment
 import feedparser
 import requests
 from datetime import datetime, timedelta
+import calendar
 import logging
 from typing import List, Dict, Any
 import re
@@ -178,10 +179,18 @@ class RealNewsCollector:
                     
                     # Parse publication date
                     pub_date = datetime.utcnow()
+                    parsed = None
                     if hasattr(entry, 'published_parsed') and entry.published_parsed:
+                        parsed = entry.published_parsed
+                    elif hasattr(entry, 'updated_parsed') and entry.updated_parsed:
+                        parsed = entry.updated_parsed
+
+                    if parsed:
                         try:
-                            pub_date = datetime(*entry.published_parsed[:6])
-                        except (ValueError, TypeError):
+                            # feedparser returns a time.struct_time in UTC for typical RSS/Atom feeds.
+                            # Convert to a UTC timestamp and then to a naive UTC datetime for storage.
+                            pub_date = datetime.utcfromtimestamp(calendar.timegm(parsed))
+                        except (ValueError, TypeError, OverflowError):
                             pass
                     
                     # Clean content

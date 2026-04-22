@@ -71,7 +71,12 @@ const NewsCard = ({ article, onAnalyze, onDelete, showActions = true }) => {
   };
 
   const formatDate = (dateString) => {
-    return moment(dateString).fromNow();
+    if (!dateString) return 'Unknown date';
+    const s = String(dateString);
+    // Backend often returns naive UTC (no timezone suffix). Moment treats that as local time,
+    // which makes "fromNow" look ~5.5h off in IST (and other offsets). Treat naive ISO as UTC.
+    const hasZone = /Z$|[+-]\d{2}:\d{2}$/.test(s);
+    return (hasZone ? moment(s) : moment.utc(s).local()).fromNow();
   };
 
   const getSourceInitials = (source) => {
